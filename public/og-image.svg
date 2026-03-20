@@ -1,0 +1,176 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <!-- Radial glow for charity dots -->
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#D4A843" stop-opacity="0.9"/>
+      <stop offset="40%" stop-color="#D4A843" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#D4A843" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowLg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#D4A843" stop-opacity="0.7"/>
+      <stop offset="30%" stop-color="#D4A843" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#D4A843" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Subtle vignette -->
+    <radialGradient id="vignette" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#0C1324" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#0C1324" stop-opacity="0.5"/>
+    </radialGradient>
+    <!-- Star of David filter glow -->
+    <filter id="starGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Dot glow filter -->
+    <filter id="dotGlow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background: deep navy -->
+  <rect width="1200" height="630" fill="#0A1628"/>
+
+  <!-- Subtle grid pattern -->
+  <g opacity="0.04" stroke="#5B94F0" stroke-width="0.5">
+    <line x1="0" y1="0" x2="0" y2="630" transform="translate(100,0)"/>
+    <line x1="0" y1="0" x2="0" y2="630" transform="translate(200,0)"/>
+    <line x1="0" y1="0" x2="0" y2="630" transform="translate(300,0)"/>
+    <line x1="0" y1="0" x2="0" y2="630" transform="translate(400,0)"/>
+    <line x1="0" y1="0" x2="0" y2="630" transform="translate(500,0)"/>
+    <line x1="0" y1="0" x2="0" y2="630" transform="translate(600,0)"/>
+    <line x1="0" y1="0" x2="0" y2="630" transform="translate(700,0)"/>
+    <line x1="0" y1="0" x2="0" y2="630" transform="translate(800,0)"/>
+    <line x1="0" y1="0" x2="0" y2="630" transform="translate(900,0)"/>
+    <line x1="0" y1="0" x2="0" y2="630" transform="translate(1000,0)"/>
+    <line x1="0" y1="0" x2="0" y2="630" transform="translate(1100,0)"/>
+  </g>
+
+  <!-- Map of Israel outline (simplified, elegant) centered in right portion -->
+  <g transform="translate(620, 45) scale(1.05)" opacity="0.25" fill="none" stroke="#5B94F0" stroke-width="1.5" stroke-linejoin="round">
+    <!-- Simplified Israel outline -->
+    <path d="
+      M 95,20
+      L 110,18 125,22 140,15 155,20 168,30
+      L 172,50 170,70 175,90 170,110
+      L 165,130 168,150 165,170 160,190
+      L 155,210 150,230 148,250 145,270
+      L 140,290 135,310 130,330 125,350
+      L 120,370 115,390 110,410 105,430
+      L 102,445 100,460 95,480 90,500
+      L 88,510 92,515 95,520
+      L 85,520 80,510 78,500
+      L 75,480 70,460 68,440 65,420
+      L 60,400 58,380 55,360 52,340
+      L 50,320 48,300 50,280 55,260
+      L 58,240 60,220 62,200 65,180
+      L 68,160 70,140 72,120 75,100
+      L 78,80 80,60 82,40 88,25 Z
+    "/>
+  </g>
+
+  <!-- Glowing charity location dots on the map -->
+  <g transform="translate(620, 45) scale(1.05)">
+    <!-- Haifa area (North) -->
+    <circle cx="78" cy="115" r="28" fill="url(#glowLg)" filter="url(#dotGlow)"/>
+    <circle cx="78" cy="115" r="4" fill="#D4A843" opacity="0.95"/>
+
+    <!-- Tiberias / Sea of Galilee -->
+    <circle cx="105" cy="130" r="22" fill="url(#glowLg)" filter="url(#dotGlow)"/>
+    <circle cx="105" cy="130" r="3.5" fill="#D4A843" opacity="0.9"/>
+
+    <!-- Safed (North) -->
+    <circle cx="95" cy="90" r="20" fill="url(#glowLg)" filter="url(#dotGlow)"/>
+    <circle cx="95" cy="90" r="3" fill="#D4A843" opacity="0.85"/>
+
+    <!-- Nazareth -->
+    <circle cx="88" cy="145" r="18" fill="url(#glowLg)" filter="url(#dotGlow)"/>
+    <circle cx="88" cy="145" r="3" fill="#D4A843" opacity="0.85"/>
+
+    <!-- Netanya (Central Coast) -->
+    <circle cx="65" cy="195" r="22" fill="url(#glowLg)" filter="url(#dotGlow)"/>
+    <circle cx="65" cy="195" r="3.5" fill="#D4A843" opacity="0.9"/>
+
+    <!-- Tel Aviv (Central Coast) - bigger glow -->
+    <circle cx="60" cy="235" r="35" fill="url(#glowLg)" filter="url(#dotGlow)"/>
+    <circle cx="60" cy="235" r="5" fill="#D4A843" opacity="1"/>
+
+    <!-- Herzliya -->
+    <circle cx="62" cy="215" r="18" fill="url(#glowLg)" filter="url(#dotGlow)"/>
+    <circle cx="62" cy="215" r="3" fill="#D4A843" opacity="0.85"/>
+
+    <!-- Jerusalem - biggest glow -->
+    <circle cx="100" cy="275" r="40" fill="url(#glowLg)" filter="url(#dotGlow)"/>
+    <circle cx="100" cy="275" r="6" fill="#D4A843" opacity="1"/>
+
+    <!-- Ariel (Judea & Samaria) -->
+    <circle cx="90" cy="240" r="18" fill="url(#glowLg)" filter="url(#dotGlow)"/>
+    <circle cx="90" cy="240" r="3" fill="#D4A843" opacity="0.8"/>
+
+    <!-- Be'er Sheva (South) -->
+    <circle cx="72" cy="370" r="28" fill="url(#glowLg)" filter="url(#dotGlow)"/>
+    <circle cx="72" cy="370" r="4" fill="#D4A843" opacity="0.9"/>
+
+    <!-- Arad -->
+    <circle cx="90" cy="350" r="18" fill="url(#glowLg)" filter="url(#dotGlow)"/>
+    <circle cx="90" cy="350" r="3" fill="#D4A843" opacity="0.8"/>
+
+    <!-- Eilat (Negev) -->
+    <circle cx="92" cy="510" r="24" fill="url(#glowLg)" filter="url(#dotGlow)"/>
+    <circle cx="92" cy="510" r="4" fill="#D4A843" opacity="0.9"/>
+
+    <!-- Mitzpe Ramon -->
+    <circle cx="82" cy="440" r="18" fill="url(#glowLg)" filter="url(#dotGlow)"/>
+    <circle cx="82" cy="440" r="3" fill="#D4A843" opacity="0.8"/>
+  </g>
+
+  <!-- Vignette overlay -->
+  <rect width="1200" height="630" fill="url(#vignette)"/>
+
+  <!-- Left side text content -->
+  <g transform="translate(80, 180)">
+    <!-- Small Star of David accent -->
+    <g transform="translate(0, -20)" filter="url(#starGlow)" opacity="0.6">
+      <polygon points="12,0 15,7 22,7 16,12 18,19 12,15 6,19 8,12 2,7 9,7" fill="#D4A843"/>
+    </g>
+
+    <!-- Site name -->
+    <text font-family="'Cormorant Garamond', Georgia, serif" font-size="62" font-weight="700" fill="#FFFFFF" letter-spacing="-1">
+      Give Israel
+    </text>
+
+    <!-- Tagline -->
+    <text y="55" font-family="'Figtree', sans-serif" font-size="22" font-weight="400" fill="#A8B0C4" letter-spacing="0.5">
+      Explore &amp; Support Israeli Charities
+    </text>
+
+    <!-- Divider line -->
+    <line x1="0" y1="85" x2="120" y2="85" stroke="#D4A843" stroke-width="2" opacity="0.6"/>
+
+    <!-- Stats -->
+    <text y="125" font-family="'Figtree', sans-serif" font-size="16" font-weight="500" fill="#5B94F0" letter-spacing="1" text-transform="uppercase">
+      45+ CHARITIES
+    </text>
+    <text y="125" x="180" font-family="'Figtree', sans-serif" font-size="16" fill="#2A3550">|</text>
+    <text y="125" x="200" font-family="'Figtree', sans-serif" font-size="16" font-weight="500" fill="#5B94F0" letter-spacing="1">
+      15 CATEGORIES
+    </text>
+
+    <!-- CTA text -->
+    <text y="175" font-family="'Figtree', sans-serif" font-size="18" font-weight="300" fill="#7B849E">
+      Find your cause. Light up Israel.
+    </text>
+  </g>
+
+  <!-- Bottom bar -->
+  <rect y="605" width="1200" height="25" fill="#0038B8" opacity="0.6"/>
+  <text x="600" y="622" font-family="'Figtree', sans-serif" font-size="13" font-weight="500" fill="#FFFFFF" text-anchor="middle" letter-spacing="2" opacity="0.8">
+    GIVEISRAEL.CHARITY
+  </text>
+</svg>

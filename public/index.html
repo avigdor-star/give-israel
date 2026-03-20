@@ -3,10 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Give Israel — Find & Support Israeli Charities</title>
-<meta name="description" content="Discover and donate to verified Israeli charities. Browse by category, search by name, and give directly to causes you care about.">
-<meta property="og:title" content="Give Israel — Find & Support Israeli Charities">
-<meta property="og:description" content="The most comprehensive directory of Israeli charities. Find your cause. Make your impact.">
+<title>Give Israel — Explore & Support Israeli Charities</title>
+<meta name="description" content="Supporting Israel starts with finding the right cause. Browse verified charities, filter by category, and donate directly — all in one place.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Give Israel — Explore & Support Israeli Charities">
+<meta property="og:description" content="Supporting Israel starts with finding the right cause. Browse verified charities, filter by category, and donate directly — all in one place.">
+<meta property="og:image" content="/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Give Israel — A glowing map of Israel showing charity locations across the country">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Give Israel — Explore & Support Israeli Charities">
+<meta name="twitter:description" content="Supporting Israel starts with finding the right cause. Browse verified charities, filter by category, and donate directly — all in one place.">
+<meta name="twitter:image" content="/og-image.png">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230038B8'/%3E%3Cpath d='M32 12 L44 32 L32 52 L20 32 Z' fill='none' stroke='white' stroke-width='2.5' opacity='0.3'/%3E%3Cpath d='M32 16 L20 36 L44 36 Z' fill='none' stroke='white' stroke-width='2.2' opacity='0.85'/%3E%3Cpath d='M32 48 L20 28 L44 28 Z' fill='none' stroke='white' stroke-width='2.2' opacity='0.85'/%3E%3Cpath d='M32 26 C32 26 27 30 27 33.5 C27 36.2 29.2 38 32 38 C34.8 38 37 36.2 37 33.5 C37 30 32 26 32 26Z' fill='white' opacity='0.95'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1445,6 +1454,7 @@ body::after {
           <div class="fg"><label class="fl">Your Name</label><input type="text" class="fi" name="submitter_name" placeholder="Optional"></div>
           <div class="fg"><label class="fl">Your Email</label><input type="email" class="fi" name="submitter_email" placeholder="Optional"></div>
         </div>
+        <div style="position:absolute;left:-9999px;opacity:0;height:0;overflow:hidden;" aria-hidden="true"><label>Website URL<input type="text" name="_hp_website" tabindex="-1" autocomplete="off"></label></div>
         <button type="submit" class="btn-submit" id="submitBtn">Submit Suggestion</button>
       </form>
     </div>
@@ -1462,6 +1472,9 @@ const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSI
 const hdrs={'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`,'Content-Type':'application/json'};
 
 let allCharities=[],allCategories=[],activeCat=null,sq='';
+
+// Sanitize strings to prevent XSS
+function esc(str){if(!str)return '';const d=document.createElement('div');d.textContent=str;return d.innerHTML;}
 
 async function fetchData(){
   try{
@@ -1483,7 +1496,7 @@ function renderCats(){
   const bar=document.getElementById('categoriesBar');
   const cnt={};allCharities.forEach(c=>{cnt[c.category_id]=(cnt[c.category_id]||0)+1;});
   let h=`<button class="cat-pill ${!activeCat?'active':''}" onclick="filterCat(null)"><span class="ci">✦</span>All<span class="cc">${allCharities.length}</span></button>`;
-  allCategories.forEach(c=>{if(!(cnt[c.id]||0))return;h+=`<button class="cat-pill ${activeCat===c.id?'active':''}" onclick="filterCat(${c.id})"><span class="ci">${c.icon}</span>${c.name}<span class="cc">${cnt[c.id]||0}</span></button>`;});
+  allCategories.forEach(c=>{if(!(cnt[c.id]||0))return;h+=`<button class="cat-pill ${activeCat===c.id?'active':''}" onclick="filterCat(${c.id})"><span class="ci">${esc(c.icon)}</span>${esc(c.name)}<span class="cc">${cnt[c.id]||0}</span></button>`;});
   bar.innerHTML=h;
 }
 
@@ -1503,15 +1516,15 @@ function renderCards(){
 
 function card(ch,idx,feat){
   const ct=allCategories.find(c=>c.id===ch.category_id);
-  const ini=ch.name.split(/[\s&]+/).slice(0,2).map(w=>w[0]).join('').toUpperCase();
+  const ini=esc(ch.name).split(/[\s&]+/).slice(0,2).map(w=>w[0]).join('').toUpperCase();
   let tg='';
   if(ch.is_verified)tg+='<span class="tag tag-v">✓ Verified</span>';
   if(ch.is_featured&&feat)tg+='<span class="tag tag-f">★ Featured</span>';
   if(ch.is_tax_deductible_us)tg+='<span class="tag tag-t">US Tax Deductible</span>';
   return`<div class="card ${ch.is_featured?'feat':''}" style="animation-delay:${Math.min(idx*0.04,0.35)}s">
-    <div class="card-head"><div class="card-mono">${ch.logo_url?`<img src="${ch.logo_url}" alt="${ch.name}" onerror="this.parentElement.textContent='${ini}'">`:ini}</div><div class="card-meta"><div class="card-name">${ch.name}</div>${ch.location?`<div class="card-loc">📍 ${ch.location}</div>`:''}<div class="card-tags">${tg}</div></div></div>
-    <div class="card-body"><div class="card-desc">${ch.short_description||ch.description}</div>${ct?`<div class="card-cat-label">${ct.icon} ${ct.name}</div>`:''}</div>
-    <div class="card-foot"><a href="${ch.donation_url}" target="_blank" rel="noopener" class="btn-donate"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>Donate</a>${ch.website_url?`<a href="${ch.website_url}" target="_blank" rel="noopener" class="btn-web">Website</a>`:''}</div></div>`;
+    <div class="card-head"><div class="card-mono">${ch.logo_url?`<img src="${esc(ch.logo_url)}" alt="${esc(ch.name)}" onerror="this.parentElement.textContent='${ini}'">`:ini}</div><div class="card-meta"><div class="card-name">${esc(ch.name)}</div>${ch.location?`<div class="card-loc">📍 ${esc(ch.location)}</div>`:''}<div class="card-tags">${tg}</div></div></div>
+    <div class="card-body"><div class="card-desc">${esc(ch.short_description||ch.description)}</div>${ct?`<div class="card-cat-label">${esc(ct.icon)} ${esc(ct.name)}</div>`:''}</div>
+    <div class="card-foot"><a href="${esc(ch.donation_url)}" target="_blank" rel="noopener" class="btn-donate"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>Donate</a>${ch.website_url?`<a href="${esc(ch.website_url)}" target="_blank" rel="noopener" class="btn-web">Website</a>`:''}</div></div>`;
 }
 
 function filterCat(id){activeCat=id;renderCats();renderCards();document.querySelector('.main').scrollIntoView({behavior:'smooth',block:'start'});}
@@ -1532,9 +1545,11 @@ function closeSuggestModal(e){if(e&&e.target!==e.currentTarget)return;document.g
 async function submitSuggestion(e){
   e.preventDefault();const form=e.target,btn=document.getElementById('submitBtn');
   btn.disabled=true;btn.textContent='Submitting...';
-  const d={charity_name:form.charity_name.value,website_url:form.website_url.value||null,donation_url:form.donation_url.value||null,category:form.category.value||null,description:form.description.value||null,submitter_name:form.submitter_name.value||null,submitter_email:form.submitter_email.value||null};
-  try{const r=await fetch(`${SUPABASE_URL}/rest/v1/charity_suggestions`,{method:'POST',headers:{...hdrs,'Prefer':'return=minimal'},body:JSON.stringify(d)});
-    if(r.ok){document.getElementById('suggestFormBody').innerHTML='<div class="form-ok"><div class="form-ok-ico">✓</div><h3>Thank you!</h3><p>Your suggestion has been submitted. We\'ll review it and add the charity soon.</p></div>';}
+  const d={charity_name:form.charity_name.value,website_url:form.website_url.value||null,donation_url:form.donation_url.value||null,category:form.category.value||null,description:form.description.value||null,submitter_name:form.submitter_name.value||null,submitter_email:form.submitter_email.value||null,_hp_website:form._hp_website.value};
+  try{const r=await fetch(`${SUPABASE_URL}/functions/v1/submit-suggestion`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});
+    const res=await r.json();
+    if(r.ok&&res.success){document.getElementById('suggestFormBody').innerHTML='<div class="form-ok"><div class="form-ok-ico">✓</div><h3>Thank you!</h3><p>Your suggestion has been submitted. We\'ll review it and add the charity soon.</p></div>';}
+    else if(r.status===429){btn.disabled=false;btn.textContent='Submit Suggestion';alert('Too many submissions. Please try again in an hour.');}
     else throw new Error('fail');
   }catch(err){btn.disabled=false;btn.textContent='Submit Suggestion';alert('Something went wrong. Please try again.');}
 }

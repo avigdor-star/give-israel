@@ -108,6 +108,21 @@ body { font-family: var(--font); background: var(--ink-03); color: var(--ink); -
 .btn-do-publish { height: 36px; padding: 0 20px; background: var(--blue); color: var(--white); border: none; border-radius: 8px; font-family: var(--font); font-size: 13px; font-weight: 700; cursor: pointer; }
 .btn-do-publish:hover { background: var(--blue-deep); }
 
+/* Edit form for charities */
+.edit-form { padding: 20px 22px; display: none; border-top: 2px solid var(--blue-pale); background: var(--blue-ghost); }
+.edit-form.open { display: block; }
+.btn-edit { background: var(--blue-pale); color: var(--blue); }
+.btn-edit:hover { background: var(--blue); color: var(--white); }
+.btn-save { background: var(--green); color: var(--white); }
+.btn-save:hover { background: #15803D; }
+.btn-delete { background: var(--red-bg); color: var(--red); }
+.btn-delete:hover { background: var(--red); color: var(--white); }
+.btn-edit-sub { background: var(--amber-bg); color: var(--amber); }
+.btn-edit-sub:hover { background: var(--amber); color: var(--white); }
+.pf-check { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+.pf-check input { width: 16px; height: 16px; accent-color: var(--blue); }
+.pf-check label { font-size: 12px; color: var(--ink-60); font-weight: 600; }
+
 /* Empty */
 .empty-row td { text-align: center; color: var(--ink-40); padding: 40px; font-size: 14px; }
 
@@ -122,33 +137,60 @@ body { font-family: var(--font); background: var(--ink-03); color: var(--ink); -
 </head>
 <body>
 
+<!-- Supabase Auth SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
 <!-- Admin Auth Gate -->
 <div id="authGate" style="display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--ink-03);">
   <div style="background:var(--white);padding:36px;border-radius:12px;border:1px solid var(--ink-06);width:340px;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,0.06);">
     <div style="font-size:20px;font-weight:800;color:var(--ink);margin-bottom:4px;">Give<span style="color:var(--blue);">Israel</span> Admin</div>
-    <div style="font-size:12px;color:var(--ink-40);margin-bottom:24px;">Enter password to continue</div>
-    <input type="password" id="adminPw" placeholder="Password" onkeydown="if(event.key==='Enter')checkAdminPw()" style="width:100%;padding:10px 14px;border:1.5px solid var(--ink-12);border-radius:8px;font-family:var(--font);font-size:14px;outline:none;margin-bottom:12px;">
-    <div id="authErr" style="color:var(--red);font-size:12px;font-weight:600;margin-bottom:12px;display:none;">Incorrect password</div>
-    <button onclick="checkAdminPw()" style="width:100%;padding:10px;background:var(--blue);color:var(--white);border:none;border-radius:8px;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;">Log In</button>
+    <div style="font-size:12px;color:var(--ink-40);margin-bottom:24px;">Sign in to continue</div>
+    <input type="email" id="adminEmail" placeholder="Email" onkeydown="if(event.key==='Enter')document.getElementById('adminPw').focus()" style="width:100%;padding:10px 14px;border:1.5px solid var(--ink-12);border-radius:8px;font-family:var(--font);font-size:14px;outline:none;margin-bottom:10px;">
+    <input type="password" id="adminPw" placeholder="Password" onkeydown="if(event.key==='Enter')adminLogin()" style="width:100%;padding:10px 14px;border:1.5px solid var(--ink-12);border-radius:8px;font-family:var(--font);font-size:14px;outline:none;margin-bottom:12px;">
+    <div id="authErr" style="color:var(--red);font-size:12px;font-weight:600;margin-bottom:12px;display:none;"></div>
+    <button onclick="adminLogin()" id="loginBtn" style="width:100%;padding:10px;background:var(--blue);color:var(--white);border:none;border-radius:8px;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;">Log In</button>
   </div>
 </div>
 <script>
-// Simple admin gate — change this password to something strong!
-const ADMIN_HASH='d1a92c4e198d110700590c5e12dac44d8356c2235c1d650b19354da5340f7a92';
-async function sha256(msg){const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(msg));return[...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');}
-async function checkAdminPw(){
+// Supabase Auth — server-verified authentication
+const SUPA_URL='https://psrtcjaxfeutecirypwd.supabase.co';
+const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBzcnRjamF4ZmV1dGVjaXJ5cHdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5NTcxMDIsImV4cCI6MjA4OTUzMzEwMn0.4aJK0277vZudaRtvmCpEhfWhHkbrXyHIc_2f8DgqZkQ';
+const sbAuth = supabase.createClient(SUPA_URL, SUPA_ANON);
+let authSession = null;
+
+async function adminLogin(){
+  const email=document.getElementById('adminEmail').value;
   const pw=document.getElementById('adminPw').value;
-  const hash=await sha256(pw);
-  if(hash===ADMIN_HASH){
-    sessionStorage.setItem('gi_admin','1');
-    document.getElementById('authGate').style.display='none';
-    document.getElementById('adminContent').style.display='';
-  } else {
-    document.getElementById('authErr').style.display='';
-    document.getElementById('adminPw').value='';
-  }
+  const errEl=document.getElementById('authErr');
+  const btn=document.getElementById('loginBtn');
+  errEl.style.display='none';
+  btn.disabled=true;btn.textContent='Signing in...';
+  const{data,error}=await sbAuth.auth.signInWithPassword({email,password:pw});
+  if(error){errEl.textContent=error.message;errEl.style.display='';btn.disabled=false;btn.textContent='Log In';return;}
+  authSession=data.session;
+  showAdmin();
 }
-if(sessionStorage.getItem('gi_admin')==='1'){document.addEventListener('DOMContentLoaded',()=>{document.getElementById('authGate').style.display='none';document.getElementById('adminContent').style.display='';});}
+
+function showAdmin(){
+  document.getElementById('authGate').style.display='none';
+  document.getElementById('adminContent').style.display='';
+}
+
+function adminLogout(){
+  sbAuth.auth.signOut();
+  authSession=null;
+  document.getElementById('adminContent').style.display='none';
+  document.getElementById('authGate').style.display='flex';
+  document.getElementById('adminEmail').value='';
+  document.getElementById('adminPw').value='';
+}
+
+// Check for existing session on page load
+sbAuth.auth.getSession().then(({data:{session}})=>{
+  if(session){authSession=session;showAdmin();}
+});
+// Keep session fresh
+sbAuth.auth.onAuthStateChange((event,session)=>{authSession=session;});
 </script>
 
 <div id="adminContent" style="display:none;">
@@ -159,6 +201,7 @@ if(sessionStorage.getItem('gi_admin')==='1'){document.addEventListener('DOMConte
     <button class="nav-tab active" onclick="showTab('suggestions')">Suggestions</button>
     <button class="nav-tab" onclick="showTab('charities')">All Charities</button>
   </div>
+  <button onclick="adminLogout()" style="margin-left:12px;padding:6px 14px;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);">Log Out</button>
 </nav>
 
 <div class="page">
@@ -186,7 +229,7 @@ if(sessionStorage.getItem('gi_admin')==='1'){document.addEventListener('DOMConte
         <div class="panel-count" id="charitiesCount">0</div>
       </div>
       <table class="tbl">
-        <thead><tr><th>Name</th><th>Category</th><th>Location</th><th>Status</th><th>Donation Link</th></tr></thead>
+        <thead><tr><th>Name</th><th>Category</th><th>Location</th><th>Status</th><th>Donation Link</th><th>Actions</th></tr></thead>
         <tbody id="charitiesBody"></tbody>
       </table>
     </div>
@@ -198,7 +241,11 @@ if(sessionStorage.getItem('gi_admin')==='1'){document.addEventListener('DOMConte
 <script>
 const SUPA='https://psrtcjaxfeutecirypwd.supabase.co';
 const KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBzcnRjamF4ZmV1dGVjaXJ5cHdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5NTcxMDIsImV4cCI6MjA4OTUzMzEwMn0.4aJK0277vZudaRtvmCpEhfWhHkbrXyHIc_2f8DgqZkQ';
-const H={'apikey':KEY,'Authorization':`Bearer ${KEY}`,'Content-Type':'application/json'};
+// Use authenticated session token for admin operations (falls back to anon for reads)
+function getHeaders(){
+  const token=authSession?authSession.access_token:KEY;
+  return{'apikey':KEY,'Authorization':`Bearer ${token}`,'Content-Type':'application/json'};
+}
 
 let suggestions=[],charities=[],categories=[];
 
@@ -207,9 +254,9 @@ function esc(str){if(!str)return '';const d=document.createElement('div');d.text
 
 async function load(){
   const[sr,cr,catr]=await Promise.all([
-    fetch(`${SUPA}/rest/v1/charity_suggestions?order=created_at.desc`,{headers:H}),
-    fetch(`${SUPA}/rest/v1/charities?order=name.asc`,{headers:H}),
-    fetch(`${SUPA}/rest/v1/categories?order=display_order.asc`,{headers:H})
+    fetch(`${SUPA}/rest/v1/charity_suggestions?order=created_at.desc`,{headers:getHeaders()}),
+    fetch(`${SUPA}/rest/v1/charities?order=name.asc`,{headers:getHeaders()}),
+    fetch(`${SUPA}/rest/v1/categories?order=display_order.asc`,{headers:getHeaders()})
   ]);
   suggestions=await sr.json();
   charities=await cr.json();
@@ -253,11 +300,31 @@ function renderSuggestions(){
       <td>
         <div class="actions">
           ${s.status==='pending'?`
+            <button class="btn-sm btn-edit-sub" onclick="openEditSub('${s.id}')">Edit</button>
             <button class="btn-sm btn-publish" onclick="openPublish('${s.id}')">Publish</button>
             <button class="btn-sm btn-reject" onclick="rejectSuggestion('${s.id}')">Reject</button>
           `:`<span style="font-size:12px;color:var(--ink-40);">—</span>`}
         </div>
+        <!-- Edit Submission Form -->
+        <div class="edit-form" id="ef-${s.id}">
+          <div style="font-size:13px;font-weight:700;color:var(--blue);margin-bottom:12px;">Edit Submission</div>
+          <div class="pf-row">
+            <div><label class="pf-label">Charity Name</label><input class="pf-input" id="ef-name-${s.id}" value="${esc(s.charity_name)}"></div>
+            <div><label class="pf-label">Category</label><select class="pf-select" id="ef-cat-${s.id}"><option value="">—</option>${categories.map(c=>`<option value="${esc(c.name)}" ${s.category===c.name?'selected':''}>${esc(c.name)}</option>`).join('')}</select></div>
+          </div>
+          <div class="pf-row">
+            <div><label class="pf-label">Website</label><input class="pf-input" id="ef-web-${s.id}" value="${esc(s.website_url||'')}"></div>
+            <div><label class="pf-label">Donation URL</label><input class="pf-input" id="ef-don-${s.id}" value="${esc(s.donation_url||'')}"></div>
+          </div>
+          <div class="pf-full"><label class="pf-label">Description</label><textarea class="pf-textarea" id="ef-desc-${s.id}">${esc(s.description||'')}</textarea></div>
+          <div class="pf-actions">
+            <button class="btn-cancel" onclick="closeEditSub('${s.id}')">Cancel</button>
+            <button class="btn-sm btn-save" onclick="saveEditSub('${s.id}')">Save Changes</button>
+          </div>
+        </div>
+        <!-- Publish Form -->
         <div class="publish-form" id="pf-${s.id}">
+          <div style="font-size:13px;font-weight:700;color:var(--blue);margin-bottom:12px;">Review & Publish</div>
           <div class="pf-row">
             <div><label class="pf-label">Charity Name</label><input class="pf-input" id="pf-name-${s.id}" value="${esc(s.charity_name)}"></div>
             <div><label class="pf-label">Category</label><select class="pf-select" id="pf-cat-${s.id}">${categories.map(c=>`<option value="${c.id}" ${s.category===c.name?'selected':''}>${esc(c.name)}</option>`).join('')}</select></div>
@@ -286,18 +353,97 @@ function renderCharities(){
   document.getElementById('charitiesCount').textContent=charities.length;
   body.innerHTML=charities.map(c=>{
     const cat=categories.find(ct=>ct.id===c.category_id);
-    return`<tr>
+    return`<tr id="chr-${c.id}">
       <td><div class="cell-name">${esc(c.name)}</div>${c.is_featured?'<span class="status status-approved" style="margin-top:4px;">Featured</span>':''}</td>
       <td>${cat?`${esc(cat.icon)} ${esc(cat.name)}`:'-'}</td>
       <td class="cell-date">${esc(c.location||'-')}</td>
       <td>${c.is_verified?'<span class="status status-approved">Verified</span>':'<span class="status status-pending">Unverified</span>'}</td>
       <td><a href="${esc(c.donation_url)}" target="_blank" rel="noopener" class="cell-url">${esc((c.donation_url||'').replace('https://','').slice(0,35))}...</a></td>
+      <td>
+        <div class="actions">
+          <button class="btn-sm btn-edit" onclick="openEditCharity('${c.id}')">Edit</button>
+          <button class="btn-sm btn-delete" onclick="deleteCharity('${c.id}','${esc(c.name).replace(/'/g,"\\'")}')">Delete</button>
+        </div>
+        <div class="edit-form" id="ec-${c.id}">
+          <div style="font-size:13px;font-weight:700;color:var(--blue);margin-bottom:12px;">Edit Charity</div>
+          <div class="pf-row">
+            <div><label class="pf-label">Charity Name</label><input class="pf-input" id="ec-name-${c.id}" value="${esc(c.name)}"></div>
+            <div><label class="pf-label">Category</label><select class="pf-select" id="ec-cat-${c.id}">${categories.map(ct=>`<option value="${ct.id}" ${ct.id===c.category_id?'selected':''}>${esc(ct.name)}</option>`).join('')}</select></div>
+          </div>
+          <div class="pf-row">
+            <div><label class="pf-label">Website</label><input class="pf-input" id="ec-web-${c.id}" value="${esc(c.website_url||'')}"></div>
+            <div><label class="pf-label">Donation URL</label><input class="pf-input" id="ec-don-${c.id}" value="${esc(c.donation_url||'')}"></div>
+          </div>
+          <div class="pf-row">
+            <div><label class="pf-label">Location</label><input class="pf-input" id="ec-loc-${c.id}" value="${esc(c.location||'')}"></div>
+            <div><label class="pf-label">Short Description</label><input class="pf-input" id="ec-short-${c.id}" value="${esc(c.short_description||'')}"></div>
+          </div>
+          <div class="pf-full"><label class="pf-label">Full Description</label><textarea class="pf-textarea" id="ec-desc-${c.id}">${esc(c.description||'')}</textarea></div>
+          <div class="pf-check">
+            <input type="checkbox" id="ec-feat-${c.id}" ${c.is_featured?'checked':''}>
+            <label for="ec-feat-${c.id}">Featured</label>
+            <input type="checkbox" id="ec-ver-${c.id}" ${c.is_verified?'checked':''}>
+            <label for="ec-ver-${c.id}">Verified</label>
+            <input type="checkbox" id="ec-tax-${c.id}" ${c.is_tax_deductible_us?'checked':''}>
+            <label for="ec-tax-${c.id}">US Tax Deductible</label>
+          </div>
+          <div class="pf-actions">
+            <button class="btn-cancel" onclick="closeEditCharity('${c.id}')">Cancel</button>
+            <button class="btn-sm btn-save" onclick="saveEditCharity('${c.id}')">Save Changes</button>
+          </div>
+        </div>
+      </td>
     </tr>`;
   }).join('');
 }
 
-function openPublish(id){document.getElementById('pf-'+id).classList.add('open');}
+function openPublish(id){closeEditSub(id);document.getElementById('pf-'+id).classList.add('open');}
 function closePublish(id){document.getElementById('pf-'+id).classList.remove('open');}
+
+// Edit submission (before publish)
+function openEditSub(id){closePublish(id);document.getElementById('ef-'+id).classList.add('open');}
+function closeEditSub(id){document.getElementById('ef-'+id).classList.remove('open');}
+async function saveEditSub(id){
+  const data={
+    charity_name: document.getElementById('ef-name-'+id).value,
+    category: document.getElementById('ef-cat-'+id).value||null,
+    website_url: document.getElementById('ef-web-'+id).value||null,
+    donation_url: document.getElementById('ef-don-'+id).value||null,
+    description: document.getElementById('ef-desc-'+id).value||null
+  };
+  const r=await fetch(`${SUPA}/rest/v1/charity_suggestions?id=eq.${id}`,{method:'PATCH',headers:{...getHeaders(),'Prefer':'return=minimal'},body:JSON.stringify(data)});
+  if(r.ok){toast('Submission updated!');load();}
+  else toast('Error saving changes.');
+}
+
+// Edit published charity
+function openEditCharity(id){document.getElementById('ec-'+id).classList.add('open');}
+function closeEditCharity(id){document.getElementById('ec-'+id).classList.remove('open');}
+async function saveEditCharity(id){
+  const data={
+    name: document.getElementById('ec-name-'+id).value,
+    category_id: parseInt(document.getElementById('ec-cat-'+id).value),
+    website_url: document.getElementById('ec-web-'+id).value||null,
+    donation_url: document.getElementById('ec-don-'+id).value||'#',
+    location: document.getElementById('ec-loc-'+id).value||null,
+    short_description: document.getElementById('ec-short-'+id).value||null,
+    description: document.getElementById('ec-desc-'+id).value||'',
+    is_featured: document.getElementById('ec-feat-'+id).checked,
+    is_verified: document.getElementById('ec-ver-'+id).checked,
+    is_tax_deductible_us: document.getElementById('ec-tax-'+id).checked
+  };
+  const r=await fetch(`${SUPA}/rest/v1/charities?id=eq.${id}`,{method:'PATCH',headers:{...getHeaders(),'Prefer':'return=minimal'},body:JSON.stringify(data)});
+  if(r.ok){toast('Charity updated!');load();}
+  else toast('Error saving changes.');
+}
+
+// Delete charity
+async function deleteCharity(id,name){
+  if(!confirm('Are you sure you want to delete "'+name+'" from the directory? This cannot be undone.'))return;
+  const r=await fetch(`${SUPA}/rest/v1/charities?id=eq.${id}`,{method:'DELETE',headers:{...getHeaders(),'Prefer':'return=minimal'}});
+  if(r.ok){toast('Charity deleted.');load();}
+  else toast('Error deleting charity.');
+}
 
 async function doPublish(id){
   const name=document.getElementById('pf-name-'+id).value;
@@ -315,16 +461,16 @@ async function doPublish(id){
   };
 
   // Insert into charities
-  const r1=await fetch(`${SUPA}/rest/v1/charities`,{method:'POST',headers:{...H,'Prefer':'return=minimal'},body:JSON.stringify(data)});
+  const r1=await fetch(`${SUPA}/rest/v1/charities`,{method:'POST',headers:{...getHeaders(),'Prefer':'return=minimal'},body:JSON.stringify(data)});
   // Update suggestion status
-  const r2=await fetch(`${SUPA}/rest/v1/charity_suggestions?id=eq.${id}`,{method:'PATCH',headers:{...H,'Prefer':'return=minimal'},body:JSON.stringify({status:'approved'})});
+  const r2=await fetch(`${SUPA}/rest/v1/charity_suggestions?id=eq.${id}`,{method:'PATCH',headers:{...getHeaders(),'Prefer':'return=minimal'},body:JSON.stringify({status:'approved'})});
 
   if(r1.ok&&r2.ok){ toast('Published! Charity is now live.'); load(); }
   else toast('Error publishing. Check the data.');
 }
 
 async function rejectSuggestion(id){
-  await fetch(`${SUPA}/rest/v1/charity_suggestions?id=eq.${id}`,{method:'PATCH',headers:{...H,'Prefer':'return=minimal'},body:JSON.stringify({status:'rejected'})});
+  await fetch(`${SUPA}/rest/v1/charity_suggestions?id=eq.${id}`,{method:'PATCH',headers:{...getHeaders(),'Prefer':'return=minimal'},body:JSON.stringify({status:'rejected'})});
   toast('Suggestion rejected.');
   load();
 }
