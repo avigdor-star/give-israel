@@ -365,3 +365,4 @@ March 2026 — Built with Claude using the Mikoshi Protocol for research and pla
   - **All new charities verified** with working website + Israeli Amuta number + donation link
   - **Established verification rule**: a charity is "verified" only if it has all three: working website, Amuta number, and donation link
   - **Directory grew from 45 → 57 charities** across all 15 categories (Technology & Innovation no longer empty)
+- **March 20, 2026** — Removed CSS truncation on charity card descriptions: deleted `-webkit-line-clamp: 2` and related overflow rules from `.card-desc` so the full short_description text is always visible on every card. Cards grow taller as needed. Works in both English and Hebrew/RTL views.
