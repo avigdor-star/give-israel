@@ -31,6 +31,7 @@ Desktop/give-israel/
 ├── README.md                   ← Short GitHub readme
 ├── GIVE-ISRAEL-DOCS.md         ← Full project documentation (tables, categories, how-tos)
 ├── LIGHT-UP-ISRAEL-FEATURE-SPEC.md ← Feature spec for the "Light Up Israel" interactive map (not yet built)
+├── GiveIsrael-Language-Toggle-Research.md ← Mikoshi Protocol research for Hebrew/English i18n
 ├── GiveIsrael-Security-Stress-Test.docx ← Security audit document
 ├── Give Isreal.jpg             ← Original feature image source file
 ├── find-your-cause-demo.html   ← Demo/prototype file
@@ -50,7 +51,9 @@ Desktop/give-israel/
 | **Hosting** | Vercel (free tier) | Auto-deploys from GitHub on every push |
 | **Domain** | giveisrael.charity | Registered on Namecheap, DNS pointed to Vercel |
 | **Code repo** | GitHub | github.com/avigdor-star/give-israel |
-| **Fonts** | Google Fonts | Cormorant Garamond (serif headings) + Figtree (body text) |
+| **Fonts** | Google Fonts | English: Cormorant Garamond + Figtree · Hebrew: Frank Ruhl Libre + Heebo |
+| **i18n** | Built-in toggle | Hebrew/English with RTL support, geolocation default, localStorage persistence |
+| **Geolocation** | ipapi.co (free) | Detects Israel visitors → defaults to Hebrew; everyone else → English |
 | **Logos** | Google Favicon API | Auto-pulled from each charity's website |
 
 ---
@@ -76,9 +79,11 @@ Desktop/give-israel/
 | Column | Type | What It Stores |
 |--------|------|---------------|
 | id | serial | Auto-generated number |
-| name | text | Category name (e.g. "Soldiers & Veterans") |
+| name | text | Category name in English (e.g. "Soldiers & Veterans") |
+| name_he | text | Category name in Hebrew (e.g. "חיילים וותיקים") |
 | slug | text | URL-friendly version (e.g. "soldiers-veterans") |
-| description | text | Short explanation of the category |
+| description | text | Short explanation of the category (English) |
+| description_he | text | Short explanation of the category (Hebrew) |
 | icon | text | Emoji icon for the category |
 | display_order | int | What order to show them in |
 
@@ -86,15 +91,19 @@ Desktop/give-israel/
 | Column | Type | What It Stores |
 |--------|------|---------------|
 | id | UUID | Unique ID |
-| name | text | Charity name |
+| name | text | Charity name (English) |
+| name_he | text | Charity name (Hebrew) |
 | slug | text | URL-friendly name |
-| description | text | Full description |
-| short_description | text | One-liner shown on cards |
+| description | text | Full description (English) |
+| description_he | text | Full description (Hebrew) |
+| short_description | text | One-liner shown on cards (English) |
+| short_description_he | text | One-liner shown on cards (Hebrew) |
 | category_id | int | Links to categories table |
 | logo_url | text | Auto-pulled logo from their website |
 | website_url | text | Their main website |
 | donation_url | text | Direct link to their donate page |
-| location | text | Where in Israel they operate |
+| location | text | Where in Israel they operate (English) |
+| location_he | text | Where in Israel they operate (Hebrew) |
 | amuta_number | text | Official registration number |
 | is_verified | boolean | Whether we've confirmed they're legit |
 | is_featured | boolean | Shows them in the "Featured" section |
@@ -176,8 +185,11 @@ NOTE: The og:image URLs currently use relative paths (/og-image.jpg). For full s
 | --gold | #D4A843 | "Light Up Israel" glow color |
 
 ### Fonts
-- **Display/Headings**: Cormorant Garamond (serif) — weights 400, 600, 700
-- **Body/UI**: Figtree (sans-serif) — weights 300, 400, 500, 600, 700, 800
+- **Display/Headings (English)**: Cormorant Garamond (serif) — weights 400, 600, 700
+- **Display/Headings (Hebrew)**: Frank Ruhl Libre (serif) — weights 400, 600, 700
+- **Body/UI (English)**: Figtree (sans-serif) — weights 300, 400, 500, 600, 700, 800
+- **Body/UI (Hebrew)**: Heebo (sans-serif) — weights 300, 400, 500, 600, 700, 800
+- CSS variables: `--font-display-he` and `--font-body-he` switch fonts when `html[dir="rtl"]` is active
 
 ### Design Aesthetic
 - Editorial luxury meets Israeli flag blue & white
@@ -190,9 +202,48 @@ NOTE: The og:image URLs currently use relative paths (/og-image.jpg). For full s
 
 ---
 
+## Hebrew/English Language Toggle (i18n)
+
+The site is fully bilingual. Here's how it works:
+
+### How Language Switching Works
+- A **toggle button** (עב / EN) in the header switches between Hebrew and English instantly — no page reload
+- **Geolocation detection**: visitors from Israel automatically get Hebrew; everyone else gets English
+- **localStorage** saves the visitor's preference for future visits
+- When Hebrew is active, `html dir="rtl"` flips the entire layout right-to-left
+
+### Translation Architecture
+- **UI text** (labels, buttons, quiz, form, footer, badges) lives in a `LANG` dictionary inside index.html's JavaScript, with keys for `en` and `he`
+- **Charity data** (names, descriptions, locations) comes from Supabase `_he` columns (e.g. `name_he`, `short_description_he`)
+- **Category names** also come from Supabase `name_he` column
+- **Fallback**: if any Hebrew field is empty, the English version is shown instead
+
+### Key Functions
+- `t('key')` — returns the translated UI string for the current language
+- `cf(charity, 'field')` — returns the charity's field in the current language (with English fallback)
+- `catf(category, 'field')` — returns the category's field in the current language
+- `setLanguage(lang, save)` — switches language and updates all text
+- `detectLanguage()` — runs on page load (checks localStorage → geolocation → defaults to English)
+- `toggleLanguage()` — flips between Hebrew and English
+
+### Adding New Translatable Text
+When adding any new visible text to the site:
+1. Add the English string to `LANG.en` with a descriptive key
+2. Add the Hebrew string to `LANG.he` with the same key
+3. Use `t('yourKey')` in the code instead of hardcoding the string
+
+### Research & Stress Testing
+- Language toggle was researched using the Mikoshi Protocol (see GiveIsrael-Language-Toggle-Research.md)
+- All translations were stress-tested by a separate AI model and scored on the CIQ rubric
+- The quiz personas, footer tagline, and meta descriptions scored 10/10 for Hebrew quality
+- Two fixes were applied based on the stress test: "מגן נחוש" → "מגן אמיץ" and improved phrasing for several items
+
+---
+
 ## Main Site Features (index.html)
 
-- **Sticky header** with logo, search bar, suggest button, and charity/category counters
+- **Sticky header** with logo, search bar, suggest button, language toggle, and charity/category counters
+- **Hebrew/English toggle** — instant language switch with RTL support
 - **Real-time search** — searches names, descriptions, and tags instantly as you type
 - **Category filter pills** — sticky row below header, click to filter, shows count per category
 - **Featured section** — hand-picked charities appear at the top with special styling
@@ -209,10 +260,12 @@ NOTE: The og:image URLs currently use relative paths (/og-image.jpg). For full s
 - **Supabase Auth** — email/password login required
 - **Stats overview** — total charities, pending suggestions, categories, featured count
 - **Suggestions tab** — see all submitted charities with status (pending/approved/rejected)
-- **Publish flow** — review suggestion, edit details, pick category, add to live directory
+- **Publish flow** — review suggestion, edit details, pick category, add Hebrew translations, add to live directory
 - **Reject flow** — dismiss a suggestion
-- **All Charities tab** — see everything currently in the directory
+- **All Charities tab** — see everything currently in the directory, edit Hebrew translations
+- **Hebrew translation fields** — both the Publish form and Edit Charity form include Hebrew name, short description, location, and full description fields (marked with 🇮🇱, RTL input direction)
 - **Uses Supabase JS SDK** (loaded via CDN)
+- Admin dashboard stays in English only (it's only used by Avigdor)
 
 ---
 
@@ -259,7 +312,8 @@ Vercel watches GitHub and auto-deploys every push within ~30 seconds. No build s
 1. Go to Supabase dashboard → Table Editor → charities
 2. Click "Insert row"
 3. Fill in name, description, category_id, donation_url at minimum
-4. For logo, use: `https://www.google.com/s2/favicons?domain=THEIR_DOMAIN&sz=128`
+4. Also fill in name_he, short_description_he, location_he for Hebrew support
+5. For logo, use: `https://www.google.com/s2/favicons?domain=THEIR_DOMAIN&sz=128`
 
 ### Review a community suggestion
 1. Go to giveisrael.charity/admin
@@ -275,6 +329,7 @@ Vercel watches GitHub and auto-deploys every push within ~30 seconds. No build s
 1. Supabase dashboard → Table Editor → categories
 2. Click "Insert row"
 3. Add name, slug, description, icon (emoji), display_order
+4. Also add name_he and description_he for Hebrew support
 
 ---
 
@@ -286,7 +341,8 @@ Vercel watches GitHub and auto-deploys every push within ~30 seconds. No build s
 4. **No frameworks** — no React, no Vue, no build tools. Plain HTML/CSS/JS only
 5. **Supabase anon key is public** — it's safe to be in the HTML, RLS protects the data
 6. **Test changes carefully** — this is a live charity site with real users
-7. **Preserve the design** — editorial luxury aesthetic, Israeli flag blue (#0038B8) and white, Cormorant Garamond + Figtree fonts, grain texture, flag stripe accents
+7. **Preserve the design** — editorial luxury aesthetic, Israeli flag blue (#0038B8) and white, Cormorant Garamond + Figtree (English) / Frank Ruhl Libre + Heebo (Hebrew), grain texture, flag stripe accents
+7b. **Bilingual consistency** — when adding new text, always add both English and Hebrew versions to the LANG dictionary. Use `t('key')` for UI text, `cf(charity,'field')` for charity data, `catf(category,'field')` for category data
 8. **Git workflow** — Avigdor pushes with `git add -A && git commit -m "..." && git push`. Vercel auto-deploys. Do not suggest Vercel CLI unless specifically asked
 9. **OG image paths** — currently relative (/og-image.jpg). Should be updated to absolute URLs when ready
 
@@ -295,3 +351,7 @@ Vercel watches GitHub and auto-deploys every push within ~30 seconds. No build s
 ## Created
 
 March 2026 — Built with Claude using the Mikoshi Protocol for research and planning.
+
+## Changelog
+
+- **March 19, 2026** — Added full Hebrew/English language toggle: translation dictionary (100+ entries), RTL CSS support, Hebrew Google Fonts, geolocation-based language detection, Hebrew columns in Supabase (all 45 charities + 15 categories translated), admin dashboard Hebrew input fields, and "Find Your Cause" quiz fully translated. Translations stress-tested by a separate AI model and scored on CIQ rubric.

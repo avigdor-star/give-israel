@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Language Toggle Preview</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --il-blue: #0038B8;
+  --il-blue-deep: #002A8C;
+  --il-blue-dark: #001B5E;
+  --il-blue-ghost: #EDF2FD;
+  --white: #FFFFFF;
+  --ink: #0C1324;
+  --ink-03: #F4F6FA;
+  --ink-06: #EBEEF5;
+  --ink-25: #A8B0C4;
+  --ink-40: #7B849E;
+  --r-md: 12px;
+  --r-sm: 8px;
+  --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --dur: 0.28s;
+  --font-body: 'Figtree', -apple-system, sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: var(--font-body); background: #f0f2f5; color: var(--ink); }
+
+.preview-page {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 0 24px;
+}
+
+h1 { font-size: 22px; font-weight: 800; color: var(--il-blue-dark); margin-bottom: 8px; }
+.subtitle { font-size: 14px; color: var(--ink-40); margin-bottom: 32px; }
+
+.option-card {
+  background: var(--white);
+  border-radius: 16px;
+  border: 1px solid var(--ink-06);
+  padding: 28px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.option-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--il-blue);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+}
+
+.mock-header {
+  background: var(--white);
+  border: 1px solid var(--ink-06);
+  border-radius: var(--r-md);
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  height: 60px;
+  gap: 16px;
+}
+
+.mock-logo {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--il-blue-dark);
+  letter-spacing: -0.5px;
+  flex-shrink: 0;
+}
+.mock-logo span { color: var(--il-blue); }
+
+.mock-search {
+  flex: 1;
+  height: 36px;
+  background: var(--ink-03);
+  border-radius: var(--r-sm);
+  border: 1px solid transparent;
+}
+
+.mock-suggest {
+  height: 36px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--white);
+  color: var(--il-blue);
+  border: 1.5px solid var(--il-blue);
+  border-radius: var(--r-sm);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+  cursor: default;
+}
+
+/* ============ OPTION A: Flag + Text ============ */
+.btn-lang-a {
+  height: 40px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--ink-03);
+  color: var(--il-blue);
+  border: 1.5px solid var(--ink-06);
+  border-radius: var(--r-md);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--dur) var(--ease);
+  flex-shrink: 0;
+}
+.btn-lang-a:hover { background: var(--il-blue-ghost); border-color: var(--il-blue); }
+.btn-lang-a .flag { font-size: 18px; line-height: 1; }
+
+/* ============ OPTION B: Pill with flag on left, text on right ============ */
+.btn-lang-b {
+  height: 40px;
+  padding: 0 12px 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--white);
+  color: var(--ink);
+  border: 1.5px solid var(--ink-06);
+  border-radius: 100px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--dur) var(--ease);
+  flex-shrink: 0;
+}
+.btn-lang-b:hover { background: var(--il-blue-ghost); border-color: var(--il-blue); color: var(--il-blue); }
+.btn-lang-b .flag { font-size: 20px; line-height: 1; }
+
+/* ============ OPTION C: Compact flag-only with tooltip feel ============ */
+.btn-lang-c {
+  height: 40px;
+  width: 40px;
+  display: grid;
+  place-items: center;
+  background: var(--ink-03);
+  color: var(--il-blue);
+  border: 1.5px solid var(--ink-06);
+  border-radius: var(--r-md);
+  font-size: 22px;
+  cursor: pointer;
+  transition: all var(--dur) var(--ease);
+  flex-shrink: 0;
+  line-height: 1;
+}
+.btn-lang-c:hover { background: var(--il-blue-ghost); border-color: var(--il-blue); }
+
+.notes {
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--ink-40);
+  line-height: 1.6;
+}
+
+.state-toggle {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.state-btn {
+  padding: 6px 16px;
+  border: 1.5px solid var(--ink-06);
+  border-radius: 100px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  background: var(--white);
+  color: var(--ink-40);
+  transition: 0.2s;
+}
+.state-btn.active { background: var(--il-blue); color: var(--white); border-color: var(--il-blue); }
+</style>
+</head>
+<body>
+<div class="preview-page">
+
+<h1>Language Toggle — Design Options</h1>
+<p class="subtitle">Click "English Mode" or "Hebrew Mode" to see how each option looks in both states.</p>
+
+<div class="state-toggle">
+  <button class="state-btn active" onclick="setMode('en')">English Mode</button>
+  <button class="state-btn" onclick="setMode('he')">Hebrew Mode</button>
+</div>
+
+<!-- OPTION A -->
+<div class="option-card">
+  <div class="option-label">Option A — Flag + Text (Rounded Rectangle)</div>
+  <div class="mock-header">
+    <div class="mock-logo">Give<span>Israel</span></div>
+    <div class="mock-search"></div>
+    <div class="mock-suggest">+ Suggest a Charity</div>
+    <button class="btn-lang-a" id="optA" onclick="toggleA()">
+      <span class="flag" id="flagA">🇮🇱</span>
+      <span id="textA">עב</span>
+    </button>
+  </div>
+  <div class="notes">
+    Shows the flag of the language you'll <em>switch to</em>. In English mode: Israel flag + "עב" (switch to Hebrew). In Hebrew mode: US flag + "EN" (switch to English).
+  </div>
+</div>
+
+<!-- OPTION B -->
+<div class="option-card">
+  <div class="option-label">Option B — Flag + Text (Pill Shape)</div>
+  <div class="mock-header">
+    <div class="mock-logo">Give<span>Israel</span></div>
+    <div class="mock-search"></div>
+    <div class="mock-suggest">+ Suggest a Charity</div>
+    <button class="btn-lang-b" id="optB" onclick="toggleB()">
+      <span class="flag" id="flagB">🇮🇱</span>
+      <span id="textB">עברית</span>
+    </button>
+  </div>
+  <div class="notes">
+    Pill-shaped, shows the language you'll <em>switch to</em> with its full name. Feels friendly and clear. Uses "עברית" (Hebrew) and "English" as labels.
+  </div>
+</div>
+
+<!-- OPTION C -->
+<div class="option-card">
+  <div class="option-label">Option C — Flag Only (Compact Square)</div>
+  <div class="mock-header">
+    <div class="mock-logo">Give<span>Israel</span></div>
+    <div class="mock-search"></div>
+    <div class="mock-suggest">+ Suggest a Charity</div>
+    <button class="btn-lang-c" id="optC" onclick="toggleC()">
+      <span id="flagC">🇮🇱</span>
+    </button>
+  </div>
+  <div class="notes">
+    Most compact — just the flag. Clean and minimal, but might not be obvious to everyone that it's a language switcher. Shows flag of the language you'll <em>switch to</em>.
+  </div>
+</div>
+
+</div>
+
+<script>
+let mode = 'en';
+
+function setMode(m) {
+  mode = m;
+  document.querySelectorAll('.state-btn').forEach((b, i) => {
+    b.classList.toggle('active', (m === 'en' && i === 0) || (m === 'he' && i === 1));
+  });
+  updateAll();
+}
+
+function updateAll() {
+  // Option A
+  document.getElementById('flagA').textContent = mode === 'en' ? '🇮🇱' : '🇺🇸';
+  document.getElementById('textA').textContent = mode === 'en' ? 'עב' : 'EN';
+
+  // Option B
+  document.getElementById('flagB').textContent = mode === 'en' ? '🇮🇱' : '🇺🇸';
+  document.getElementById('textB').textContent = mode === 'en' ? 'עברית' : 'English';
+
+  // Option C
+  document.getElementById('flagC').textContent = mode === 'en' ? '🇮🇱' : '🇺🇸';
+}
+
+function toggleA() { setMode(mode === 'en' ? 'he' : 'en'); }
+function toggleB() { setMode(mode === 'en' ? 'he' : 'en'); }
+function toggleC() { setMode(mode === 'en' ? 'he' : 'en'); }
+</script>
+</body>
+</html>

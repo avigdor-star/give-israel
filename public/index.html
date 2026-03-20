@@ -721,12 +721,13 @@ body::after {
 /* ===== LANGUAGE TOGGLE BUTTON ===== */
 .btn-lang {
   height: 42px;
-  width: 42px;
-  display: grid;
-  place-items: center;
-  background: #F4F6FA;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--ink-03);
   color: var(--il-blue);
-  border: 1.5px solid #EBEEF5;
+  border: 1.5px solid var(--ink-06);
   border-radius: var(--r-md);
   font-family: var(--font-body);
   font-size: 13px;
@@ -735,6 +736,7 @@ body::after {
   transition: all var(--dur) var(--ease);
   flex-shrink: 0;
 }
+.btn-lang .lang-flag { font-size: 18px; line-height: 1; }
 .btn-lang:hover { background: var(--il-blue-ghost); border-color: var(--il-blue); }
 
 /* ===== RTL SUPPORT ===== */
@@ -1379,7 +1381,7 @@ html[dir="rtl"] .to-top { right: auto; left: 24px; }
       <span style="display:none" class="mobile-plus">+</span>
     </button>
 
-    <button class="btn-lang" id="langToggle" onclick="toggleLanguage()">עב</button>
+    <button class="btn-lang" id="langToggle" onclick="toggleLanguage()"><span class="lang-flag" id="langFlag">🇮🇱</span><span id="langText">עב</span></button>
 
     <div class="header-counters">
       <div class="h-counter"><div class="h-counter-val" id="totalCharities">—</div><div class="h-counter-lbl">Charities</div></div>
@@ -1744,8 +1746,10 @@ function setLanguage(lang, save) {
 
   updateQuizText();
 
-  const toggleBtn = document.getElementById('langToggle');
-  if (toggleBtn) toggleBtn.textContent = lang === 'he' ? 'EN' : 'עב';
+  const langFlag = document.getElementById('langFlag');
+  const langText = document.getElementById('langText');
+  if (langFlag) langFlag.textContent = lang === 'he' ? '🇺🇸' : '🇮🇱';
+  if (langText) langText.textContent = lang === 'he' ? 'EN' : 'עב';
 }
 
 function updateStaticText() {
