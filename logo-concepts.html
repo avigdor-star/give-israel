@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GiveIsrael — Logo Concepts v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Figtree:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue: #0038B8;
+  --blue-dark: #001B5E;
+  --white: #FFFFFF;
+  --ink: #0C1324;
+  --ink-40: #7B849E;
+  --ink-06: #EBEEF5;
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'Figtree', -apple-system, sans-serif;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: var(--font-body);
+  background: #F0F2F7;
+  color: var(--ink);
+  padding: 48px 24px 80px;
+}
+
+h1 {
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--blue-dark);
+  margin-bottom: 6px;
+}
+
+.sub { text-align: center; font-size: 13px; color: var(--ink-40); margin-bottom: 52px; }
+
+.grid {
+  max-width: 960px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.card {
+  background: var(--white);
+  border-radius: 20px;
+  border: 1px solid var(--ink-06);
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 20px 24px 14px;
+  border-bottom: 1px solid var(--ink-06);
+}
+
+.card-letter {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  color: var(--blue);
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.card-title {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.card-desc {
+  font-size: 11.5px;
+  color: var(--ink-40);
+  margin-top: 1px;
+}
+
+/* Preview areas */
+.previews {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.prev {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 36px 20px 28px;
+  gap: 14px;
+}
+
+.prev.on-white { background: #fff; }
+.prev.on-dark { background: linear-gradient(165deg, #001233, #001B5E 50%, #002A8C); }
+
+.prev .mark-row {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.prev .wordmark {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.3px;
+}
+
+.prev.on-white .wordmark { color: var(--ink); }
+.prev.on-white .wordmark em { color: var(--blue); font-style: normal; }
+.prev.on-dark .wordmark { color: #fff; }
+.prev.on-dark .wordmark em { color: rgba(255,255,255,0.55); font-style: normal; }
+
+/* Favicon strip */
+.fav-strip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 18px;
+  background: #F8F9FC;
+  border-top: 1px solid var(--ink-06);
+}
+
+.fav-strip svg { border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+.fav-label { font-size: 9px; color: var(--ink-40); font-weight: 600; }
+
+@media (max-width: 700px) {
+  .grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<h1>GiveIsrael Logo — Round 2</h1>
+<p class="sub">Tasteful · Minimal · Star of David · Giving</p>
+
+<div class="grid">
+
+<!-- ===== CONCEPT A: Negative-space heart inside Star ===== -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-letter">Concept A</div>
+    <div class="card-title">Heart Within</div>
+    <div class="card-desc">Clean Star of David — the negative space at center reads as a heart</div>
+  </div>
+  <div class="previews">
+    <div class="prev on-white">
+      <div class="mark-row">
+        <svg width="38" height="38" viewBox="0 0 100 100" fill="none">
+          <path d="M50 10 L78 52 L22 52 Z" stroke="#0038B8" stroke-width="4" fill="none" stroke-linejoin="round"/>
+          <path d="M50 90 L22 48 L78 48 Z" stroke="#0038B8" stroke-width="4" fill="none" stroke-linejoin="round"/>
+          <!-- Tiny heart at exact center -->
+          <path d="M50 43 C50 43 44 46.5 44 50 C44 53 46.5 55 50 58 C53.5 55 56 53 56 50 C56 46.5 50 43 50 43Z" fill="#0038B8"/>
+        </svg>
+        <div class="wordmark">Give<em>Israel</em></div>
+      </div>
+    </div>
+    <div class="prev on-dark">
+      <div class="mark-row">
+        <svg width="38" height="38" viewBox="0 0 100 100" fill="none">
+          <path d="M50 10 L78 52 L22 52 Z" stroke="#fff" stroke-width="4" fill="none" stroke-linejoin="round"/>
+          <path d="M50 90 L22 48 L78 48 Z" stroke="#fff" stroke-width="4" fill="none" stroke-linejoin="round"/>
+          <path d="M50 43 C50 43 44 46.5 44 50 C44 53 46.5 55 50 58 C53.5 55 56 53 56 50 C56 46.5 50 43 50 43Z" fill="#fff"/>
+        </svg>
+        <div class="wordmark">Give<em>Israel</em></div>
+      </div>
+    </div>
+  </div>
+  <div class="fav-strip">
+    <svg width="44" height="44" viewBox="0 0 100 100">
+      <rect width="100" height="100" rx="22" fill="#0038B8"/>
+      <path d="M50 15 L75 50 L25 50 Z" stroke="#fff" stroke-width="4.5" fill="none" stroke-linejoin="round"/>
+      <path d="M50 85 L25 50 L75 50 Z" stroke="#fff" stroke-width="4.5" fill="none" stroke-linejoin="round"/>
+      <path d="M50 42 C50 42 44 46 44 49.5 C44 52.5 46.5 54.5 50 57.5 C53.5 54.5 56 52.5 56 49.5 C56 46 50 42 50 42Z" fill="#fff"/>
+    </svg>
+    <svg width="28" height="28" viewBox="0 0 100 100">
+      <rect width="100" height="100" rx="22" fill="#0038B8"/>
+      <path d="M50 15 L75 50 L25 50 Z" stroke="#fff" stroke-width="6" fill="none" stroke-linejoin="round"/>
+      <path d="M50 85 L25 50 L75 50 Z" stroke="#fff" stroke-width="6" fill="none" stroke-linejoin="round"/>
+      <path d="M50 40 C50 40 43 45 43 49 C43 52.5 46 55 50 58 C54 55 57 52.5 57 49 C57 45 50 40 50 40Z" fill="#fff"/>
+    </svg>
+    <span class="fav-label">Favicons</span>
+  </div>
+</div>
+
+<!-- ===== CONCEPT B: Giving hands form the bottom triangle ===== -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-letter">Concept B</div>
+    <div class="card-title">Giving Hands</div>
+    <div class="card-desc">The bottom triangle opens into two cupped hands offering the star upward</div>
+  </div>
+  <div class="previews">
+    <div class="prev on-white">
+      <div class="mark-row">
+        <svg width="38" height="38" viewBox="0 0 100 100" fill="none">
+          <!-- Top triangle (classic) -->
+          <path d="M50 12 L76 50 L24 50 Z" stroke="#0038B8" stroke-width="3.5" fill="none" stroke-linejoin="round"/>
+          <!-- Bottom triangle as cupped hands — two arcs meeting at bottom -->
+          <path d="M24 50 C24 50 30 72 50 88 C70 72 76 50 76 50" stroke="#0038B8" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+          <!-- Cross bar to complete star shape -->
+          <line x1="30" y1="60" x2="70" y2="60" stroke="#0038B8" stroke-width="3" stroke-linecap="round" opacity="0.3"/>
+        </svg>
+        <div class="wordmark">Give<em>Israel</em></div>
+      </div>
+    </div>
+    <div class="prev on-dark">
+      <div class="mark-row">
+        <svg width="38" height="38" viewBox="0 0 100 100" fill="none">
+          <path d="M50 12 L76 50 L24 50 Z" stroke="#fff" stroke-width="3.5" fill="none" stroke-linejoin="round"/>
+          <path d="M24 50 C24 50 30 72 50 88 C70 72 76 50 76 50" stroke="#fff" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+          <line x1="30" y1="60" x2="70" y2="60" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity="0.3"/>
+        </svg>
+        <div class="wordmark">Give<em>Israel</em></div>
+      </div>
+    </div>
+  </div>
+  <div class="fav-strip">
+    <svg width="44" height="44" viewBox="0 0 100 100">
+      <rect width="100" height="100" rx="22" fill="#0038B8"/>
+      <path d="M50 14 L74 48 L26 48 Z" stroke="#fff" stroke-width="4" fill="none" stroke-linejoin="round"/>
+      <path d="M26 48 C26 48 32 70 50 85 C68 70 74 48 74 48" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/>
+    </svg>
+    <svg width="28" height="28" viewBox="0 0 100 100">
+      <rect width="100" height="100" rx="22" fill="#0038B8"/>
+      <path d="M50 14 L74 48 L26 48 Z" stroke="#fff" stroke-width="5.5" fill="none" stroke-linejoin="round"/>
+      <path d="M26 48 C26 48 32 70 50 85 C68 70 74 48 74 48" stroke="#fff" stroke-width="5.5" fill="none" stroke-linecap="round"/>
+    </svg>
+    <span class="fav-label">Favicons</span>
+  </div>
+</div>
+
+<!-- ===== CONCEPT C: Ultra-minimal thin star, open top ===== -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-letter">Concept C</div>
+    <div class="card-title">Open Star</div>
+    <div class="card-desc">Hairline Star of David with the top point open — generosity flowing upward</div>
+  </div>
+  <div class="previews">
+    <div class="prev on-white">
+      <div class="mark-row">
+        <svg width="38" height="38" viewBox="0 0 100 100" fill="none">
+          <!-- Bottom triangle complete -->
+          <path d="M50 88 L22 48 L78 48 Z" stroke="#0038B8" stroke-width="2.8" fill="none" stroke-linejoin="round"/>
+          <!-- Top triangle open at apex — two lines going up but not meeting -->
+          <path d="M22 52 L42 18" stroke="#0038B8" stroke-width="2.8" stroke-linecap="round"/>
+          <path d="M78 52 L58 18" stroke="#0038B8" stroke-width="2.8" stroke-linecap="round"/>
+          <!-- Small heart floating in the open space -->
+          <path d="M50 12 C50 12 46 14.5 46 17 C46 19 47.8 20.5 50 22.5 C52.2 20.5 54 19 54 17 C54 14.5 50 12 50 12Z" fill="#0038B8"/>
+        </svg>
+        <div class="wordmark">Give<em>Israel</em></div>
+      </div>
+    </div>
+    <div class="prev on-dark">
+      <div class="mark-row">
+        <svg width="38" height="38" viewBox="0 0 100 100" fill="none">
+          <path d="M50 88 L22 48 L78 48 Z" stroke="#fff" stroke-width="2.8" fill="none" stroke-linejoin="round"/>
+          <path d="M22 52 L42 18" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/>
+          <path d="M78 52 L58 18" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/>
+          <path d="M50 12 C50 12 46 14.5 46 17 C46 19 47.8 20.5 50 22.5 C52.2 20.5 54 19 54 17 C54 14.5 50 12 50 12Z" fill="#fff"/>
+        </svg>
+        <div class="wordmark">Give<em>Israel</em></div>
+      </div>
+    </div>
+  </div>
+  <div class="fav-strip">
+    <svg width="44" height="44" viewBox="0 0 100 100">
+      <rect width="100" height="100" rx="22" fill="#0038B8"/>
+      <path d="M50 86 L24 48 L76 48 Z" stroke="#fff" stroke-width="4" fill="none" stroke-linejoin="round"/>
+      <path d="M24 52 L43 20" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+      <path d="M76 52 L57 20" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+      <path d="M50 12 C50 12 45.5 15 45.5 18 C45.5 20.5 47.5 22 50 24 C52.5 22 54.5 20.5 54.5 18 C54.5 15 50 12 50 12Z" fill="#fff"/>
+    </svg>
+    <svg width="28" height="28" viewBox="0 0 100 100">
+      <rect width="100" height="100" rx="22" fill="#0038B8"/>
+      <path d="M50 86 L24 48 L76 48 Z" stroke="#fff" stroke-width="5.5" fill="none" stroke-linejoin="round"/>
+      <path d="M24 52 L43 20" stroke="#fff" stroke-width="5.5" stroke-linecap="round"/>
+      <path d="M76 52 L57 20" stroke="#fff" stroke-width="5.5" stroke-linecap="round"/>
+      <path d="M50 10 C50 10 44 14.5 44 18 C44 21 47 23 50 25.5 C53 23 56 21 56 18 C56 14.5 50 10 50 10Z" fill="#fff"/>
+    </svg>
+    <span class="fav-label">Favicons</span>
+  </div>
+</div>
+
+<!-- ===== CONCEPT D: Star of David is also a heart when you look ===== -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-letter">Concept D</div>
+    <div class="card-title">Star-Heart</div>
+    <div class="card-desc">One continuous stroke — Star of David that doubles as a heart silhouette</div>
+  </div>
+  <div class="previews">
+    <div class="prev on-white">
+      <div class="mark-row">
+        <svg width="38" height="38" viewBox="0 0 100 100" fill="none">
+          <!-- Heart shape that contains a star -->
+          <path d="M50 85 C50 85 15 58 15 38 C15 25 24 16 35 16 C42 16 47 20 50 25 C53 20 58 16 65 16 C76 16 85 25 85 38 C85 58 50 85 50 85Z" stroke="#0038B8" stroke-width="3" fill="none" stroke-linejoin="round"/>
+          <!-- Minimal star of david inside -->
+          <path d="M50 28 L62 48 L38 48 Z" stroke="#0038B8" stroke-width="2.5" fill="none" stroke-linejoin="round"/>
+          <path d="M50 68 L38 48 L62 48 Z" stroke="#0038B8" stroke-width="2.5" fill="none" stroke-linejoin="round"/>
+        </svg>
+        <div class="wordmark">Give<em>Israel</em></div>
+      </div>
+    </div>
+    <div class="prev on-dark">
+      <div class="mark-row">
+        <svg width="38" height="38" viewBox="0 0 100 100" fill="none">
+          <path d="M50 85 C50 85 15 58 15 38 C15 25 24 16 35 16 C42 16 47 20 50 25 C53 20 58 16 65 16 C76 16 85 25 85 38 C85 58 50 85 50 85Z" stroke="#fff" stroke-width="3" fill="none" stroke-linejoin="round"/>
+          <path d="M50 28 L62 48 L38 48 Z" stroke="#fff" stroke-width="2.5" fill="none" stroke-linejoin="round"/>
+          <path d="M50 68 L38 48 L62 48 Z" stroke="#fff" stroke-width="2.5" fill="none" stroke-linejoin="round"/>
+        </svg>
+        <div class="wordmark">Give<em>Israel</em></div>
+      </div>
+    </div>
+  </div>
+  <div class="fav-strip">
+    <svg width="44" height="44" viewBox="0 0 100 100">
+      <rect width="100" height="100" rx="22" fill="#0038B8"/>
+      <path d="M50 84 C50 84 17 58 17 39 C17 27 25 18 35 18 C42 18 47 22 50 26 C53 22 58 18 65 18 C75 18 83 27 83 39 C83 58 50 84 50 84Z" stroke="#fff" stroke-width="3.5" fill="none" stroke-linejoin="round"/>
+      <path d="M50 30 L61 48 L39 48 Z" stroke="#fff" stroke-width="2.8" fill="none" stroke-linejoin="round"/>
+      <path d="M50 66 L39 48 L61 48 Z" stroke="#fff" stroke-width="2.8" fill="none" stroke-linejoin="round"/>
+    </svg>
+    <svg width="28" height="28" viewBox="0 0 100 100">
+      <rect width="100" height="100" rx="22" fill="#0038B8"/>
+      <path d="M50 84 C50 84 17 58 17 39 C17 27 25 18 35 18 C42 18 47 22 50 26 C53 22 58 18 65 18 C75 18 83 27 83 39 C83 58 50 84 50 84Z" stroke="#fff" stroke-width="4.5" fill="none" stroke-linejoin="round"/>
+      <path d="M50 30 L61 48 L39 48 Z" stroke="#fff" stroke-width="3.5" fill="none" stroke-linejoin="round"/>
+      <path d="M50 66 L39 48 L61 48 Z" stroke="#fff" stroke-width="3.5" fill="none" stroke-linejoin="round"/>
+    </svg>
+    <span class="fav-label">Favicons</span>
+  </div>
+</div>
+
+</div>
+
+</body>
+</html>

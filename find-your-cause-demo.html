@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Find Your Cause — Give Israel</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Figtree:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --il-blue: #0038B8;
+  --il-blue-deep: #002A8C;
+  --il-blue-dark: #001B5E;
+  --il-blue-soft: #5B94F0;
+  --il-blue-mist: #D6E4FA;
+  --il-blue-ghost: #EDF2FD;
+  --gold: #B8860B;
+  --gold-warm: #D4A843;
+  --gold-light: #FFF8E6;
+  --ink: #0C1324;
+  --ink-60: #4A5578;
+  --ink-40: #7B849E;
+  --ink-25: #A8B0C4;
+  --ivory: #FAFBFD;
+  --white: #FFFFFF;
+  --success: #0D9F5F;
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'Figtree', -apple-system, sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--ivory);
+  color: var(--ink);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Grain overlay */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.018;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+/* ===== LAYOUT ===== */
+.container {
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+/* ===== INTRO SCREEN ===== */
+.screen { display: none; }
+.screen.active { display: block; animation: fadeUp 0.45s ease-out; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.badge {
+  display: inline-block;
+  background: var(--il-blue);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+}
+
+.intro-title {
+  font-family: var(--font-display);
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: var(--il-blue-dark);
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+
+.intro-subtitle {
+  font-size: 1.05rem;
+  color: var(--ink-60);
+  line-height: 1.6;
+  margin-bottom: 36px;
+  max-width: 480px;
+}
+
+.start-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 36px;
+  background: var(--il-blue);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 20px rgba(0, 56, 184, 0.25);
+}
+
+.start-btn:hover {
+  background: var(--il-blue-deep);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 28px rgba(0, 56, 184, 0.35);
+}
+
+.start-note {
+  margin-top: 14px;
+  font-size: 0.8rem;
+  color: var(--ink-25);
+}
+
+/* ===== PROGRESS BAR ===== */
+.progress-bar {
+  height: 4px;
+  background: var(--il-blue-ghost);
+  border-radius: 4px;
+  margin-bottom: 40px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--il-blue), var(--il-blue-soft));
+  border-radius: 4px;
+  transition: width 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.q-counter {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--ink-25);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 12px;
+}
+
+/* ===== QUESTION ===== */
+.question-text {
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: var(--il-blue-dark);
+  line-height: 1.2;
+  margin-bottom: 28px;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 22px;
+  background: var(--white);
+  border: 2px solid #E4E8F0;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.option:hover {
+  border-color: var(--il-blue-soft);
+  background: var(--il-blue-ghost);
+  transform: translateX(4px);
+}
+
+.option.selected {
+  border-color: var(--il-blue);
+  background: var(--il-blue-ghost);
+  box-shadow: 0 2px 12px rgba(0, 56, 184, 0.12);
+}
+
+.option-icon {
+  font-size: 1.5rem;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--il-blue-ghost);
+  border-radius: 12px;
+  flex-shrink: 0;
+  transition: background 0.2s ease;
+}
+
+.option.selected .option-icon {
+  background: var(--il-blue-mist);
+}
+
+.option-text {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--ink);
+  line-height: 1.4;
+}
+
+.option-subtext {
+  font-size: 0.8rem;
+  color: var(--ink-40);
+  margin-top: 2px;
+}
+
+/* ===== RESULTS SCREEN ===== */
+.result-persona-card {
+  text-align: center;
+  padding: 40px 32px;
+  background: linear-gradient(135deg, var(--il-blue-dark) 0%, var(--il-blue) 100%);
+  border-radius: 20px;
+  color: white;
+  margin-bottom: 32px;
+  position: relative;
+  overflow: hidden;
+}
+
+.result-persona-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 40%, rgba(255,255,255,0.08) 0%, transparent 60%);
+}
+
+.persona-emoji {
+  font-size: 3.2rem;
+  margin-bottom: 12px;
+  display: block;
+  position: relative;
+}
+
+.persona-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  opacity: 0.7;
+  margin-bottom: 6px;
+  position: relative;
+}
+
+.persona-name {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.persona-description {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  opacity: 0.85;
+  max-width: 400px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.results-heading {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--il-blue-dark);
+  margin-bottom: 6px;
+}
+
+.results-subtext {
+  font-size: 0.85rem;
+  color: var(--ink-40);
+  margin-bottom: 20px;
+}
+
+/* Matched category cards */
+.match-card {
+  background: var(--white);
+  border: 1px solid #E4E8F0;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 12px;
+  transition: all 0.2s ease;
+}
+
+.match-card:hover {
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+}
+
+.match-rank {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--il-blue);
+  margin-bottom: 8px;
+}
+
+.match-rank .dot {
+  width: 6px;
+  height: 6px;
+  background: var(--il-blue);
+  border-radius: 50%;
+}
+
+.match-category {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.match-description {
+  font-size: 0.85rem;
+  color: var(--ink-60);
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+
+.match-charities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.charity-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: var(--il-blue-ghost);
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--il-blue-deep);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.charity-tag:hover {
+  background: var(--il-blue-mist);
+}
+
+.charity-tag .arrow {
+  font-size: 0.7rem;
+  opacity: 0.5;
+}
+
+/* Bottom actions */
+.result-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 32px;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  flex: 1;
+  min-width: 160px;
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  border: none;
+}
+
+.action-btn.primary {
+  background: var(--il-blue);
+  color: white;
+  box-shadow: 0 4px 16px rgba(0, 56, 184, 0.2);
+}
+
+.action-btn.primary:hover {
+  background: var(--il-blue-deep);
+  transform: translateY(-1px);
+}
+
+.action-btn.secondary {
+  background: var(--white);
+  color: var(--ink-60);
+  border: 1px solid #E4E8F0;
+}
+
+.action-btn.secondary:hover {
+  border-color: var(--ink-25);
+  color: var(--ink);
+}
+
+/* Confetti */
+.confetti-container {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 9998;
+  overflow: hidden;
+}
+
+.confetti-piece {
+  position: absolute;
+  top: -12px;
+  animation: confettiFall 3s ease-out forwards;
+}
+
+@keyframes confettiFall {
+  0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+  80% { opacity: 1; }
+  100% { transform: translateY(100vh) rotate(800deg) scale(0.5); opacity: 0; }
+}
+
+/* Demo label */
+.demo-float {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  background: var(--ink);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 8px;
+  opacity: 0.6;
+  z-index: 100;
+}
+</style>
+</head>
+<body>
+
+<div class="demo-float">Sandbox Demo</div>
+<div class="confetti-container" id="confetti"></div>
+
+<div class="container">
+
+  <!-- ===== INTRO ===== -->
+  <div class="screen active" id="intro">
+    <div class="badge">✦ New Feature</div>
+    <h1 class="intro-title">Find Your<br>Cause</h1>
+    <p class="intro-subtitle">Not sure where to start? Answer 4 quick questions and we'll match you with the Israeli charities that align with what moves you most.</p>
+    <button class="start-btn" onclick="startQuiz()">
+      Find My Cause
+      <span style="font-size:1.2rem">→</span>
+    </button>
+    <p class="start-note">Takes about 30 seconds · No sign-up needed</p>
+  </div>
+
+  <!-- ===== QUESTIONS ===== -->
+  <div class="screen" id="quiz">
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress" style="width: 0%"></div>
+    </div>
+    <div class="q-counter" id="q-counter">Question 1 of 4</div>
+    <h2 class="question-text" id="question-text"></h2>
+    <div class="options" id="options"></div>
+  </div>
+
+  <!-- ===== RESULTS ===== -->
+  <div class="screen" id="results"></div>
+
+</div>
+
+<script>
+// ========== QUIZ DATA ==========
+const questions = [
+  {
+    text: "What draws you most to supporting Israel?",
+    options: [
+      {
+        icon: "🛡️",
+        text: "Protecting those who protect Israel",
+        sub: "The soldiers, the first responders, those on the front lines",
+        scores: { "Soldiers & Veterans": 3, "Terror Victims": 2, "Medical & Emergency": 2 }
+      },
+      {
+        icon: "💛",
+        text: "Caring for the most vulnerable",
+        sub: "Children in need, Holocaust survivors, families in poverty",
+        scores: { "Poverty & Hunger": 3, "Holocaust Survivors": 3, "Children & Youth": 2, "Special Needs": 2 }
+      },
+      {
+        icon: "🌱",
+        text: "Building Israel's future",
+        sub: "Education, technology, strengthening communities",
+        scores: { "Education": 3, "Technology & Innovation": 3, "Community Development": 2, "Women Empowerment": 2 }
+      },
+      {
+        icon: "✡️",
+        text: "Preserving Israel's soul and beauty",
+        sub: "The land, the culture, the traditions",
+        scores: { "Environment & Land": 3, "Religious & Spiritual": 3, "Arts & Culture": 2, "Animals": 1 }
+      }
+    ]
+  },
+  {
+    text: "When you give, what matters most to you?",
+    options: [
+      {
+        icon: "🎯",
+        text: "Knowing someone is safer because of me",
+        sub: "Direct, tangible protection and safety",
+        scores: { "Soldiers & Veterans": 2, "Medical & Emergency": 3, "Terror Victims": 2 }
+      },
+      {
+        icon: "🤲",
+        text: "Seeing a life changed up close",
+        sub: "One person's story transformed by support",
+        scores: { "Children & Youth": 3, "Special Needs": 2, "Poverty & Hunger": 2, "Holocaust Survivors": 2 }
+      },
+      {
+        icon: "🏗️",
+        text: "Investing in long-term impact",
+        sub: "Things that compound and grow over years",
+        scores: { "Education": 3, "Technology & Innovation": 2, "Women Empowerment": 2, "Community Development": 2 }
+      },
+      {
+        icon: "🕊️",
+        text: "Protecting something irreplaceable",
+        sub: "Things that once lost, can never come back",
+        scores: { "Environment & Land": 3, "Religious & Spiritual": 2, "Arts & Culture": 2, "Animals": 2 }
+      }
+    ]
+  },
+  {
+    text: "Which story would move you most?",
+    options: [
+      {
+        icon: "🪖",
+        text: "A soldier coming home to a family that needs support",
+        sub: "",
+        scores: { "Soldiers & Veterans": 3, "Terror Victims": 2, "Medical & Emergency": 1 }
+      },
+      {
+        icon: "👧",
+        text: "A child getting a chance they almost didn't have",
+        sub: "",
+        scores: { "Children & Youth": 3, "Education": 2, "Special Needs": 2 }
+      },
+      {
+        icon: "🏘️",
+        text: "A community rebuilding itself from the ground up",
+        sub: "",
+        scores: { "Community Development": 3, "Women Empowerment": 2, "Poverty & Hunger": 2 }
+      },
+      {
+        icon: "🕯️",
+        text: "Ancient traditions being kept alive for the next generation",
+        sub: "",
+        scores: { "Religious & Spiritual": 3, "Arts & Culture": 2, "Holocaust Survivors": 2, "Environment & Land": 1 }
+      }
+    ]
+  },
+  {
+    text: "How would you describe your giving heart?",
+    options: [
+      {
+        icon: "⚔️",
+        text: "Fierce protector",
+        sub: "I'm drawn to shield those in harm's way",
+        scores: { "Soldiers & Veterans": 2, "Terror Victims": 2, "Medical & Emergency": 2 }
+      },
+      {
+        icon: "🫶",
+        text: "Gentle nurturer",
+        sub: "I'm drawn to lift up those who are struggling",
+        scores: { "Children & Youth": 2, "Holocaust Survivors": 2, "Special Needs": 2, "Poverty & Hunger": 2 }
+      },
+      {
+        icon: "🔨",
+        text: "Visionary builder",
+        sub: "I'm drawn to create things that outlast me",
+        scores: { "Education": 2, "Technology & Innovation": 2, "Community Development": 2, "Women Empowerment": 1 }
+      },
+      {
+        icon: "🌿",
+        text: "Soulful keeper",
+        sub: "I'm drawn to preserve what makes Israel sacred",
+        scores: { "Environment & Land": 2, "Religious & Spiritual": 2, "Arts & Culture": 2, "Animals": 2 }
+      }
+    ]
+  }
+];
+
+// Personas based on top category groupings
+const personas = {
+  guardian: {
+    name: "The Guardian",
+    emoji: "🛡️",
+    description: "You're driven by a deep instinct to protect. Whether it's soldiers on the front lines, terror survivors, or emergency responders — you show up for those who put themselves in harm's way for Israel.",
+    categories: ["Soldiers & Veterans", "Terror Victims", "Medical & Emergency"]
+  },
+  nurturer: {
+    name: "The Nurturer",
+    emoji: "💛",
+    description: "Your heart goes straight to the most vulnerable. Children who need a champion, Holocaust survivors who deserve dignity, families fighting to get by — your compassion finds them.",
+    categories: ["Children & Youth", "Holocaust Survivors", "Special Needs", "Poverty & Hunger"]
+  },
+  builder: {
+    name: "The Builder",
+    emoji: "🌱",
+    description: "You think in decades, not days. Education, technology, empowering women, strengthening communities — you invest in the things that compound and shape Israel's future.",
+    categories: ["Education", "Technology & Innovation", "Community Development", "Women Empowerment"]
+  },
+  keeper: {
+    name: "The Keeper",
+    emoji: "✡️",
+    description: "You protect what makes Israel sacred — the land, the traditions, the culture, the living things. For you, giving is an act of preservation and love.",
+    categories: ["Environment & Land", "Religious & Spiritual", "Arts & Culture", "Animals"]
+  }
+};
+
+// Sample charities (in real app, these come from Supabase)
+const sampleCharities = {
+  "Soldiers & Veterans": ["Friends of the IDF", "LIBI Fund", "Beit Halochem"],
+  "Terror Victims": ["OneFamily Fund", "Koby Mandell Foundation"],
+  "Medical & Emergency": ["Magen David Adom", "United Hatzalah", "Hadassah"],
+  "Children & Youth": ["Elem Youth", "Big Brothers Big Sisters Israel", "Youth Futures"],
+  "Holocaust Survivors": ["Claims Conference", "Amcha", "Zikaron BaSalon"],
+  "Special Needs": ["Aleh Israel", "Beit Issie Shapiro", "SHEKEL"],
+  "Poverty & Hunger": ["Leket Israel", "Latet", "Meir Panim"],
+  "Education": ["ORT Israel", "Israel Sci-Tech Schools", "Atidim"],
+  "Technology & Innovation": ["Start-Up Nation Central", "Tech-Career", "MassChallenge Israel"],
+  "Community Development": ["JNF-KKL", "Or Movement", "Garin Torani"],
+  "Women Empowerment": ["WePower", "Jasmine", "Itach-Ma'aki"],
+  "Environment & Land": ["SPNI", "KKL-JNF Green", "EcoPeace"],
+  "Religious & Spiritual": ["Western Wall Heritage", "Ohr Torah Stone", "Masorti Foundation"],
+  "Arts & Culture": ["Israel Philharmonic", "Beit Avi Chai", "Jerusalem Foundation"],
+  "Animals": ["Let the Animals Live", "SPCA Israel", "Israeli Wildlife Hospital"]
+};
+
+const categoryIcons = {
+  "Soldiers & Veterans": "🪖", "Terror Victims": "🎗️", "Medical & Emergency": "🏥",
+  "Children & Youth": "👧", "Holocaust Survivors": "🕯️", "Special Needs": "💙",
+  "Poverty & Hunger": "🍞", "Education": "📚", "Technology & Innovation": "💡",
+  "Community Development": "🏘️", "Women Empowerment": "💪", "Environment & Land": "🌿",
+  "Religious & Spiritual": "✡️", "Arts & Culture": "🎨", "Animals": "🐾"
+};
+
+// ========== STATE ==========
+let currentQ = 0;
+const scores = {};
+
+// ========== FUNCTIONS ==========
+function startQuiz() {
+  currentQ = 0;
+  Object.keys(scores).forEach(k => delete scores[k]);
+  showScreen('quiz');
+  renderQuestion();
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderQuestion() {
+  const q = questions[currentQ];
+  document.getElementById('q-counter').textContent = `Question ${currentQ + 1} of ${questions.length}`;
+  document.getElementById('progress').style.width = `${((currentQ) / questions.length) * 100}%`;
+  document.getElementById('question-text').textContent = q.text;
+
+  const optionsEl = document.getElementById('options');
+  optionsEl.innerHTML = '';
+
+  q.options.forEach((opt, i) => {
+    const div = document.createElement('div');
+    div.className = 'option';
+    div.innerHTML = `
+      <div class="option-icon">${opt.icon}</div>
+      <div>
+        <div class="option-text">${opt.text}</div>
+        ${opt.sub ? `<div class="option-subtext">${opt.sub}</div>` : ''}
+      </div>
+    `;
+    div.addEventListener('click', () => selectOption(i));
+    optionsEl.appendChild(div);
+  });
+}
+
+function selectOption(index) {
+  // Visual feedback
+  document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+  document.querySelectorAll('.option')[index].classList.add('selected');
+
+  // Record scores
+  const chosen = questions[currentQ].options[index];
+  Object.entries(chosen.scores).forEach(([cat, pts]) => {
+    scores[cat] = (scores[cat] || 0) + pts;
+  });
+
+  // Advance after brief pause
+  setTimeout(() => {
+    currentQ++;
+    if (currentQ < questions.length) {
+      // Fade transition
+      const quiz = document.getElementById('quiz');
+      quiz.style.opacity = '0';
+      quiz.style.transform = 'translateY(8px)';
+      setTimeout(() => {
+        renderQuestion();
+        quiz.style.opacity = '1';
+        quiz.style.transform = 'translateY(0)';
+      }, 200);
+    } else {
+      document.getElementById('progress').style.width = '100%';
+      setTimeout(() => showResults(), 400);
+    }
+  }, 350);
+}
+
+function showResults() {
+  // Sort categories by score
+  const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+  const top3 = sorted.slice(0, 3);
+
+  // Determine persona
+  const topCat = top3[0][0];
+  let persona;
+  for (const [key, p] of Object.entries(personas)) {
+    if (p.categories.includes(topCat)) {
+      persona = p;
+      break;
+    }
+  }
+  if (!persona) persona = personas.guardian;
+
+  // Build results HTML
+  const resultsEl = document.getElementById('results');
+  resultsEl.innerHTML = `
+    <div class="result-persona-card">
+      <span class="persona-emoji">${persona.emoji}</span>
+      <div class="persona-label">Your Giving Persona</div>
+      <div class="persona-name">${persona.name}</div>
+      <p class="persona-description">${persona.description}</p>
+    </div>
+
+    <h3 class="results-heading">Your Top Matches</h3>
+    <p class="results-subtext">Based on your answers, these causes align most with your heart</p>
+
+    ${top3.map(([cat, score], i) => `
+      <div class="match-card">
+        <div class="match-rank"><span class="dot"></span>${i === 0 ? 'Top Match' : i === 1 ? 'Strong Match' : 'Also Resonates'}</div>
+        <div class="match-category">${categoryIcons[cat] || '✦'} ${cat}</div>
+        <div class="match-description">Explore charities making a real difference in this space</div>
+        <div class="match-charities">
+          ${(sampleCharities[cat] || ['Example Charity']).map(c => `
+            <span class="charity-tag">${c} <span class="arrow">→</span></span>
+          `).join('')}
+        </div>
+      </div>
+    `).join('')}
+
+    <div class="result-actions">
+      <button class="action-btn primary" onclick="alert('In the real app, this scrolls to the directory filtered to your top match!')">Browse My Matches</button>
+      <button class="action-btn secondary" onclick="startQuiz()">Retake Quiz</button>
+    </div>
+  `;
+
+  showScreen('results');
+  launchConfetti();
+}
+
+function launchConfetti() {
+  const container = document.getElementById('confetti');
+  container.innerHTML = '';
+  const colors = ['#0038B8', '#D4A843', '#5B94F0', '#F0D98A', '#FFFFFF', '#002A8C'];
+
+  for (let i = 0; i < 60; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random() * 100 + '%';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.width = (5 + Math.random() * 7) + 'px';
+    piece.style.height = (5 + Math.random() * 7) + 'px';
+    piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    piece.style.animationDelay = Math.random() * 0.8 + 's';
+    piece.style.animationDuration = (2.5 + Math.random() * 2) + 's';
+    container.appendChild(piece);
+  }
+  setTimeout(() => container.innerHTML = '', 5000);
+}
+</script>
+
+</body>
+</html>

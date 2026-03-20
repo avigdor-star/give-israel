@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Light Up Israel — Interactive Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Figtree:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --il-blue: #0038B8;
+  --il-blue-deep: #002A8C;
+  --il-blue-dark: #001B5E;
+  --gold: #D4A843;
+  --gold-light: #F0D98A;
+  --gold-glow: rgba(212, 168, 67, 0.5);
+  --ink: #0C1324;
+  --ink-60: #4A5578;
+  --ink-40: #7B849E;
+  --ivory: #FAFBFD;
+  --white: #FFFFFF;
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'Figtree', -apple-system, sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--ivory);
+  color: var(--ink);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+.demo-badge {
+  background: var(--il-blue);
+  color: white;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 6px 16px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+}
+
+h1 {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: var(--il-blue-dark);
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: var(--ink-60);
+  text-align: center;
+  margin-bottom: 40px;
+  max-width: 500px;
+}
+
+.main-container {
+  display: flex;
+  gap: 48px;
+  align-items: flex-start;
+  max-width: 900px;
+  width: 100%;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* ====== MAP ====== */
+.map-wrapper {
+  position: relative;
+  width: 320px;
+  flex-shrink: 0;
+}
+
+.map-wrapper svg {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 4px 24px rgba(0, 56, 184, 0.08));
+}
+
+.region {
+  fill: #C8D1E0;
+  stroke: #A0ABBD;
+  stroke-width: 1;
+  cursor: pointer;
+  transition: fill 0.6s ease, filter 0.6s ease, stroke 0.4s ease;
+}
+
+.region:hover {
+  fill: #B0BBCF;
+  stroke: var(--il-blue);
+  stroke-width: 1.5;
+}
+
+.region.lit {
+  fill: var(--gold);
+  stroke: var(--gold-light);
+  stroke-width: 1.5;
+  filter: drop-shadow(0 0 12px var(--gold-glow));
+  animation: pulseOnce 0.8s ease-out;
+}
+
+@keyframes pulseOnce {
+  0% { filter: drop-shadow(0 0 0px var(--gold-glow)); transform: scale(1); }
+  50% { filter: drop-shadow(0 0 24px var(--gold-glow)); transform: scale(1.015); }
+  100% { filter: drop-shadow(0 0 12px var(--gold-glow)); transform: scale(1); }
+}
+
+.region-label {
+  font-family: var(--font-body);
+  font-size: 9px;
+  font-weight: 600;
+  fill: #5A6478;
+  pointer-events: none;
+  text-anchor: middle;
+  transition: fill 0.4s ease;
+}
+
+.region-label.lit {
+  fill: #7A5A10;
+  font-weight: 700;
+}
+
+/* ====== JOURNEY PANEL ====== */
+.journey-panel {
+  flex: 1;
+  min-width: 280px;
+  max-width: 420px;
+}
+
+.panel-header {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--il-blue-dark);
+  margin-bottom: 4px;
+}
+
+.panel-subtext {
+  font-size: 0.85rem;
+  color: var(--ink-40);
+  margin-bottom: 24px;
+}
+
+/* Stats row */
+.stats-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.stat-card {
+  flex: 1;
+  background: var(--white);
+  border: 1px solid #E4E8F0;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card.active {
+  border-color: var(--gold);
+  box-shadow: 0 2px 12px rgba(212, 168, 67, 0.15);
+}
+
+.stat-number {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--il-blue-dark);
+  line-height: 1;
+}
+
+.stat-card.active .stat-number {
+  color: var(--gold);
+}
+
+.stat-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--ink-40);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+
+/* Milestones */
+.milestones-header {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--ink-40);
+  margin-bottom: 12px;
+}
+
+.milestone {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--white);
+  border: 1px solid #E4E8F0;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  transition: all 0.4s ease;
+  opacity: 0.45;
+}
+
+.milestone.earned {
+  opacity: 1;
+  border-color: var(--gold);
+  background: linear-gradient(135deg, #FFFDF5, var(--white));
+  box-shadow: 0 2px 8px rgba(212, 168, 67, 0.1);
+}
+
+.milestone-icon {
+  font-size: 1.4rem;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #F0F2F7;
+  border-radius: 8px;
+  flex-shrink: 0;
+  transition: background 0.4s ease;
+}
+
+.milestone.earned .milestone-icon {
+  background: #FFF5D6;
+}
+
+.milestone-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--ink);
+}
+
+.milestone-desc {
+  font-size: 0.75rem;
+  color: var(--ink-40);
+}
+
+.milestone.earned .milestone-name {
+  color: var(--il-blue-dark);
+}
+
+/* Reset button */
+.reset-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 20px;
+  padding: 8px 18px;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--ink-40);
+  background: transparent;
+  border: 1px solid #E4E8F0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.reset-btn:hover {
+  border-color: var(--ink-40);
+  color: var(--ink-60);
+}
+
+/* Confetti */
+.confetti-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.confetti-piece {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  top: -10px;
+  animation: confettiFall 2.5s ease-out forwards;
+}
+
+@keyframes confettiFall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+/* Instructions toast */
+.instructions {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--il-blue-dark);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  z-index: 100;
+  animation: slideUp 0.5s ease-out;
+  transition: opacity 0.4s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateX(-50%) translateY(20px); opacity: 0; }
+  to { transform: translateX(-50%) translateY(0); opacity: 1; }
+}
+
+/* All-lit celebration */
+.celebration-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 27, 94, 0.85);
+  z-index: 9998;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.5s ease;
+}
+
+.celebration-overlay.show {
+  display: flex;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.celebration-card {
+  background: white;
+  border-radius: 20px;
+  padding: 48px 40px;
+  text-align: center;
+  max-width: 400px;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.3);
+  animation: popIn 0.4s var(--ease-back, cubic-bezier(0.34, 1.56, 0.64, 1));
+}
+
+@keyframes popIn {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.celebration-emoji {
+  font-size: 3.5rem;
+  margin-bottom: 16px;
+}
+
+.celebration-title {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--il-blue-dark);
+  margin-bottom: 8px;
+}
+
+.celebration-text {
+  font-size: 0.95rem;
+  color: var(--ink-60);
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.celebration-close {
+  padding: 10px 28px;
+  background: var(--gold);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.celebration-close:hover {
+  background: #C09A3A;
+}
+</style>
+</head>
+<body>
+
+<div class="demo-badge">Interactive Demo</div>
+<h1>Light Up Israel</h1>
+<p class="subtitle">Click the regions on the map to explore charities and watch Israel light up with your generosity.</p>
+
+<div class="main-container">
+  <!-- MAP -->
+  <div class="map-wrapper">
+    <svg viewBox="0 0 280 520" xmlns="http://www.w3.org/2000/svg">
+      <!-- Background water hint -->
+      <defs>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+          <feMerge>
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+
+      <!-- North / Galilee & Golan -->
+      <path class="region" id="north" d="
+        M 80 20 L 180 15 L 220 30 L 240 60 L 230 100 L 210 120
+        L 170 130 L 130 125 L 90 110 L 70 80 L 65 50 Z
+      " data-name="North (Galilee & Golan)" />
+      <text class="region-label" id="label-north" x="155" y="75">GALILEE</text>
+
+      <!-- Haifa / Central Coast -->
+      <path class="region" id="coast" d="
+        M 65 50 L 70 80 L 90 110 L 130 125 L 140 150 L 120 180
+        L 90 190 L 50 170 L 40 130 L 45 90 Z
+      " data-name="Central Coast (Haifa – Tel Aviv)" />
+      <text class="region-label" id="label-coast" x="85" y="140">COAST</text>
+
+      <!-- Tel Aviv / Central -->
+      <path class="region" id="central" d="
+        M 50 170 L 90 190 L 120 180 L 140 200 L 135 250
+        L 110 270 L 70 260 L 45 230 L 40 195 Z
+      " data-name="Central (Tel Aviv – Netanya)" />
+      <text class="region-label" id="label-central" x="90" y="225">TEL AVIV</text>
+
+      <!-- Jerusalem -->
+      <path class="region" id="jerusalem" d="
+        M 140 150 L 170 130 L 210 120 L 220 150 L 215 200
+        L 190 240 L 155 260 L 135 250 L 140 200 L 120 180 Z
+      " data-name="Jerusalem District" />
+      <text class="region-label" id="label-jerusalem" x="175" y="190">JERUSALEM</text>
+
+      <!-- Judea / Southern Hills -->
+      <path class="region" id="judea" d="
+        M 70 260 L 110 270 L 135 250 L 155 260 L 190 240
+        L 200 280 L 185 330 L 150 360 L 110 350 L 80 320 L 65 290 Z
+      " data-name="Judea & Samaria" />
+      <text class="region-label" id="label-judea" x="135" y="310">JUDEA</text>
+
+      <!-- Negev / South -->
+      <path class="region" id="negev" d="
+        M 65 290 L 80 320 L 110 350 L 150 360 L 185 330
+        L 175 390 L 155 440 L 140 480 L 130 500
+        L 120 500 L 100 460 L 80 410 L 60 360 Z
+      " data-name="Negev & Eilat" />
+      <text class="region-label" id="label-negev" x="120" y="410">NEGEV</text>
+    </svg>
+  </div>
+
+  <!-- JOURNEY PANEL -->
+  <div class="journey-panel">
+    <div class="panel-header">Your Giving Journey</div>
+    <p class="panel-subtext">Explore regions to light up the map</p>
+
+    <div class="stats-row">
+      <div class="stat-card" id="stat-regions">
+        <div class="stat-number" id="regions-count">0</div>
+        <div class="stat-label">of 6 Regions</div>
+      </div>
+      <div class="stat-card" id="stat-milestones">
+        <div class="stat-number" id="milestones-count">0</div>
+        <div class="stat-label">Milestones</div>
+      </div>
+    </div>
+
+    <div class="milestones-header">Milestones</div>
+
+    <div class="milestone" id="m-first" data-requires="1">
+      <div class="milestone-icon">✨</div>
+      <div>
+        <div class="milestone-name">First Light</div>
+        <div class="milestone-desc">Explore your first region</div>
+      </div>
+    </div>
+
+    <div class="milestone" id="m-coast-desert" data-requires="coast-negev">
+      <div class="milestone-icon">🏔️</div>
+      <div>
+        <div class="milestone-name">Coast to Desert</div>
+        <div class="milestone-desc">Explore both the Coast and the Negev</div>
+      </div>
+    </div>
+
+    <div class="milestone" id="m-half" data-requires="3">
+      <div class="milestone-icon">🔍</div>
+      <div>
+        <div class="milestone-name">Curious Giver</div>
+        <div class="milestone-desc">Explore 3 different regions</div>
+      </div>
+    </div>
+
+    <div class="milestone" id="m-jerusalem" data-requires="jerusalem">
+      <div class="milestone-icon">🕊️</div>
+      <div>
+        <div class="milestone-name">Heart of Jerusalem</div>
+        <div class="milestone-desc">Explore the Jerusalem district</div>
+      </div>
+    </div>
+
+    <div class="milestone" id="m-all" data-requires="6">
+      <div class="milestone-icon">🇮🇱</div>
+      <div>
+        <div class="milestone-name">All of Israel</div>
+        <div class="milestone-desc">Light up every region on the map</div>
+      </div>
+    </div>
+
+    <button class="reset-btn" onclick="resetMap()">↺ Reset map</button>
+  </div>
+</div>
+
+<div class="instructions" id="instructions">
+  👆 Click any gray region on the map to light it up
+</div>
+
+<div class="celebration-overlay" id="celebration">
+  <div class="celebration-card">
+    <div class="celebration-emoji">🇮🇱</div>
+    <div class="celebration-title">You Lit Up All of Israel!</div>
+    <p class="celebration-text">Every corner of Israel is glowing because of your curiosity and generosity. You're a true champion.</p>
+    <button class="celebration-close" onclick="closeCelebration()">Beautiful ✦</button>
+  </div>
+</div>
+
+<div class="confetti-container" id="confetti"></div>
+
+<script>
+const regions = ['north', 'coast', 'central', 'jerusalem', 'judea', 'negev'];
+const litRegions = new Set();
+
+// Click handler for each region
+regions.forEach(id => {
+  const el = document.getElementById(id);
+  el.addEventListener('click', () => lightRegion(id));
+});
+
+function lightRegion(id) {
+  if (litRegions.has(id)) return;
+
+  litRegions.add(id);
+
+  // Light up the region
+  const region = document.getElementById(id);
+  region.classList.add('lit');
+
+  // Light up the label
+  const label = document.getElementById('label-' + id);
+  if (label) label.classList.add('lit');
+
+  // Update stats
+  updateStats();
+  checkMilestones();
+
+  // Hide instructions after first click
+  if (litRegions.size === 1) {
+    const inst = document.getElementById('instructions');
+    inst.style.opacity = '0';
+    setTimeout(() => inst.style.display = 'none', 400);
+  }
+
+  // Check for full map
+  if (litRegions.size === 6) {
+    setTimeout(() => {
+      showCelebration();
+      launchConfetti();
+    }, 600);
+  }
+}
+
+function updateStats() {
+  const count = litRegions.size;
+  document.getElementById('regions-count').textContent = count;
+
+  const regionCard = document.getElementById('stat-regions');
+  regionCard.classList.toggle('active', count > 0);
+
+  // Count earned milestones
+  const earned = document.querySelectorAll('.milestone.earned').length;
+  document.getElementById('milestones-count').textContent = earned;
+  document.getElementById('stat-milestones').classList.toggle('active', earned > 0);
+}
+
+function checkMilestones() {
+  const count = litRegions.size;
+  let newMilestones = 0;
+
+  // First Light
+  if (count >= 1 && !document.getElementById('m-first').classList.contains('earned')) {
+    earnMilestone('m-first');
+    newMilestones++;
+  }
+
+  // Coast to Desert
+  if (litRegions.has('coast') && litRegions.has('negev') &&
+      !document.getElementById('m-coast-desert').classList.contains('earned')) {
+    earnMilestone('m-coast-desert');
+    newMilestones++;
+  }
+
+  // Curious Giver
+  if (count >= 3 && !document.getElementById('m-half').classList.contains('earned')) {
+    earnMilestone('m-half');
+    newMilestones++;
+  }
+
+  // Heart of Jerusalem
+  if (litRegions.has('jerusalem') &&
+      !document.getElementById('m-jerusalem').classList.contains('earned')) {
+    earnMilestone('m-jerusalem');
+    newMilestones++;
+  }
+
+  // All of Israel
+  if (count >= 6 && !document.getElementById('m-all').classList.contains('earned')) {
+    earnMilestone('m-all');
+    newMilestones++;
+  }
+
+  // Update milestone count
+  const earned = document.querySelectorAll('.milestone.earned').length;
+  document.getElementById('milestones-count').textContent = earned;
+  document.getElementById('stat-milestones').classList.toggle('active', earned > 0);
+}
+
+function earnMilestone(id) {
+  const el = document.getElementById(id);
+  el.classList.add('earned');
+  // Small pop animation
+  el.style.transform = 'scale(1.03)';
+  setTimeout(() => el.style.transform = 'scale(1)', 300);
+}
+
+function resetMap() {
+  litRegions.clear();
+  regions.forEach(id => {
+    document.getElementById(id).classList.remove('lit');
+    const label = document.getElementById('label-' + id);
+    if (label) label.classList.remove('lit');
+  });
+  document.querySelectorAll('.milestone').forEach(m => m.classList.remove('earned'));
+  document.getElementById('regions-count').textContent = '0';
+  document.getElementById('milestones-count').textContent = '0';
+  document.getElementById('stat-regions').classList.remove('active');
+  document.getElementById('stat-milestones').classList.remove('active');
+
+  // Show instructions again
+  const inst = document.getElementById('instructions');
+  inst.style.display = 'block';
+  setTimeout(() => inst.style.opacity = '1', 50);
+}
+
+function showCelebration() {
+  document.getElementById('celebration').classList.add('show');
+}
+
+function closeCelebration() {
+  document.getElementById('celebration').classList.remove('show');
+}
+
+function launchConfetti() {
+  const container = document.getElementById('confetti');
+  const colors = ['#D4A843', '#0038B8', '#F0D98A', '#5B94F0', '#FFFFFF', '#FFD700'];
+
+  for (let i = 0; i < 80; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random() * 100 + '%';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.animationDelay = Math.random() * 1 + 's';
+    piece.style.animationDuration = (2 + Math.random() * 2) + 's';
+    piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    piece.style.width = (6 + Math.random() * 6) + 'px';
+    piece.style.height = (6 + Math.random() * 6) + 'px';
+    container.appendChild(piece);
+  }
+
+  setTimeout(() => container.innerHTML = '', 5000);
+}
+</script>
+
+</body>
+</html>

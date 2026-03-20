@@ -122,6 +122,36 @@ body { font-family: var(--font); background: var(--ink-03); color: var(--ink); -
 </head>
 <body>
 
+<!-- Admin Auth Gate -->
+<div id="authGate" style="display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--ink-03);">
+  <div style="background:var(--white);padding:36px;border-radius:12px;border:1px solid var(--ink-06);width:340px;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,0.06);">
+    <div style="font-size:20px;font-weight:800;color:var(--ink);margin-bottom:4px;">Give<span style="color:var(--blue);">Israel</span> Admin</div>
+    <div style="font-size:12px;color:var(--ink-40);margin-bottom:24px;">Enter password to continue</div>
+    <input type="password" id="adminPw" placeholder="Password" onkeydown="if(event.key==='Enter')checkAdminPw()" style="width:100%;padding:10px 14px;border:1.5px solid var(--ink-12);border-radius:8px;font-family:var(--font);font-size:14px;outline:none;margin-bottom:12px;">
+    <div id="authErr" style="color:var(--red);font-size:12px;font-weight:600;margin-bottom:12px;display:none;">Incorrect password</div>
+    <button onclick="checkAdminPw()" style="width:100%;padding:10px;background:var(--blue);color:var(--white);border:none;border-radius:8px;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;">Log In</button>
+  </div>
+</div>
+<script>
+// Simple admin gate — change this password to something strong!
+const ADMIN_HASH='d1a92c4e198d110700590c5e12dac44d8356c2235c1d650b19354da5340f7a92';
+async function sha256(msg){const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(msg));return[...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');}
+async function checkAdminPw(){
+  const pw=document.getElementById('adminPw').value;
+  const hash=await sha256(pw);
+  if(hash===ADMIN_HASH){
+    sessionStorage.setItem('gi_admin','1');
+    document.getElementById('authGate').style.display='none';
+    document.getElementById('adminContent').style.display='';
+  } else {
+    document.getElementById('authErr').style.display='';
+    document.getElementById('adminPw').value='';
+  }
+}
+if(sessionStorage.getItem('gi_admin')==='1'){document.addEventListener('DOMContentLoaded',()=>{document.getElementById('authGate').style.display='none';document.getElementById('adminContent').style.display='';});}
+</script>
+
+<div id="adminContent" style="display:none;">
 <nav class="nav">
   <div class="nav-logo">Give<span>Israel</span></div>
   <div class="nav-badge">Admin</div>
@@ -172,6 +202,9 @@ const H={'apikey':KEY,'Authorization':`Bearer ${KEY}`,'Content-Type':'applicatio
 
 let suggestions=[],charities=[],categories=[];
 
+// Sanitize strings to prevent XSS
+function esc(str){if(!str)return '';const d=document.createElement('div');d.textContent=str;return d.innerHTML;}
+
 async function load(){
   const[sr,cr,catr]=await Promise.all([
     fetch(`${SUPA}/rest/v1/charity_suggestions?order=created_at.desc`,{headers:H}),
@@ -207,16 +240,16 @@ function renderSuggestions(){
     const statusCls=s.status==='pending'?'status-pending':s.status==='approved'?'status-approved':'status-rejected';
     return`<tr id="sug-${s.id}">
       <td>
-        <div class="cell-name">${s.charity_name}</div>
-        ${s.website_url?`<a href="${s.website_url}" target="_blank" class="cell-url">${s.website_url}</a>`:''}
-        ${s.submitter_email?`<div class="cell-email">by ${s.submitter_name||'Anonymous'} &lt;${s.submitter_email}&gt;</div>`:''}
+        <div class="cell-name">${esc(s.charity_name)}</div>
+        ${s.website_url?`<a href="${esc(s.website_url)}" target="_blank" rel="noopener" class="cell-url">${esc(s.website_url)}</a>`:''}
+        ${s.submitter_email?`<div class="cell-email">by ${esc(s.submitter_name||'Anonymous')} &lt;${esc(s.submitter_email)}&gt;</div>`:''}
       </td>
       <td>
-        <div class="cell-desc">${s.description||'No description'}</div>
-        ${s.category?`<div style="margin-top:4px;font-size:11px;color:var(--blue);font-weight:600;">${s.category}</div>`:''}
+        <div class="cell-desc">${esc(s.description||'No description')}</div>
+        ${s.category?`<div style="margin-top:4px;font-size:11px;color:var(--blue);font-weight:600;">${esc(s.category)}</div>`:''}
       </td>
       <td class="cell-date">${date}</td>
-      <td><span class="status ${statusCls}">${s.status}</span></td>
+      <td><span class="status ${statusCls}">${esc(s.status)}</span></td>
       <td>
         <div class="actions">
           ${s.status==='pending'?`
@@ -226,18 +259,18 @@ function renderSuggestions(){
         </div>
         <div class="publish-form" id="pf-${s.id}">
           <div class="pf-row">
-            <div><label class="pf-label">Charity Name</label><input class="pf-input" id="pf-name-${s.id}" value="${s.charity_name}"></div>
-            <div><label class="pf-label">Category</label><select class="pf-select" id="pf-cat-${s.id}">${categories.map(c=>`<option value="${c.id}" ${s.category===c.name?'selected':''}>${c.name}</option>`).join('')}</select></div>
+            <div><label class="pf-label">Charity Name</label><input class="pf-input" id="pf-name-${s.id}" value="${esc(s.charity_name)}"></div>
+            <div><label class="pf-label">Category</label><select class="pf-select" id="pf-cat-${s.id}">${categories.map(c=>`<option value="${c.id}" ${s.category===c.name?'selected':''}>${esc(c.name)}</option>`).join('')}</select></div>
           </div>
           <div class="pf-row">
-            <div><label class="pf-label">Website</label><input class="pf-input" id="pf-web-${s.id}" value="${s.website_url||''}"></div>
-            <div><label class="pf-label">Donation URL</label><input class="pf-input" id="pf-don-${s.id}" value="${s.donation_url||s.website_url||''}"></div>
+            <div><label class="pf-label">Website</label><input class="pf-input" id="pf-web-${s.id}" value="${esc(s.website_url||'')}"></div>
+            <div><label class="pf-label">Donation URL</label><input class="pf-input" id="pf-don-${s.id}" value="${esc(s.donation_url||s.website_url||'')}"></div>
           </div>
           <div class="pf-row">
             <div><label class="pf-label">Location</label><input class="pf-input" id="pf-loc-${s.id}" value="" placeholder="e.g. Jerusalem, Israel-wide"></div>
             <div><label class="pf-label">Short Description</label><input class="pf-input" id="pf-short-${s.id}" value="" placeholder="One-liner for card display"></div>
           </div>
-          <div class="pf-full"><label class="pf-label">Full Description</label><textarea class="pf-textarea" id="pf-desc-${s.id}">${s.description||''}</textarea></div>
+          <div class="pf-full"><label class="pf-label">Full Description</label><textarea class="pf-textarea" id="pf-desc-${s.id}">${esc(s.description||'')}</textarea></div>
           <div class="pf-actions">
             <button class="btn-cancel" onclick="closePublish('${s.id}')">Cancel</button>
             <button class="btn-do-publish" onclick="doPublish('${s.id}')">Publish to Directory</button>
@@ -254,11 +287,11 @@ function renderCharities(){
   body.innerHTML=charities.map(c=>{
     const cat=categories.find(ct=>ct.id===c.category_id);
     return`<tr>
-      <td><div class="cell-name">${c.name}</div>${c.is_featured?'<span class="status status-approved" style="margin-top:4px;">Featured</span>':''}</td>
-      <td>${cat?`${cat.icon} ${cat.name}`:'-'}</td>
-      <td class="cell-date">${c.location||'-'}</td>
+      <td><div class="cell-name">${esc(c.name)}</div>${c.is_featured?'<span class="status status-approved" style="margin-top:4px;">Featured</span>':''}</td>
+      <td>${cat?`${esc(cat.icon)} ${esc(cat.name)}`:'-'}</td>
+      <td class="cell-date">${esc(c.location||'-')}</td>
       <td>${c.is_verified?'<span class="status status-approved">Verified</span>':'<span class="status status-pending">Unverified</span>'}</td>
-      <td><a href="${c.donation_url}" target="_blank" class="cell-url">${c.donation_url.replace('https://','').slice(0,35)}...</a></td>
+      <td><a href="${esc(c.donation_url)}" target="_blank" rel="noopener" class="cell-url">${esc((c.donation_url||'').replace('https://','').slice(0,35))}...</a></td>
     </tr>`;
   }).join('');
 }
@@ -306,5 +339,6 @@ function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t
 
 load();
 </script>
+</div><!-- /adminContent -->
 </body>
 </html>
