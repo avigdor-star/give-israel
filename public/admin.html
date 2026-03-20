@@ -229,7 +229,7 @@ sbAuth.auth.onAuthStateChange((event,session)=>{authSession=session;});
         <div class="panel-count" id="charitiesCount">0</div>
       </div>
       <table class="tbl">
-        <thead><tr><th>Name</th><th>Category</th><th>Location</th><th>Status</th><th>Donation Link</th><th>Actions</th></tr></thead>
+        <thead><tr><th>Name</th><th>Category</th><th>Location</th><th>Featured</th><th>Donation Link</th><th>Actions</th></tr></thead>
         <tbody id="charitiesBody"></tbody>
       </table>
     </div>
@@ -363,7 +363,7 @@ function renderCharities(){
       <td><div class="cell-name">${esc(c.name)}</div>${c.is_featured?'<span class="status status-approved" style="margin-top:4px;">Featured</span>':''}</td>
       <td>${cat?`${esc(cat.icon)} ${esc(cat.name)}`:'-'}</td>
       <td class="cell-date">${esc(c.location||'-')}</td>
-      <td>${c.is_verified?'<span class="status status-approved">Verified</span>':'<span class="status status-pending">Unverified</span>'}</td>
+      <td><input type="checkbox" ${c.is_featured?'checked':''} onchange="toggleFeatured('${c.id}',this.checked)" style="width:18px;height:18px;accent-color:var(--green);cursor:pointer;"></td>
       <td><a href="${esc(c.donation_url)}" target="_blank" rel="noopener" class="cell-url">${esc((c.donation_url||'').replace('https://','').slice(0,35))}...</a></td>
       <td>
         <div class="actions">
@@ -477,7 +477,7 @@ async function doPublish(id){
     website_url: document.getElementById('pf-web-'+id).value||null,
     donation_url: document.getElementById('pf-don-'+id).value||document.getElementById('pf-web-'+id).value||'#',
     location: document.getElementById('pf-loc-'+id).value||null,
-    is_verified: true,
+    is_verified: false,
     name_he: document.getElementById('pf-name-he-'+id).value||null,
     short_description_he: document.getElementById('pf-short-he-'+id).value||null,
     description_he: document.getElementById('pf-desc-he-'+id).value||null
@@ -496,6 +496,12 @@ async function rejectSuggestion(id){
   await fetch(`${SUPA}/rest/v1/charity_suggestions?id=eq.${id}`,{method:'PATCH',headers:{...getHeaders(),'Prefer':'return=minimal'},body:JSON.stringify({status:'rejected'})});
   toast('Suggestion rejected.');
   load();
+}
+
+async function toggleFeatured(id,checked){
+  const r=await fetch(`${SUPA}/rest/v1/charities?id=eq.${id}`,{method:'PATCH',headers:{...getHeaders(),'Prefer':'return=minimal'},body:JSON.stringify({is_featured:checked})});
+  if(r.ok){toast(checked?'Charity featured!':'Charity unfeatured.');load();}
+  else toast('Error updating featured status.');
 }
 
 function showTab(tab){
