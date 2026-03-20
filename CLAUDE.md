@@ -54,7 +54,7 @@ Desktop/give-israel/
 | **Fonts** | Google Fonts | English: Cormorant Garamond + Figtree · Hebrew: Frank Ruhl Libre + Heebo |
 | **i18n** | Built-in toggle | Hebrew/English with RTL support, geolocation default, localStorage persistence |
 | **Geolocation** | ipapi.co (free) | Detects Israel visitors → defaults to Hebrew; everyone else → English |
-| **Logos** | Google Favicon API | Auto-pulled from each charity's website |
+| **Logos** | Google Favicon API | Auto-pulled via `https://www.google.com/s2/favicons?domain=DOMAIN&sz=128` |
 
 ---
 
@@ -87,7 +87,7 @@ Desktop/give-israel/
 | icon | text | Emoji icon for the category |
 | display_order | int | What order to show them in |
 
-**charities** — 45+ charity listings
+**charities** — 57 charity listings
 | Column | Type | What It Stores |
 |--------|------|---------------|
 | id | UUID | Unique ID |
@@ -108,7 +108,7 @@ Desktop/give-israel/
 | is_verified | boolean | Whether we've confirmed they're legit |
 | is_featured | boolean | Shows them in the "Featured" section |
 | is_tax_deductible_us | boolean | Tax deductible for US donors |
-| tags | text | Keywords for search |
+| tags | text[] (array) | Keywords for search (use `{"tag1","tag2"}` format) |
 | search_text | text | Combined text for search matching |
 
 **charity_suggestions** — Community-submitted charities
@@ -314,6 +314,8 @@ Vercel watches GitHub and auto-deploys every push within ~30 seconds. No build s
 3. Fill in name, description, category_id, donation_url at minimum
 4. Also fill in name_he, short_description_he, location_he for Hebrew support
 5. For logo, use: `https://www.google.com/s2/favicons?domain=THEIR_DOMAIN&sz=128`
+6. **Verification rule**: A charity is only considered "verified" if it has ALL THREE: a working website, an Israeli Amuta (registration) number, and a direct donation link. Set `is_verified` to true only when all three are confirmed.
+7. Look up the Amuta number on IsraelGives.org (`israelgives.org/amuta/AMUTA_NUMBER`) to confirm it's real
 
 ### Review a community suggestion
 1. Go to giveisrael.charity/admin
@@ -355,3 +357,11 @@ March 2026 — Built with Claude using the Mikoshi Protocol for research and pla
 ## Changelog
 
 - **March 19, 2026** — Added full Hebrew/English language toggle: translation dictionary (100+ entries), RTL CSS support, Hebrew Google Fonts, geolocation-based language detection, Hebrew columns in Supabase (all 45 charities + 15 categories translated), admin dashboard Hebrew input fields, and "Find Your Cause" quiz fully translated. Translations stress-tested by a separate AI model and scored on CIQ rubric.
+- **March 20, 2026** — Full charity audit and expansion:
+  - **Removed 3 charities**: Claims Conference (international, not Israeli), October 7 Relief Fund (unverifiable), AWIS (wrong URL pointing to unrelated site)
+  - **Fixed 2 URLs**: Beit Issie Shapiro (→ beitissie.org.il), ORT Israel (→ en.ort.org.il)
+  - **Re-added AWIS** with correct URL (ufis.org.il) and Amuta number (580004307)
+  - **Added 14 new verified charities**: Hasoub, Freedom Farm Sanctuary, SPCA Israel, Tzohar, Bnei Akiva, Rabinovich Foundation, Centre of Holocaust Survivors, NATAL, NA'AMAT, Kayan Feminist Organization, Zalul, Heschel Center, SHEKEL, AKIM Israel
+  - **All new charities verified** with working website + Israeli Amuta number + donation link
+  - **Established verification rule**: a charity is "verified" only if it has all three: working website, Amuta number, and donation link
+  - **Directory grew from 45 → 57 charities** across all 15 categories (Technology & Innovation no longer empty)

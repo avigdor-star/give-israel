@@ -1354,6 +1354,84 @@ html[dir="rtl"] .to-top { right: auto; left: 24px; }
 @media (max-width: 380px) {
   .logo-wordmark { display: none; }
 }
+
+/* ===== SEARCH FOCUS: Quiz Hero Minimize ===== */
+.quiz-hero {
+  transition: max-height 0.5s var(--ease), opacity 0.4s var(--ease), padding 0.5s var(--ease);
+  max-height: 800px;
+  overflow: hidden;
+}
+
+.quiz-hero.minimized {
+  max-height: 0;
+  opacity: 0;
+  padding: 0;
+  pointer-events: none;
+}
+
+.quiz-reminder-strip {
+  background: linear-gradient(165deg, #001233 0%, #001B5E 50%, #002A8C 100%);
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.5s var(--ease), opacity 0.4s var(--ease);
+}
+
+.quiz-reminder-strip.visible {
+  max-height: 70px;
+  opacity: 1;
+}
+
+.quiz-reminder-inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 12px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.quiz-reminder-text {
+  color: rgba(255,255,255,0.85);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 400;
+}
+
+html[dir="rtl"] .quiz-reminder-text {
+  font-family: var(--font-body-he);
+}
+
+.quiz-reminder-btn {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.25);
+  padding: 6px 18px;
+  border-radius: 20px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+html[dir="rtl"] .quiz-reminder-btn {
+  font-family: var(--font-body-he);
+}
+
+.quiz-reminder-btn:hover {
+  background: rgba(255,255,255,0.25);
+  transform: scale(1.03);
+}
+
+@media (max-width: 680px) {
+  .quiz-reminder-inner { padding: 10px 20px; gap: 10px; }
+  .quiz-reminder-text { font-size: 13px; }
+  .quiz-reminder-btn { font-size: 12px; padding: 5px 14px; }
+}
 </style>
 </head>
 <body>
@@ -1424,6 +1502,14 @@ html[dir="rtl"] .to-top { right: auto; left: 24px; }
   </div>
 </section>
 <div class="confetti-box" id="confettiBox"></div>
+
+<!-- QUIZ REMINDER STRIP (shown when search is focused) -->
+<div class="quiz-reminder-strip" id="quizReminderStrip">
+  <div class="quiz-reminder-inner">
+    <span class="quiz-reminder-text" id="quizReminderText">Not sure what to search for? Let us help you find the right cause.</span>
+    <button class="quiz-reminder-btn" id="quizReminderBtn" onclick="expandQuizFromReminder()">Take the Quiz</button>
+  </div>
+</div>
 
 <!-- MAIN -->
 <main class="main">
@@ -1568,6 +1654,8 @@ const LANG = {
     quizAlsoResonates: 'Also Resonates',
     quizSeeMatch: 'See My Top Match →',
     quizRetake: 'Retake Quiz',
+    quizReminderText: 'Not sure what to search for? Let us help you find the right cause.',
+    quizReminderBtn: 'Take the Quiz',
     footerTagline: 'connecting generous hearts with verified Israeli charities.',
     footerDisclaimer1: 'We don\'t process donations. Every link goes directly to the charity\'s own page.',
     footerDisclaimer2: 'All information is provided as-is. Verify details with each organization.',
@@ -1657,6 +1745,8 @@ const LANG = {
     quizAlsoResonates: 'גם מתחבר',
     quizSeeMatch: 'צפו בהתאמה המובילה ←',
     quizRetake: 'קחו את השאלון שוב',
+    quizReminderText: 'לא בטוחים מה לחפש? בואו נעזור לכם למצוא את המטרה הנכונה.',
+    quizReminderBtn: 'קחו את השאלון',
     footerTagline: 'מחברים לבבות נדיבים עם עמותות ישראליות מאומתות.',
     footerDisclaimer1: 'איננו מעבדים תרומות. כל קישור מוביל ישירות לדף של העמותה עצמה.',
     footerDisclaimer2: 'כל המידע מוצג כפי שהוא. ודאו פרטים ישירות מול כל ארגון.',
@@ -1769,6 +1859,8 @@ function updateStaticText() {
   document.querySelector('.quiz-subtitle').textContent = t('quizSub');
   document.querySelector('.quiz-start-btn').innerHTML = t('quizStart') + ' <span>' + t('quizArrow') + '</span>';
   document.querySelector('.quiz-note').textContent = t('quizNote');
+  document.getElementById('quizReminderText').textContent = t('quizReminderText');
+  document.getElementById('quizReminderBtn').textContent = t('quizReminderBtn');
 
   document.querySelector('.footer').innerHTML = '<strong>' + (currentLang === 'he' ? 'תן לישראל' : 'Give Israel') + '</strong> — ' + t('footerTagline') + '<div class="footer-rule"></div>' + t('footerDisclaimer1') + '<br>&copy; 2026 &middot; ' + t('footerDisclaimer2');
 
@@ -1881,8 +1973,48 @@ function filterCat(id){activeCat=id;renderCats();renderCards();document.querySel
 function handleSearch(){sq=document.getElementById('searchInput').value.trim();activeCat=null;renderCats();renderCards();}
 function resetFilters(){activeCat=null;sq='';document.getElementById('searchInput').value='';renderCats();renderCards();window.scrollTo({top:0,behavior:'smooth'});}
 
-document.getElementById('searchInput').addEventListener('keydown',e=>{if(e.key==='Enter')handleSearch();if(e.key==='Escape'){e.target.value='';sq='';renderCards();}});
+document.getElementById('searchInput').addEventListener('keydown',e=>{if(e.key==='Enter')handleSearch();if(e.key==='Escape'){e.target.value='';sq='';renderCards();e.target.blur();}});
 window.addEventListener('scroll',()=>{document.getElementById('scrollTopBtn').classList.toggle('show',window.scrollY>300);});
+
+// Search focus: minimize quiz hero, show reminder strip
+let quizMinimized=false;
+document.getElementById('searchInput').addEventListener('focus',function(){
+  const hero=document.getElementById('quizHero');
+  const strip=document.getElementById('quizReminderStrip');
+  if(!quizMinimized){
+    hero.classList.add('minimized');
+    strip.classList.add('visible');
+    quizMinimized=true;
+  }
+});
+
+document.getElementById('searchInput').addEventListener('blur',function(){
+  const val=this.value.trim();
+  // Only expand back if search bar is empty
+  if(!val){
+    setTimeout(()=>{
+      const hero=document.getElementById('quizHero');
+      const strip=document.getElementById('quizReminderStrip');
+      hero.classList.remove('minimized');
+      strip.classList.remove('visible');
+      quizMinimized=false;
+    },150);
+  }
+});
+
+function expandQuizFromReminder(){
+  const hero=document.getElementById('quizHero');
+  const strip=document.getElementById('quizReminderStrip');
+  const input=document.getElementById('searchInput');
+  // Clear search and restore hero
+  input.value='';sq='';activeCat=null;renderCats();renderCards();
+  hero.classList.remove('minimized');
+  strip.classList.remove('visible');
+  quizMinimized=false;
+  // Scroll to quiz and start it
+  hero.scrollIntoView({behavior:'smooth',block:'start'});
+  setTimeout(()=>quizStart(),600);
+}
 
 // Mobile suggest button
 function updateSuggestBtn(){const w=window.innerWidth;document.querySelectorAll('.desktop-text').forEach(e=>e.style.display=w<=680?'none':'');document.querySelectorAll('.mobile-plus').forEach(e=>e.style.display=w<=680?'':'none');}
