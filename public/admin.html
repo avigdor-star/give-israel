@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Give Israel — Admin Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue: #0038B8;
+  --blue-deep: #002A8C;
+  --blue-pale: #E6EEFB;
+  --blue-ghost: #F4F7FE;
+  --white: #FFFFFF;
+  --ink: #0C1324;
+  --ink-60: #4A5578;
+  --ink-40: #7B849E;
+  --ink-12: #D4D9E6;
+  --ink-06: #EBEEF5;
+  --ink-03: #F4F6FA;
+  --green: #16A34A;
+  --green-bg: #E6F9F0;
+  --amber: #D97706;
+  --amber-bg: #FFF8E6;
+  --red: #DC2626;
+  --red-bg: #FEF2F2;
+  --r: 10px;
+  --font: 'Figtree', -apple-system, sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body { font-family: var(--font); background: var(--ink-03); color: var(--ink); -webkit-font-smoothing: antialiased; }
+
+/* NAV */
+.nav { background: var(--ink); padding: 0 28px; display: flex; align-items: center; height: 56px; gap: 20px; }
+.nav-logo { font-size: 18px; font-weight: 800; color: var(--white); letter-spacing: -0.5px; }
+.nav-logo span { color: #5B94F0; }
+.nav-badge { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 100px; text-transform: uppercase; letter-spacing: 0.5px; }
+.nav-tabs { margin-left: auto; display: flex; gap: 4px; }
+.nav-tab { padding: 8px 16px; color: rgba(255,255,255,0.5); font-size: 13px; font-weight: 600; border: none; background: none; cursor: pointer; border-radius: 8px; font-family: var(--font); transition: 0.2s; }
+.nav-tab:hover { color: rgba(255,255,255,0.8); background: rgba(255,255,255,0.06); }
+.nav-tab.active { color: var(--white); background: rgba(255,255,255,0.1); }
+
+/* LAYOUT */
+.page { max-width: 1200px; margin: 0 auto; padding: 28px; }
+
+/* STATS ROW */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 28px; }
+.stat-card { background: var(--white); border-radius: var(--r); padding: 18px 20px; border: 1px solid var(--ink-06); }
+.stat-label { font-size: 11px; font-weight: 700; color: var(--ink-40); text-transform: uppercase; letter-spacing: 0.8px; }
+.stat-val { font-size: 28px; font-weight: 800; color: var(--ink); margin-top: 4px; letter-spacing: -1px; }
+.stat-val.blue { color: var(--blue); }
+.stat-val.amber { color: var(--amber); }
+.stat-val.green { color: var(--green); }
+
+/* PANELS */
+.panel { background: var(--white); border-radius: 12px; border: 1px solid var(--ink-06); margin-bottom: 20px; overflow: hidden; }
+.panel-head { padding: 18px 22px; border-bottom: 1px solid var(--ink-06); display: flex; align-items: center; justify-content: space-between; }
+.panel-title { font-size: 16px; font-weight: 700; color: var(--ink); }
+.panel-count { font-size: 12px; font-weight: 600; color: var(--ink-40); background: var(--ink-03); padding: 3px 10px; border-radius: 100px; }
+
+/* TABLE */
+.tbl { width: 100%; border-collapse: collapse; }
+.tbl th { text-align: left; font-size: 10px; font-weight: 700; color: var(--ink-40); text-transform: uppercase; letter-spacing: 0.8px; padding: 10px 16px; border-bottom: 1px solid var(--ink-06); background: var(--ink-03); }
+.tbl td { padding: 14px 16px; font-size: 13px; border-bottom: 1px solid var(--ink-06); vertical-align: top; }
+.tbl tr:last-child td { border-bottom: none; }
+.tbl tr:hover td { background: var(--blue-ghost); }
+
+.cell-name { font-weight: 700; color: var(--ink); }
+.cell-url { color: var(--blue); text-decoration: none; font-size: 12px; word-break: break-all; }
+.cell-url:hover { text-decoration: underline; }
+.cell-desc { color: var(--ink-60); font-size: 12px; max-width: 280px; line-height: 1.5; }
+.cell-date { color: var(--ink-40); font-size: 12px; white-space: nowrap; }
+.cell-email { color: var(--ink-60); font-size: 12px; }
+
+/* Status badges */
+.status { display: inline-block; padding: 3px 10px; border-radius: 100px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; }
+.status-pending { background: var(--amber-bg); color: var(--amber); }
+.status-approved { background: var(--green-bg); color: var(--green); }
+.status-rejected { background: var(--red-bg); color: var(--red); }
+
+/* Action buttons */
+.actions { display: flex; gap: 6px; }
+.btn-sm { height: 32px; padding: 0 14px; border: none; border-radius: 7px; font-family: var(--font); font-size: 12px; font-weight: 700; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 4px; }
+.btn-approve { background: var(--green); color: var(--white); }
+.btn-approve:hover { background: #15803D; }
+.btn-reject { background: var(--ink-03); color: var(--ink-40); }
+.btn-reject:hover { background: var(--red-bg); color: var(--red); }
+.btn-publish { background: var(--blue); color: var(--white); }
+.btn-publish:hover { background: var(--blue-deep); }
+
+/* Toast */
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--ink); color: var(--white); padding: 12px 24px; border-radius: var(--r); font-size: 14px; font-weight: 600; box-shadow: 0 8px 24px rgba(0,0,0,0.2); transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); z-index: 999; pointer-events: none; }
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* Form panel for publishing */
+.publish-form { padding: 20px 22px; display: none; border-top: 2px solid var(--blue-pale); background: var(--blue-ghost); }
+.publish-form.open { display: block; }
+.pf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.pf-full { margin-bottom: 12px; }
+.pf-label { font-size: 11px; font-weight: 700; color: var(--ink-60); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; display: block; }
+.pf-input, .pf-select, .pf-textarea { width: 100%; padding: 9px 12px; border: 1.5px solid var(--ink-12); border-radius: 8px; font-family: var(--font); font-size: 13px; color: var(--ink); background: var(--white); outline: none; }
+.pf-input:focus, .pf-select:focus, .pf-textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(0,56,184,0.08); }
+.pf-textarea { resize: vertical; min-height: 60px; }
+.pf-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px; }
+.btn-cancel { height: 36px; padding: 0 16px; background: var(--white); color: var(--ink-40); border: 1px solid var(--ink-12); border-radius: 8px; font-family: var(--font); font-size: 13px; font-weight: 600; cursor: pointer; }
+.btn-do-publish { height: 36px; padding: 0 20px; background: var(--blue); color: var(--white); border: none; border-radius: 8px; font-family: var(--font); font-size: 13px; font-weight: 700; cursor: pointer; }
+.btn-do-publish:hover { background: var(--blue-deep); }
+
+/* Empty */
+.empty-row td { text-align: center; color: var(--ink-40); padding: 40px; font-size: 14px; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .page { padding: 16px; }
+  .tbl { display: block; overflow-x: auto; }
+  .pf-row { grid-template-columns: 1fr; }
+  .nav-tabs { display: none; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-logo">Give<span>Israel</span></div>
+  <div class="nav-badge">Admin</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showTab('suggestions')">Suggestions</button>
+    <button class="nav-tab" onclick="showTab('charities')">All Charities</button>
+  </div>
+</nav>
+
+<div class="page">
+  <div class="stats" id="statsRow"></div>
+
+  <!-- SUGGESTIONS TAB -->
+  <div id="tab-suggestions">
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title">Pending Suggestions</div>
+        <div class="panel-count" id="pendingCount">0</div>
+      </div>
+      <table class="tbl">
+        <thead><tr><th>Charity</th><th>Details</th><th>Submitted</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody id="suggestionsBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- CHARITIES TAB -->
+  <div id="tab-charities" style="display:none;">
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title">Published Charities</div>
+        <div class="panel-count" id="charitiesCount">0</div>
+      </div>
+      <table class="tbl">
+        <thead><tr><th>Name</th><th>Category</th><th>Location</th><th>Status</th><th>Donation Link</th></tr></thead>
+        <tbody id="charitiesBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SUPA='https://psrtcjaxfeutecirypwd.supabase.co';
+const KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBzcnRjamF4ZmV1dGVjaXJ5cHdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5NTcxMDIsImV4cCI6MjA4OTUzMzEwMn0.4aJK0277vZudaRtvmCpEhfWhHkbrXyHIc_2f8DgqZkQ';
+const H={'apikey':KEY,'Authorization':`Bearer ${KEY}`,'Content-Type':'application/json'};
+
+let suggestions=[],charities=[],categories=[];
+
+async function load(){
+  const[sr,cr,catr]=await Promise.all([
+    fetch(`${SUPA}/rest/v1/charity_suggestions?order=created_at.desc`,{headers:H}),
+    fetch(`${SUPA}/rest/v1/charities?order=name.asc`,{headers:H}),
+    fetch(`${SUPA}/rest/v1/categories?order=display_order.asc`,{headers:H})
+  ]);
+  suggestions=await sr.json();
+  charities=await cr.json();
+  categories=await catr.json();
+  renderStats();
+  renderSuggestions();
+  renderCharities();
+}
+
+function renderStats(){
+  const pending=suggestions.filter(s=>s.status==='pending').length;
+  document.getElementById('statsRow').innerHTML=`
+    <div class="stat-card"><div class="stat-label">Total Charities</div><div class="stat-val blue">${charities.length}</div></div>
+    <div class="stat-card"><div class="stat-label">Pending Review</div><div class="stat-val amber">${pending}</div></div>
+    <div class="stat-card"><div class="stat-label">Categories</div><div class="stat-val">${categories.length}</div></div>
+    <div class="stat-card"><div class="stat-label">Featured</div><div class="stat-val green">${charities.filter(c=>c.is_featured).length}</div></div>
+  `;
+}
+
+function renderSuggestions(){
+  const body=document.getElementById('suggestionsBody');
+  const pending=suggestions.filter(s=>s.status==='pending');
+  document.getElementById('pendingCount').textContent=pending.length;
+  if(!suggestions.length){body.innerHTML='<tr class="empty-row"><td colspan="5">No suggestions yet</td></tr>';return;}
+  body.innerHTML=suggestions.map(s=>{
+    const d=new Date(s.created_at);
+    const date=d.toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+    const statusCls=s.status==='pending'?'status-pending':s.status==='approved'?'status-approved':'status-rejected';
+    return`<tr id="sug-${s.id}">
+      <td>
+        <div class="cell-name">${s.charity_name}</div>
+        ${s.website_url?`<a href="${s.website_url}" target="_blank" class="cell-url">${s.website_url}</a>`:''}
+        ${s.submitter_email?`<div class="cell-email">by ${s.submitter_name||'Anonymous'} &lt;${s.submitter_email}&gt;</div>`:''}
+      </td>
+      <td>
+        <div class="cell-desc">${s.description||'No description'}</div>
+        ${s.category?`<div style="margin-top:4px;font-size:11px;color:var(--blue);font-weight:600;">${s.category}</div>`:''}
+      </td>
+      <td class="cell-date">${date}</td>
+      <td><span class="status ${statusCls}">${s.status}</span></td>
+      <td>
+        <div class="actions">
+          ${s.status==='pending'?`
+            <button class="btn-sm btn-publish" onclick="openPublish('${s.id}')">Publish</button>
+            <button class="btn-sm btn-reject" onclick="rejectSuggestion('${s.id}')">Reject</button>
+          `:`<span style="font-size:12px;color:var(--ink-40);">—</span>`}
+        </div>
+        <div class="publish-form" id="pf-${s.id}">
+          <div class="pf-row">
+            <div><label class="pf-label">Charity Name</label><input class="pf-input" id="pf-name-${s.id}" value="${s.charity_name}"></div>
+            <div><label class="pf-label">Category</label><select class="pf-select" id="pf-cat-${s.id}">${categories.map(c=>`<option value="${c.id}" ${s.category===c.name?'selected':''}>${c.name}</option>`).join('')}</select></div>
+          </div>
+          <div class="pf-row">
+            <div><label class="pf-label">Website</label><input class="pf-input" id="pf-web-${s.id}" value="${s.website_url||''}"></div>
+            <div><label class="pf-label">Donation URL</label><input class="pf-input" id="pf-don-${s.id}" value="${s.donation_url||s.website_url||''}"></div>
+          </div>
+          <div class="pf-row">
+            <div><label class="pf-label">Location</label><input class="pf-input" id="pf-loc-${s.id}" value="" placeholder="e.g. Jerusalem, Israel-wide"></div>
+            <div><label class="pf-label">Short Description</label><input class="pf-input" id="pf-short-${s.id}" value="" placeholder="One-liner for card display"></div>
+          </div>
+          <div class="pf-full"><label class="pf-label">Full Description</label><textarea class="pf-textarea" id="pf-desc-${s.id}">${s.description||''}</textarea></div>
+          <div class="pf-actions">
+            <button class="btn-cancel" onclick="closePublish('${s.id}')">Cancel</button>
+            <button class="btn-do-publish" onclick="doPublish('${s.id}')">Publish to Directory</button>
+          </div>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function renderCharities(){
+  const body=document.getElementById('charitiesBody');
+  document.getElementById('charitiesCount').textContent=charities.length;
+  body.innerHTML=charities.map(c=>{
+    const cat=categories.find(ct=>ct.id===c.category_id);
+    return`<tr>
+      <td><div class="cell-name">${c.name}</div>${c.is_featured?'<span class="status status-approved" style="margin-top:4px;">Featured</span>':''}</td>
+      <td>${cat?`${cat.icon} ${cat.name}`:'-'}</td>
+      <td class="cell-date">${c.location||'-'}</td>
+      <td>${c.is_verified?'<span class="status status-approved">Verified</span>':'<span class="status status-pending">Unverified</span>'}</td>
+      <td><a href="${c.donation_url}" target="_blank" class="cell-url">${c.donation_url.replace('https://','').slice(0,35)}...</a></td>
+    </tr>`;
+  }).join('');
+}
+
+function openPublish(id){document.getElementById('pf-'+id).classList.add('open');}
+function closePublish(id){document.getElementById('pf-'+id).classList.remove('open');}
+
+async function doPublish(id){
+  const name=document.getElementById('pf-name-'+id).value;
+  const slug=name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+  const data={
+    name,
+    slug: slug+'-'+Date.now().toString(36),
+    description: document.getElementById('pf-desc-'+id).value||name,
+    short_description: document.getElementById('pf-short-'+id).value||null,
+    category_id: parseInt(document.getElementById('pf-cat-'+id).value),
+    website_url: document.getElementById('pf-web-'+id).value||null,
+    donation_url: document.getElementById('pf-don-'+id).value||document.getElementById('pf-web-'+id).value||'#',
+    location: document.getElementById('pf-loc-'+id).value||null,
+    is_verified: true
+  };
+
+  // Insert into charities
+  const r1=await fetch(`${SUPA}/rest/v1/charities`,{method:'POST',headers:{...H,'Prefer':'return=minimal'},body:JSON.stringify(data)});
+  // Update suggestion status
+  const r2=await fetch(`${SUPA}/rest/v1/charity_suggestions?id=eq.${id}`,{method:'PATCH',headers:{...H,'Prefer':'return=minimal'},body:JSON.stringify({status:'approved'})});
+
+  if(r1.ok&&r2.ok){ toast('Published! Charity is now live.'); load(); }
+  else toast('Error publishing. Check the data.');
+}
+
+async function rejectSuggestion(id){
+  await fetch(`${SUPA}/rest/v1/charity_suggestions?id=eq.${id}`,{method:'PATCH',headers:{...H,'Prefer':'return=minimal'},body:JSON.stringify({status:'rejected'})});
+  toast('Suggestion rejected.');
+  load();
+}
+
+function showTab(tab){
+  document.querySelectorAll('.nav-tab').forEach((t,i)=>{t.classList.toggle('active',i===(tab==='suggestions'?0:1));});
+  document.getElementById('tab-suggestions').style.display=tab==='suggestions'?'':'none';
+  document.getElementById('tab-charities').style.display=tab==='charities'?'':'none';
+}
+
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+load();
+</script>
+</body>
+</html>

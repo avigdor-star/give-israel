@@ -1,0 +1,9 @@
+{
+  "name": "give-israel",
+  "version": "1.0.0",
+  "description": "Give Israel — The most comprehensive directory of Israeli charities",
+  "scripts": {
+    "dev": "npx serve public",
+    "build": "echo 'Static site — no build needed'"
+  }
+}

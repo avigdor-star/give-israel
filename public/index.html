@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Give Israel — Find & Support Israeli Charities</title>
+<meta name="description" content="Discover and donate to verified Israeli charities. Browse by category, search by name, and give directly to causes you care about.">
+<meta property="og:title" content="Give Israel — Find & Support Israeli Charities">
+<meta property="og:description" content="The most comprehensive directory of Israeli charities. Find your cause. Make your impact.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Figtree:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   GIVE ISRAEL — Premium Charity Directory
+   Design: Editorial luxury meets Israeli flag blue & white
+   ============================================================ */
+:root {
+  --il-blue: #0038B8;
+  --il-blue-deep: #002A8C;
+  --il-blue-dark: #001B5E;
+  --il-blue-vivid: #1456D6;
+  --il-blue-soft: #5B94F0;
+  --il-blue-mist: #D6E4FA;
+  --il-blue-ghost: #EDF2FD;
+  --il-blue-tint: #F6F9FF;
+  --white: #FFFFFF;
+  --ivory: #FAFBFD;
+
+  --ink: #0C1324;
+  --ink-80: #2A3550;
+  --ink-60: #4A5578;
+  --ink-40: #7B849E;
+  --ink-25: #A8B0C4;
+  --ink-12: #D4D9E6;
+  --ink-06: #EBEEF5;
+  --ink-03: #F4F6FA;
+
+  --success: #0D9F5F;
+  --success-bg: #E6F9F0;
+  --amber: #B8860B;
+  --amber-bg: #FFF8E6;
+
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'Figtree', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 20px;
+
+  --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur: 0.28s;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+body {
+  font-family: var(--font-body);
+  color: var(--ink);
+  background: var(--ivory);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Subtle grain texture overlay */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.018;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+/* ===== FLAG STRIPE — top accent ===== */
+.flag-stripe {
+  height: 6px;
+  background: var(--il-blue);
+  position: relative;
+}
+
+.flag-stripe::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+    var(--il-blue-dark) 0%,
+    var(--il-blue) 30%,
+    var(--il-blue-vivid) 50%,
+    var(--il-blue) 70%,
+    var(--il-blue-dark) 100%
+  );
+}
+
+/* ===== HEADER ===== */
+.header {
+  background: var(--white);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid var(--ink-06);
+  box-shadow: 0 1px 0 rgba(0,56,184,0.03);
+}
+
+.header-inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  height: 68px;
+  gap: 24px;
+}
+
+/* Logo */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  text-decoration: none;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.logo-mark {
+  width: 38px;
+  height: 38px;
+  background: var(--il-blue);
+  border-radius: var(--r-md);
+  display: grid;
+  place-items: center;
+  position: relative;
+}
+
+.logo-mark::before {
+  content: '✡';
+  font-size: 18px;
+  color: var(--white);
+  line-height: 1;
+}
+
+.logo-wordmark {
+  font-family: var(--font-display);
+  font-size: 25px;
+  font-weight: 700;
+  color: var(--il-blue-dark);
+  letter-spacing: -0.8px;
+  line-height: 1;
+}
+
+.logo-wordmark span { color: var(--il-blue); }
+
+/* Search */
+.header-search {
+  flex: 1;
+  max-width: 520px;
+}
+
+.search-wrap {
+  display: flex;
+  align-items: center;
+  background: var(--ink-03);
+  border: 1.5px solid transparent;
+  border-radius: var(--r-md);
+  padding: 0 4px 0 14px;
+  height: 42px;
+  transition: all var(--dur) var(--ease);
+}
+
+.search-wrap:focus-within {
+  background: var(--white);
+  border-color: var(--il-blue);
+  box-shadow: 0 0 0 4px rgba(0,56,184,0.08);
+}
+
+.search-wrap svg { color: var(--ink-25); flex-shrink: 0; transition: color var(--dur) var(--ease); }
+.search-wrap:focus-within svg { color: var(--il-blue); }
+
+.search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--ink);
+  padding: 0 10px;
+  height: 100%;
+}
+
+.search-input::placeholder { color: var(--ink-25); }
+
+.search-btn {
+  height: 34px;
+  padding: 0 18px;
+  background: var(--il-blue);
+  color: var(--white);
+  border: none;
+  border-radius: var(--r-sm);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--dur) var(--ease);
+  white-space: nowrap;
+}
+
+.search-btn:hover { background: var(--il-blue-deep); }
+
+/* Suggest CTA */
+.btn-suggest {
+  height: 42px;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--white);
+  color: var(--il-blue);
+  border: 1.5px solid var(--il-blue);
+  border-radius: var(--r-md);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--dur) var(--ease);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.btn-suggest:hover {
+  background: var(--il-blue);
+  color: var(--white);
+  box-shadow: 0 4px 16px rgba(0,56,184,0.2);
+}
+
+/* Header counters */
+.header-counters {
+  display: flex;
+  gap: 20px;
+  flex-shrink: 0;
+}
+
+.h-counter { text-align: center; line-height: 1.15; }
+.h-counter-val { font-size: 19px; font-weight: 800; color: var(--il-blue); letter-spacing: -0.5px; }
+.h-counter-lbl { font-size: 9px; font-weight: 700; color: var(--ink-25); text-transform: uppercase; letter-spacing: 1.2px; }
+
+/* ===== CATEGORY NAV ===== */
+.cat-nav {
+  background: var(--white);
+  border-bottom: 1px solid var(--ink-06);
+  position: sticky;
+  top: 68px;
+  z-index: 90;
+}
+
+.cat-nav-inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+.cat-scroll {
+  display: flex;
+  gap: 3px;
+  overflow-x: auto;
+  padding: 10px 0;
+  scrollbar-width: none;
+  mask-image: linear-gradient(to right, black 95%, transparent);
+  -webkit-mask-image: linear-gradient(to right, black 95%, transparent);
+}
+
+.cat-scroll::-webkit-scrollbar { display: none; }
+
+.cat-pill {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 100px;
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--ink-60);
+  background: transparent;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  transition: all var(--dur) var(--ease);
+  white-space: nowrap;
+}
+
+.cat-pill:hover { background: var(--il-blue-ghost); color: var(--il-blue); }
+
+.cat-pill.active {
+  background: var(--il-blue);
+  color: var(--white);
+  border-color: var(--il-blue);
+  font-weight: 600;
+}
+
+.cat-pill .ci { font-size: 13px; }
+
+.cat-pill .cc {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 100px;
+  background: rgba(0,0,0,0.05);
+  line-height: 1.5;
+}
+
+.cat-pill.active .cc { background: rgba(255,255,255,0.2); }
+
+/* ===== MAIN CONTENT ===== */
+.main {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 28px 32px 96px;
+}
+
+/* Section heading */
+.sec-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--ink-06);
+}
+
+.sec-title {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--il-blue-dark);
+  letter-spacing: -0.3px;
+}
+
+.sec-meta { font-size: 13px; color: var(--ink-40); font-weight: 400; }
+.sec-meta strong { color: var(--il-blue); font-weight: 700; }
+
+/* ===== CHARITY CARDS ===== */
+.grid { display: grid; gap: 14px; }
+.grid-featured { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); margin-bottom: 40px; }
+.grid-all { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+
+.card {
+  background: var(--white);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--ink-06);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: all var(--dur) var(--ease);
+  animation: rise 0.45s var(--ease) both;
+  position: relative;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--il-blue);
+  opacity: 0;
+  transition: opacity var(--dur) var(--ease);
+}
+
+.card:hover {
+  border-color: var(--il-blue-mist);
+  box-shadow: 0 8px 28px rgba(0,42,140,0.08), 0 2px 8px rgba(0,42,140,0.04);
+  transform: translateY(-2px);
+}
+
+.card:hover::before { opacity: 1; }
+
+.card.feat::before { opacity: 1; }
+.card.feat { border-color: var(--il-blue-mist); }
+
+/* Card internals */
+.card-head {
+  padding: 20px 20px 0;
+  display: flex;
+  gap: 14px;
+}
+
+.card-mono {
+  width: 46px;
+  height: 46px;
+  border-radius: var(--r-md);
+  background: var(--ink-03);
+  color: var(--il-blue);
+  display: grid;
+  place-items: center;
+  font-size: 15px;
+  font-weight: 700;
+  flex-shrink: 0;
+  letter-spacing: -0.5px;
+  font-family: var(--font-body);
+  overflow: hidden;
+  border: 1px solid var(--ink-06);
+}
+
+.card-mono img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 6px;
+}
+
+.card-meta { flex: 1; min-width: 0; }
+
+.card-name {
+  font-family: var(--font-body);
+  font-size: 15.5px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.3;
+}
+
+.card-loc {
+  font-size: 11.5px;
+  color: var(--ink-40);
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.card-tags {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.tag {
+  padding: 2px 7px;
+  border-radius: var(--r-sm);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.tag-v { background: var(--success-bg); color: var(--success); }
+.tag-f { background: var(--il-blue-ghost); color: var(--il-blue); }
+.tag-t { background: var(--amber-bg); color: var(--amber); }
+
+.card-body {
+  padding: 12px 20px;
+  flex: 1;
+}
+
+.card-desc {
+  font-size: 13px;
+  color: var(--ink-60);
+  line-height: 1.55;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card-cat-label {
+  margin-top: 10px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--il-blue);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.card-foot {
+  padding: 14px 20px;
+  border-top: 1px solid var(--ink-03);
+  display: flex;
+  gap: 8px;
+}
+
+.btn-donate {
+  flex: 1;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: var(--il-blue);
+  color: var(--white);
+  border: none;
+  border-radius: var(--r-sm);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all var(--dur) var(--ease);
+  letter-spacing: 0.15px;
+}
+
+.btn-donate:hover {
+  background: var(--il-blue-deep);
+  box-shadow: 0 4px 14px rgba(0,56,184,0.22);
+  transform: translateY(-1px);
+}
+
+.btn-web {
+  height: 40px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ink-03);
+  color: var(--ink-40);
+  border: none;
+  border-radius: var(--r-sm);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all var(--dur) var(--ease);
+}
+
+.btn-web:hover { background: var(--ink-06); color: var(--ink-60); }
+
+/* ===== EMPTY ===== */
+.empty { text-align: center; padding: 72px 20px; grid-column: 1 / -1; }
+.empty-ico { font-size: 36px; margin-bottom: 10px; opacity: 0.3; }
+.empty h3 { font-size: 17px; color: var(--ink-60); font-weight: 600; margin-bottom: 4px; }
+.empty p { font-size: 13px; color: var(--ink-25); }
+
+/* ===== FOOTER ===== */
+.footer {
+  background: var(--il-blue-dark);
+  color: rgba(255,255,255,0.45);
+  padding: 36px 32px;
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.footer strong { color: rgba(255,255,255,0.75); }
+.footer-rule { width: 32px; height: 2px; background: var(--il-blue-soft); margin: 14px auto; border-radius: 2px; }
+
+/* Bottom flag stripe */
+.flag-stripe-bottom { height: 5px; background: var(--il-blue); }
+
+/* ===== MODAL ===== */
+.modal-bg {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,27,94,0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s var(--ease);
+}
+
+.modal-bg.open { opacity: 1; pointer-events: all; }
+
+.modal {
+  background: var(--white);
+  border-radius: var(--r-xl);
+  width: 100%;
+  max-width: 500px;
+  max-height: 88vh;
+  overflow-y: auto;
+  box-shadow: 0 32px 80px rgba(0,27,94,0.25), 0 0 0 1px rgba(0,56,184,0.08);
+  transform: translateY(12px) scale(0.98);
+  transition: transform 0.35s var(--ease-back);
+}
+
+.modal-bg.open .modal { transform: translateY(0) scale(1); }
+
+.modal-top {
+  padding: 24px 24px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.modal-top h2 {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--il-blue-dark);
+}
+
+.modal-top p { font-size: 13px; color: var(--ink-40); margin-top: 2px; }
+
+.modal-x {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--r-sm);
+  border: none;
+  background: var(--ink-03);
+  color: var(--ink-40);
+  font-size: 18px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: all var(--dur) var(--ease);
+  flex-shrink: 0;
+}
+
+.modal-x:hover { background: var(--ink-06); color: var(--ink-60); }
+
+.modal-content { padding: 20px 24px 28px; }
+
+.fg { margin-bottom: 14px; }
+
+.fl {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-60);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 5px;
+}
+
+.fl .req { color: var(--il-blue); }
+
+.fi, .fs, .ft {
+  width: 100%;
+  padding: 10px 13px;
+  border: 1.5px solid var(--ink-06);
+  border-radius: var(--r-sm);
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--ink-03);
+  outline: none;
+  transition: all var(--dur) var(--ease);
+}
+
+.ft { resize: vertical; min-height: 72px; }
+
+.fi:focus, .fs:focus, .ft:focus {
+  border-color: var(--il-blue);
+  background: var(--white);
+  box-shadow: 0 0 0 3px rgba(0,56,184,0.06);
+}
+
+.f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.btn-submit {
+  width: 100%;
+  height: 46px;
+  background: var(--il-blue);
+  color: var(--white);
+  border: none;
+  border-radius: var(--r-md);
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--dur) var(--ease);
+  margin-top: 6px;
+}
+
+.btn-submit:hover { background: var(--il-blue-deep); box-shadow: 0 6px 20px rgba(0,56,184,0.2); }
+.btn-submit:disabled { opacity: 0.55; cursor: not-allowed; }
+
+.form-ok { text-align: center; padding: 36px 16px; }
+.form-ok-ico { width: 52px; height: 52px; border-radius: 50%; background: var(--success-bg); color: var(--success); display: grid; place-items: center; font-size: 26px; margin: 0 auto 14px; }
+.form-ok h3 { font-size: 18px; color: var(--ink); margin-bottom: 4px; }
+.form-ok p { font-size: 13px; color: var(--ink-40); }
+
+/* ===== SCROLL TOP ===== */
+.to-top {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--r-md);
+  background: var(--il-blue);
+  color: var(--white);
+  border: none;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 6px 20px rgba(0,42,140,0.2);
+  transition: all var(--dur) var(--ease);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 50;
+}
+
+.to-top.show { opacity: 1; pointer-events: all; }
+.to-top:hover { background: var(--il-blue-deep); transform: translateY(-2px); }
+
+/* ===== ANIMATIONS ===== */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 960px) {
+  .header-counters { display: none; }
+  .header-inner { padding: 0 20px; gap: 14px; }
+  .cat-nav-inner { padding: 0 20px; }
+  .main { padding: 20px 20px 72px; }
+}
+
+@media (max-width: 680px) {
+  .header-inner { height: 60px; gap: 10px; }
+  .logo-wordmark { font-size: 21px; }
+  .btn-suggest span.desktop-text { display: none; }
+  .btn-suggest { padding: 0 12px; font-size: 18px; height: 38px; }
+  .search-wrap { height: 38px; }
+  .search-btn { height: 30px; padding: 0 12px; font-size: 12px; }
+  .cat-nav { top: 60px; }
+  .cat-pill { font-size: 12px; height: 30px; padding: 0 10px; }
+  .grid-featured, .grid-all { grid-template-columns: 1fr; }
+  .sec-title { font-size: 22px; }
+  .sec-head { flex-direction: column; gap: 4px; }
+  .f-row { grid-template-columns: 1fr; }
+  .card-head { padding: 16px 16px 0; }
+  .card-body { padding: 10px 16px; }
+  .card-foot { padding: 12px 16px; }
+}
+
+@media (max-width: 380px) {
+  .logo-wordmark { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="flag-stripe"></div>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-inner">
+    <a class="logo" onclick="resetFilters()">
+      <div class="logo-mark"></div>
+      <div class="logo-wordmark">Give<span>Israel</span></div>
+    </a>
+
+    <div class="header-search">
+      <div class="search-wrap">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" class="search-input" id="searchInput" placeholder="Search charities, causes, keywords..." oninput="handleSearch()" />
+        <button class="search-btn" onclick="handleSearch()">Search</button>
+      </div>
+    </div>
+
+    <button class="btn-suggest" onclick="openSuggestModal()">
+      <span class="desktop-text">+ Suggest a Charity</span>
+      <span style="display:none" class="mobile-plus">+</span>
+    </button>
+
+    <div class="header-counters">
+      <div class="h-counter"><div class="h-counter-val" id="totalCharities">—</div><div class="h-counter-lbl">Charities</div></div>
+      <div class="h-counter"><div class="h-counter-val" id="totalCategories">—</div><div class="h-counter-lbl">Categories</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- CATEGORIES -->
+<nav class="cat-nav">
+  <div class="cat-nav-inner">
+    <div class="cat-scroll" id="categoriesBar"></div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+  <div id="featuredSection">
+    <div class="sec-head">
+      <h2 class="sec-title">Featured</h2>
+      <span class="sec-meta">Hand-picked organizations making an outsized impact</span>
+    </div>
+    <div class="grid grid-featured" id="featuredGrid"></div>
+  </div>
+
+  <div id="allSection" style="margin-top:32px;">
+    <div class="sec-head">
+      <h2 class="sec-title" id="sectionTitle">All Charities</h2>
+      <span class="sec-meta" id="resultsCount"></span>
+    </div>
+    <div class="grid grid-all" id="charityGrid"></div>
+    <div class="empty" id="emptyState" style="display:none;">
+      <div class="empty-ico">🔍</div>
+      <h3>No charities found</h3>
+      <p>Try a different search term or browse by category</p>
+    </div>
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <strong>Give Israel</strong> — connecting generous hearts with verified Israeli charities.
+  <div class="footer-rule"></div>
+  We don't process donations. Every link goes directly to the charity's own page.<br>
+  &copy; 2026 &middot; All information is provided as-is. Verify details with each organization.
+</footer>
+<div class="flag-stripe-bottom"></div>
+
+<!-- SUGGEST MODAL -->
+<div class="modal-bg" id="suggestModal" onclick="closeSuggestModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-top">
+      <div>
+        <h2>Suggest a Charity</h2>
+        <p>Know an Israeli charity that should be listed?</p>
+      </div>
+      <button class="modal-x" onclick="closeSuggestModal()">&times;</button>
+    </div>
+    <div class="modal-content" id="suggestFormBody">
+      <form id="suggestForm" onsubmit="submitSuggestion(event)">
+        <div class="fg">
+          <label class="fl">Charity Name <span class="req">*</span></label>
+          <input type="text" class="fi" name="charity_name" required placeholder="e.g. Magen David Adom">
+        </div>
+        <div class="f-row">
+          <div class="fg"><label class="fl">Website</label><input type="url" class="fi" name="website_url" placeholder="https://..."></div>
+          <div class="fg"><label class="fl">Donation Page</label><input type="url" class="fi" name="donation_url" placeholder="https://.../donate"></div>
+        </div>
+        <div class="fg">
+          <label class="fl">Category</label>
+          <select class="fs" name="category">
+            <option value="">Select a category...</option>
+            <option>Soldiers & Veterans</option><option>Medical & Emergency</option><option>Poverty & Hunger</option><option>Education</option><option>Children & Youth</option><option>Holocaust Survivors</option><option>Special Needs</option><option>Terror Victims</option><option>Community Development</option><option>Environment & Land</option><option>Women Empowerment</option><option>Arts & Culture</option><option>Technology & Innovation</option><option>Animals</option><option>Religious & Spiritual</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label class="fl">Description</label>
+          <textarea class="ft" name="description" placeholder="What does this charity do?"></textarea>
+        </div>
+        <div class="f-row">
+          <div class="fg"><label class="fl">Your Name</label><input type="text" class="fi" name="submitter_name" placeholder="Optional"></div>
+          <div class="fg"><label class="fl">Your Email</label><input type="email" class="fi" name="submitter_email" placeholder="Optional"></div>
+        </div>
+        <button type="submit" class="btn-submit" id="submitBtn">Submit Suggestion</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- SCROLL TOP -->
+<button class="to-top" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+</button>
+
+<script>
+const SUPABASE_URL='https://psrtcjaxfeutecirypwd.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBzcnRjamF4ZmV1dGVjaXJ5cHdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5NTcxMDIsImV4cCI6MjA4OTUzMzEwMn0.4aJK0277vZudaRtvmCpEhfWhHkbrXyHIc_2f8DgqZkQ';
+const hdrs={'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`,'Content-Type':'application/json'};
+
+let allCharities=[],allCategories=[],activeCat=null,sq='';
+
+async function fetchData(){
+  try{
+    const[cr,chr]=await Promise.all([
+      fetch(`${SUPABASE_URL}/rest/v1/categories?order=display_order.asc`,{headers:hdrs}),
+      fetch(`${SUPABASE_URL}/rest/v1/charities?order=is_featured.desc,name.asc`,{headers:hdrs})
+    ]);
+    allCategories=await cr.json();allCharities=await chr.json();
+    document.getElementById('totalCharities').textContent=allCharities.length;
+    document.getElementById('totalCategories').textContent=allCategories.length;
+    renderCats();renderCards();
+  }catch(e){
+    console.error('Error fetching data:',e);
+    document.getElementById('charityGrid').innerHTML='<div class="empty"><div class="empty-ico">⚠️</div><h3>Could not load charities</h3><p>Check your connection and refresh.</p></div>';
+  }
+}
+
+function renderCats(){
+  const bar=document.getElementById('categoriesBar');
+  const cnt={};allCharities.forEach(c=>{cnt[c.category_id]=(cnt[c.category_id]||0)+1;});
+  let h=`<button class="cat-pill ${!activeCat?'active':''}" onclick="filterCat(null)"><span class="ci">✦</span>All<span class="cc">${allCharities.length}</span></button>`;
+  allCategories.forEach(c=>{if(!(cnt[c.id]||0))return;h+=`<button class="cat-pill ${activeCat===c.id?'active':''}" onclick="filterCat(${c.id})"><span class="ci">${c.icon}</span>${c.name}<span class="cc">${cnt[c.id]||0}</span></button>`;});
+  bar.innerHTML=h;
+}
+
+function renderCards(){
+  let f=[...allCharities];
+  if(activeCat)f=f.filter(c=>c.category_id===activeCat);
+  if(sq){const q=sq.toLowerCase();f=f.filter(c=>c.name.toLowerCase().includes(q)||(c.description||'').toLowerCase().includes(q)||(c.short_description||'').toLowerCase().includes(q)||(c.search_text||'').toLowerCase().includes(q)||(c.tags||[]).some(t=>t.toLowerCase().includes(q)));}
+
+  const fs=document.getElementById('featuredSection'),fg=document.getElementById('featuredGrid');
+  if(!activeCat&&!sq){const ft=f.filter(c=>c.is_featured);if(ft.length){fs.style.display='';fg.innerHTML=ft.map((c,i)=>card(c,i,true)).join('');}else fs.style.display='none';}else fs.style.display='none';
+
+  const g=document.getElementById('charityGrid'),em=document.getElementById('emptyState'),st=document.getElementById('sectionTitle'),rc=document.getElementById('resultsCount');
+  if(activeCat){const ct=allCategories.find(c=>c.id===activeCat);st.textContent=ct?ct.name:'All Charities';}else if(sq)st.textContent=`Results for "${sq}"`;else st.textContent='All Charities';
+  rc.innerHTML=`<strong>${f.length}</strong> ${f.length===1?'charity':'charities'}`;
+  if(!f.length){g.innerHTML='';em.style.display='';}else{em.style.display='none';const ls=(activeCat||sq)?f:f.filter(c=>!c.is_featured);g.innerHTML=ls.map((c,i)=>card(c,i,false)).join('');}
+}
+
+function card(ch,idx,feat){
+  const ct=allCategories.find(c=>c.id===ch.category_id);
+  const ini=ch.name.split(/[\s&]+/).slice(0,2).map(w=>w[0]).join('').toUpperCase();
+  let tg='';
+  if(ch.is_verified)tg+='<span class="tag tag-v">✓ Verified</span>';
+  if(ch.is_featured&&feat)tg+='<span class="tag tag-f">★ Featured</span>';
+  if(ch.is_tax_deductible_us)tg+='<span class="tag tag-t">US Tax Deductible</span>';
+  return`<div class="card ${ch.is_featured?'feat':''}" style="animation-delay:${Math.min(idx*0.04,0.35)}s">
+    <div class="card-head"><div class="card-mono">${ch.logo_url?`<img src="${ch.logo_url}" alt="${ch.name}" onerror="this.parentElement.textContent='${ini}'">`:ini}</div><div class="card-meta"><div class="card-name">${ch.name}</div>${ch.location?`<div class="card-loc">📍 ${ch.location}</div>`:''}<div class="card-tags">${tg}</div></div></div>
+    <div class="card-body"><div class="card-desc">${ch.short_description||ch.description}</div>${ct?`<div class="card-cat-label">${ct.icon} ${ct.name}</div>`:''}</div>
+    <div class="card-foot"><a href="${ch.donation_url}" target="_blank" rel="noopener" class="btn-donate"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>Donate</a>${ch.website_url?`<a href="${ch.website_url}" target="_blank" rel="noopener" class="btn-web">Website</a>`:''}</div></div>`;
+}
+
+function filterCat(id){activeCat=id;renderCats();renderCards();document.querySelector('.main').scrollIntoView({behavior:'smooth',block:'start'});}
+function handleSearch(){sq=document.getElementById('searchInput').value.trim();activeCat=null;renderCats();renderCards();}
+function resetFilters(){activeCat=null;sq='';document.getElementById('searchInput').value='';renderCats();renderCards();window.scrollTo({top:0,behavior:'smooth'});}
+
+document.getElementById('searchInput').addEventListener('keydown',e=>{if(e.key==='Enter')handleSearch();if(e.key==='Escape'){e.target.value='';sq='';renderCards();}});
+window.addEventListener('scroll',()=>{document.getElementById('scrollTopBtn').classList.toggle('show',window.scrollY>300);});
+
+// Mobile suggest button
+function updateSuggestBtn(){const w=window.innerWidth;document.querySelectorAll('.desktop-text').forEach(e=>e.style.display=w<=680?'none':'');document.querySelectorAll('.mobile-plus').forEach(e=>e.style.display=w<=680?'':'none');}
+updateSuggestBtn();window.addEventListener('resize',updateSuggestBtn);
+
+// Modal
+function openSuggestModal(){document.getElementById('suggestModal').classList.add('open');document.body.style.overflow='hidden';}
+function closeSuggestModal(e){if(e&&e.target!==e.currentTarget)return;document.getElementById('suggestModal').classList.remove('open');document.body.style.overflow='';setTimeout(()=>{const b=document.getElementById('suggestFormBody');if(b.querySelector('.form-ok')){location.reload();}},300);}
+
+async function submitSuggestion(e){
+  e.preventDefault();const form=e.target,btn=document.getElementById('submitBtn');
+  btn.disabled=true;btn.textContent='Submitting...';
+  const d={charity_name:form.charity_name.value,website_url:form.website_url.value||null,donation_url:form.donation_url.value||null,category:form.category.value||null,description:form.description.value||null,submitter_name:form.submitter_name.value||null,submitter_email:form.submitter_email.value||null};
+  try{const r=await fetch(`${SUPABASE_URL}/rest/v1/charity_suggestions`,{method:'POST',headers:{...hdrs,'Prefer':'return=minimal'},body:JSON.stringify(d)});
+    if(r.ok){document.getElementById('suggestFormBody').innerHTML='<div class="form-ok"><div class="form-ok-ico">✓</div><h3>Thank you!</h3><p>Your suggestion has been submitted. We\'ll review it and add the charity soon.</p></div>';}
+    else throw new Error('fail');
+  }catch(err){btn.disabled=false;btn.textContent='Submit Suggestion';alert('Something went wrong. Please try again.');}
+}
+
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSuggestModal();});
+
+fetchData();
+</script>
+</body>
+</html>
