@@ -338,6 +338,12 @@ function renderSuggestions(){
             <div><label class="pf-label">Short Description</label><input class="pf-input" id="pf-short-${s.id}" value="" placeholder="One-liner for card display"></div>
           </div>
           <div class="pf-full"><label class="pf-label">Full Description</label><textarea class="pf-textarea" id="pf-desc-${s.id}">${esc(s.description||'')}</textarea></div>
+          <div style="margin:16px 0 8px;padding-top:12px;border-top:1px dashed var(--ink-12);font-size:12px;font-weight:700;color:var(--amber);">🇮🇱 Hebrew Translations (optional — can add later)</div>
+          <div class="pf-row">
+            <div><label class="pf-label">Name (Hebrew)</label><input class="pf-input" id="pf-name-he-${s.id}" value="" placeholder="שם העמותה" dir="rtl"></div>
+            <div><label class="pf-label">Short Desc (Hebrew)</label><input class="pf-input" id="pf-short-he-${s.id}" value="" placeholder="תיאור קצר" dir="rtl"></div>
+          </div>
+          <div class="pf-full"><label class="pf-label">Full Description (Hebrew)</label><textarea class="pf-textarea" id="pf-desc-he-${s.id}" placeholder="תיאור מלא" dir="rtl"></textarea></div>
           <div class="pf-actions">
             <button class="btn-cancel" onclick="closePublish('${s.id}')">Cancel</button>
             <button class="btn-do-publish" onclick="doPublish('${s.id}')">Publish to Directory</button>
@@ -379,6 +385,16 @@ function renderCharities(){
             <div><label class="pf-label">Short Description</label><input class="pf-input" id="ec-short-${c.id}" value="${esc(c.short_description||'')}"></div>
           </div>
           <div class="pf-full"><label class="pf-label">Full Description</label><textarea class="pf-textarea" id="ec-desc-${c.id}">${esc(c.description||'')}</textarea></div>
+          <div style="margin:16px 0 8px;padding-top:12px;border-top:1px dashed var(--ink-12);font-size:12px;font-weight:700;color:var(--amber);">🇮🇱 Hebrew Translations</div>
+          <div class="pf-row">
+            <div><label class="pf-label">Name (Hebrew)</label><input class="pf-input" id="ec-name-he-${c.id}" value="${esc(c.name_he||'')}" dir="rtl"></div>
+            <div><label class="pf-label">Short Desc (Hebrew)</label><input class="pf-input" id="ec-short-he-${c.id}" value="${esc(c.short_description_he||'')}" dir="rtl"></div>
+          </div>
+          <div class="pf-row">
+            <div><label class="pf-label">Location (Hebrew)</label><input class="pf-input" id="ec-loc-he-${c.id}" value="${esc(c.location_he||'')}" dir="rtl"></div>
+            <div></div>
+          </div>
+          <div class="pf-full"><label class="pf-label">Full Description (Hebrew)</label><textarea class="pf-textarea" id="ec-desc-he-${c.id}" dir="rtl">${esc(c.description_he||'')}</textarea></div>
           <div class="pf-check">
             <input type="checkbox" id="ec-feat-${c.id}" ${c.is_featured?'checked':''}>
             <label for="ec-feat-${c.id}">Featured</label>
@@ -430,7 +446,11 @@ async function saveEditCharity(id){
     description: document.getElementById('ec-desc-'+id).value||'',
     is_featured: document.getElementById('ec-feat-'+id).checked,
     is_verified: document.getElementById('ec-ver-'+id).checked,
-    is_tax_deductible_us: document.getElementById('ec-tax-'+id).checked
+    is_tax_deductible_us: document.getElementById('ec-tax-'+id).checked,
+    name_he: document.getElementById('ec-name-he-'+id).value||null,
+    short_description_he: document.getElementById('ec-short-he-'+id).value||null,
+    description_he: document.getElementById('ec-desc-he-'+id).value||null,
+    location_he: document.getElementById('ec-loc-he-'+id).value||null
   };
   const r=await fetch(`${SUPA}/rest/v1/charities?id=eq.${id}`,{method:'PATCH',headers:{...getHeaders(),'Prefer':'return=minimal'},body:JSON.stringify(data)});
   if(r.ok){toast('Charity updated!');load();}
@@ -457,7 +477,10 @@ async function doPublish(id){
     website_url: document.getElementById('pf-web-'+id).value||null,
     donation_url: document.getElementById('pf-don-'+id).value||document.getElementById('pf-web-'+id).value||'#',
     location: document.getElementById('pf-loc-'+id).value||null,
-    is_verified: true
+    is_verified: true,
+    name_he: document.getElementById('pf-name-he-'+id).value||null,
+    short_description_he: document.getElementById('pf-short-he-'+id).value||null,
+    description_he: document.getElementById('pf-desc-he-'+id).value||null
   };
 
   // Insert into charities

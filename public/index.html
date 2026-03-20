@@ -20,7 +20,7 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230038B8'/%3E%3Cpath d='M32 12 L44 32 L32 52 L20 32 Z' fill='none' stroke='white' stroke-width='2.5' opacity='0.3'/%3E%3Cpath d='M32 16 L20 36 L44 36 Z' fill='none' stroke='white' stroke-width='2.2' opacity='0.85'/%3E%3Cpath d='M32 48 L20 28 L44 28 Z' fill='none' stroke='white' stroke-width='2.2' opacity='0.85'/%3E%3Cpath d='M32 26 C32 26 27 30 27 33.5 C27 36.2 29.2 38 32 38 C34.8 38 37 36.2 37 33.5 C37 30 32 26 32 26Z' fill='white' opacity='0.95'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Figtree:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Figtree:wght@300;400;500;600;700;800&family=Frank+Ruhl+Libre:wght@400;600;700&family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
    GIVE ISRAEL — Premium Charity Directory
@@ -54,6 +54,8 @@
 
   --font-display: 'Cormorant Garamond', Georgia, serif;
   --font-body: 'Figtree', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display-he: 'Frank Ruhl Libre', 'David', serif;
+  --font-body-he: 'Heebo', 'Arial Hebrew', sans-serif;
 
   --r-sm: 8px;
   --r-md: 12px;
@@ -716,6 +718,38 @@ body::after {
 .to-top.show { opacity: 1; pointer-events: all; }
 .to-top:hover { background: var(--il-blue-deep); transform: translateY(-2px); }
 
+/* ===== LANGUAGE TOGGLE BUTTON ===== */
+.btn-lang {
+  height: 42px;
+  width: 42px;
+  display: grid;
+  place-items: center;
+  background: #F4F6FA;
+  color: var(--il-blue);
+  border: 1.5px solid #EBEEF5;
+  border-radius: var(--r-md);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--dur) var(--ease);
+  flex-shrink: 0;
+}
+.btn-lang:hover { background: var(--il-blue-ghost); border-color: var(--il-blue); }
+
+/* ===== RTL SUPPORT ===== */
+html[dir="rtl"] body { font-family: var(--font-body-he); }
+html[dir="rtl"] .logo-wordmark,
+html[dir="rtl"] .sec-title,
+html[dir="rtl"] .quiz-title,
+html[dir="rtl"] .modal-top h2 { font-family: var(--font-display-he); }
+html[dir="rtl"] .cat-scroll {
+  mask-image: linear-gradient(to left, black 95%, transparent);
+  -webkit-mask-image: linear-gradient(to left, black 95%, transparent);
+}
+html[dir="rtl"] .search-wrap { padding: 0 14px 0 4px; }
+html[dir="rtl"] .to-top { right: auto; left: 24px; }
+
 /* ===== FIND YOUR CAUSE QUIZ — Hero Section (10x Edition) ===== */
 .quiz-hero {
   position: relative;
@@ -1345,6 +1379,8 @@ body::after {
       <span style="display:none" class="mobile-plus">+</span>
     </button>
 
+    <button class="btn-lang" id="langToggle" onclick="toggleLanguage()">עב</button>
+
     <div class="header-counters">
       <div class="h-counter"><div class="h-counter-val" id="totalCharities">—</div><div class="h-counter-lbl">Charities</div></div>
       <div class="h-counter"><div class="h-counter-val" id="totalCategories">—</div><div class="h-counter-lbl">Categories</div></div>
@@ -1472,6 +1508,315 @@ const SUPABASE_URL='https://psrtcjaxfeutecirypwd.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBzcnRjamF4ZmV1dGVjaXJ5cHdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5NTcxMDIsImV4cCI6MjA4OTUzMzEwMn0.4aJK0277vZudaRtvmCpEhfWhHkbrXyHIc_2f8DgqZkQ';
 const hdrs={'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`,'Content-Type':'application/json'};
 
+const LANG = {
+  en: {
+    logo: 'Give<span>Israel</span>',
+    searchPlaceholder: 'Search charities, causes, keywords...',
+    searchBtn: 'Search',
+    suggestBtn: '+ Suggest a Charity',
+    counterCharities: 'Charities',
+    counterCategories: 'Categories',
+    catAll: 'All',
+    featuredTitle: 'Featured',
+    featuredSub: 'Hand-picked organizations making an outsized impact',
+    allCharities: 'All Charities',
+    resultsFor: 'Results for',
+    charitySingular: 'charity',
+    charityPlural: 'charities',
+    verified: '✓ Verified',
+    featured: '★ Featured',
+    taxDeductible: 'US Tax Deductible',
+    donate: 'Donate',
+    website: 'Website',
+    emptyTitle: 'No charities found',
+    emptySub: 'Try a different search term or browse by category',
+    errorTitle: 'Could not load charities',
+    errorSub: 'Check your connection and refresh.',
+    suggestTitle: 'Suggest a Charity',
+    suggestSub: 'Know an Israeli charity that should be listed? Tell us about it.',
+    labelName: 'Charity Name',
+    labelWebsite: 'Website',
+    labelDonation: 'Donation Page',
+    labelCategory: 'Category',
+    labelDesc: 'Description',
+    labelYourName: 'Your Name',
+    labelYourEmail: 'Your Email',
+    phName: 'e.g. Magen David Adom',
+    phWebsite: 'https://...',
+    phDonation: 'https://.../donate',
+    phCategory: 'Select a category...',
+    phDesc: 'What does this charity do?',
+    phOptional: 'Optional',
+    submitBtn: 'Submit Suggestion',
+    submitting: 'Submitting...',
+    successTitle: 'Thank you!',
+    successMsg: 'Your suggestion has been submitted. We\'ll review it and add the charity soon.',
+    errorRate: 'Too many submissions. Please try again in an hour.',
+    errorGeneric: 'Something went wrong. Please try again.',
+    quizBadge: '✦ Start Here',
+    quizTitle: 'Help Me Find<br>My Cause',
+    quizSub: 'Answer 4 quick questions and we\'ll match you with the Israeli charities that align with what moves you most.',
+    quizStart: 'Take The Quiz',
+    quizArrow: '→',
+    quizNote: '30 seconds · No sign-up needed',
+    quizCounter: 'Question {n} of {total}',
+    quizPersonaLabel: 'Your Giving Persona',
+    quizTopMatch: 'Top Match',
+    quizStrongMatch: 'Strong Match',
+    quizAlsoResonates: 'Also Resonates',
+    quizSeeMatch: 'See My Top Match →',
+    quizRetake: 'Retake Quiz',
+    footerTagline: 'connecting generous hearts with verified Israeli charities.',
+    footerDisclaimer1: 'We don\'t process donations. Every link goes directly to the charity\'s own page.',
+    footerDisclaimer2: 'All information is provided as-is. Verify details with each organization.',
+    cookieMsg: 'This site uses cookies to analyze traffic.',
+    cookieLearn: 'Learn more',
+    cookieAccept: 'Accept',
+    cookieReject: 'Reject',
+    q1: 'What draws you most to supporting Israel?',
+    q1a: 'Protecting those who protect Israel', q1as: 'Soldiers, first responders, those on the front lines',
+    q1b: 'Caring for the most vulnerable', q1bs: 'Children in need, Holocaust survivors, families in poverty',
+    q1c: 'Building Israel\'s future', q1cs: 'Education, technology, strengthening communities',
+    q1d: 'Preserving Israel\'s soul and beauty', q1ds: 'The land, the culture, the traditions',
+    q2: 'When you give, what matters most to you?',
+    q2a: 'Knowing someone is safer because of me', q2as: 'Direct, tangible protection and safety',
+    q2b: 'Seeing a life changed up close', q2bs: 'One person\'s story transformed by support',
+    q2c: 'Investing in long-term impact', q2cs: 'Things that compound and grow over years',
+    q2d: 'Protecting something irreplaceable', q2ds: 'Things that once lost, can never come back',
+    q3: 'Which story would move you most?',
+    q3a: 'A soldier coming home to a family that needs support', q3as: '',
+    q3b: 'A child getting a chance they almost didn\'t have', q3bs: '',
+    q3c: 'A community rebuilding itself from the ground up', q3cs: '',
+    q3d: 'Ancient traditions being kept alive for the next generation', q3ds: '',
+    q4: 'How would you describe your giving heart?',
+    q4a: 'Fierce protector', q4as: 'Drawn to shield those in harm\'s way',
+    q4b: 'Gentle nurturer', q4bs: 'Drawn to lift up those who are struggling',
+    q4c: 'Visionary builder', q4cs: 'Drawn to create things that outlast me',
+    q4d: 'Soulful keeper', q4ds: 'Drawn to preserve what makes Israel sacred',
+    guardianName: 'The Guardian', guardianDesc: 'You\'re driven to protect. Whether it\'s soldiers, terror survivors, or emergency responders — you show up for those who put themselves in harm\'s way for Israel.',
+    nurturerName: 'The Nurturer', nurturerDesc: 'Your heart goes to the most vulnerable. Children who need a champion, Holocaust survivors who deserve dignity, families fighting to get by — your compassion finds them.',
+    builderName: 'The Builder', builderDesc: 'You think in decades. Education, technology, empowering women, strengthening communities — you invest in things that compound and shape Israel\'s future.',
+    keeperName: 'The Keeper', keeperDesc: 'You protect what makes Israel sacred — the land, the traditions, the culture. For you, giving is an act of preservation and love.'
+  },
+  he: {
+    logo: 'תן<span>לישראל</span>',
+    searchPlaceholder: 'חיפוש עמותות, מטרות, מילות מפתח...',
+    searchBtn: 'חיפוש',
+    suggestBtn: '+ הציעו עמותה',
+    counterCharities: 'עמותות',
+    counterCategories: 'קטגוריות',
+    catAll: 'הכל',
+    featuredTitle: 'מומלצים',
+    featuredSub: 'ארגונים נבחרים שעושים שינוי משמעותי',
+    allCharities: 'כל העמותות',
+    resultsFor: 'תוצאות עבור',
+    charitySingular: 'עמותה',
+    charityPlural: 'עמותות',
+    verified: '✓ מאומת',
+    featured: '★ מומלץ',
+    taxDeductible: 'מוכר למס בארה״ב',
+    donate: 'לתרומה',
+    website: 'אתר',
+    emptyTitle: 'לא נמצאו עמותות',
+    emptySub: 'נסו חיפוש או קטגוריה אחרת.',
+    errorTitle: 'בעיה בטעינת הנתונים',
+    errorSub: 'בדקו את החיבור לאינטרנט ורעננו את הדף.',
+    suggestTitle: 'הציעו עמותה',
+    suggestSub: 'מכירים עמותה ישראלית שצריכה להיות כאן? ספרו לנו עליה.',
+    labelName: 'שם העמותה',
+    labelWebsite: 'אתר אינטרנט',
+    labelDonation: 'דף תרומות',
+    labelCategory: 'קטגוריה',
+    labelDesc: 'תיאור',
+    labelYourName: 'שמכם',
+    labelYourEmail: 'כתובת מייל',
+    phName: 'למשל מגן דוד אדום',
+    phWebsite: 'https://...',
+    phDonation: 'https://.../donate',
+    phCategory: 'בחרו קטגוריה...',
+    phDesc: 'מה העמותה עושה?',
+    phOptional: 'לא חובה',
+    submitBtn: 'שליחת הצעה',
+    submitting: 'שולח...',
+    successTitle: 'תודה רבה!',
+    successMsg: 'ההצעה שלכם נשלחה. נבדוק אותה ונוסיף את העמותה בקרוב.',
+    errorRate: 'נשלחו יותר מדי הצעות. נסו שוב בעוד שעה.',
+    errorGeneric: 'משהו השתבש. נסו שוב.',
+    quizBadge: '✦ גלו את המטרה שלכם',
+    quizTitle: 'עזרו לי למצוא<br>את המטרה שלי',
+    quizSub: 'ענו על 4 שאלות קצרות ונתאים לכם את העמותות הישראליות שהכי מתחברות למה שחשוב לכם.',
+    quizStart: 'התחילו את השאלון',
+    quizArrow: '←',
+    quizNote: '30 שניות · ללא הרשמה',
+    quizCounter: 'שאלה {n} מתוך {total}',
+    quizPersonaLabel: 'הדמות הנותנת שלכם',
+    quizTopMatch: 'ההתאמה הטובה ביותר',
+    quizStrongMatch: 'התאמה חזקה',
+    quizAlsoResonates: 'גם מתחבר',
+    quizSeeMatch: 'צפו בהתאמה המובילה ←',
+    quizRetake: 'קחו את השאלון שוב',
+    footerTagline: 'מחברים לבבות נדיבים עם עמותות ישראליות מאומתות.',
+    footerDisclaimer1: 'איננו מעבדים תרומות. כל קישור מוביל ישירות לדף של העמותה עצמה.',
+    footerDisclaimer2: 'כל המידע מוצג כפי שהוא. ודאו פרטים ישירות מול כל ארגון.',
+    cookieMsg: 'אתר זה משתמש בעוגיות לניתוח תנועה.',
+    cookieLearn: 'מידע נוסף',
+    cookieAccept: 'אישור',
+    cookieReject: 'דחייה',
+    q1: 'מה הכי מושך אתכם בתמיכה בישראל?',
+    q1a: 'להגן על מי שמגינים על ישראל', q1as: 'חיילים, כוחות הצלה, אלו שבחזית',
+    q1b: 'לתמוך בפגיעים ביותר', q1bs: 'ילדים נזקקים, ניצולי שואה, משפחות בעוני',
+    q1c: 'לבנות את העתיד של ישראל', q1cs: 'חינוך, טכנולוגיה, חיזוק קהילות',
+    q1d: 'לשמור על הנשמה והיופי של ישראל', q1ds: 'הארץ, התרבות, המסורת',
+    q2: 'כשאתם תורמים, מה הכי חשוב לכם?',
+    q2a: 'לדעת שמישהו בטוח יותר בזכותי', q2as: 'הגנה ובטחון ישירים ומוחשיים',
+    q2b: 'לראות חיים משתנים מקרוב', q2bs: 'סיפור של אדם אחד שהשתנה בזכות תמיכה',
+    q2c: 'להשקיע בהשפעה לטווח ארוך', q2cs: 'דברים שמצטברים וגדלים עם השנים',
+    q2d: 'להגן על דבר שאי אפשר להחליף', q2ds: 'דברים שברגע שנאבדים, לא חוזרים',
+    q3: 'איזה סיפור היה מרגש אתכם הכי הרבה?',
+    q3a: 'חייל שחוזר הביתה למשפחה שזקוקה לתמיכה', q3as: '',
+    q3b: 'ילד שמקבל הזדמנות שכמעט לא הייתה לו', q3bs: '',
+    q3c: 'קהילה שבונה את עצמה מחדש מהיסוד', q3cs: '',
+    q3d: 'מסורות עתיקות שמשתמרות חיות לדור הבא', q3ds: '',
+    q4: 'איך הייתם מתארים את הלב הנותן שלכם?',
+    q4a: 'מגן אמיץ', q4as: 'נמשכים להגן על מי שנמצאים בסכנה',
+    q4b: 'מטפח רגיש', q4bs: 'נמשכים להרים את מי שמתקשים',
+    q4c: 'בונה חזון', q4cs: 'נמשכים ליצור דברים שיחזיקו אחריי',
+    q4d: 'שומר הנשמה', q4ds: 'נמשכים לשמר את מה שעושה את ישראל קדושה',
+    guardianName: 'המגן', guardianDesc: 'אתם מונעים מהצורך להגן. בין אם מדובר בחיילים, ניצולי טרור או כוחות חירום — אתם שם בשביל מי שמסכנים את עצמם למען ישראל.',
+    nurturerName: 'המטפח', nurturerDesc: 'הלב שלכם הולך לפגיעים ביותר. ילדים שצריכים אלוף, ניצולי שואה שמגיע להם כבוד, משפחות שנאבקות לשרוד — החמלה שלכם מגיעה אליהם.',
+    builderName: 'הבונה', builderDesc: 'אתם חושבים בעשרות שנים. חינוך, טכנולוגיה, העצמת נשים, חיזוק קהילות — אתם משקיעים בדברים שמצטברים ומעצבים את העתיד של ישראל.',
+    keeperName: 'השומר', keeperDesc: 'אתם שומרים על מה שעושה את ישראל קדושה — הארץ, המסורות, התרבות. עבורכם, נתינה היא מעשה של שימור ואהבה.'
+  }
+};
+
+let currentLang = 'en';
+
+function t(key) { return LANG[currentLang][key] || LANG['en'][key] || key; }
+
+function cf(charity, field) {
+  if (currentLang === 'he') {
+    return charity[field + '_he'] || charity[field] || '';
+  }
+  return charity[field] || '';
+}
+
+function catf(category, field) {
+  if (currentLang === 'he') {
+    return category[field + '_he'] || category[field] || '';
+  }
+  return category[field] || '';
+}
+
+async function detectLanguage() {
+  const saved = localStorage.getItem('gi_lang');
+  if (saved) { setLanguage(saved, false); return; }
+
+  try {
+    const res = await fetch('https://ipapi.co/json/', { signal: AbortSignal.timeout(3000) });
+    const data = await res.json();
+    if (data.country_code === 'IL') {
+      setLanguage('he', false);
+    } else {
+      setLanguage('en', false);
+    }
+  } catch(e) {
+    setLanguage('en', false);
+  }
+}
+
+function toggleLanguage() {
+  setLanguage(currentLang === 'en' ? 'he' : 'en', true);
+}
+
+function setLanguage(lang, save) {
+  currentLang = lang;
+  if (save) localStorage.setItem('gi_lang', lang);
+
+  document.documentElement.dir = lang === 'he' ? 'rtl' : 'ltr';
+  document.documentElement.lang = lang;
+
+  updateStaticText();
+
+  if (allCharities.length) {
+    renderCats();
+    renderCards();
+  }
+
+  updateQuizText();
+
+  const toggleBtn = document.getElementById('langToggle');
+  if (toggleBtn) toggleBtn.textContent = lang === 'he' ? 'EN' : 'עב';
+}
+
+function updateStaticText() {
+  document.querySelector('.logo-wordmark').innerHTML = t('logo');
+  document.getElementById('searchInput').placeholder = t('searchPlaceholder');
+  document.querySelector('.search-btn').textContent = t('searchBtn');
+  document.querySelector('.btn-suggest .desktop-text').textContent = t('suggestBtn');
+  document.querySelectorAll('.h-counter-lbl')[0].textContent = t('counterCharities');
+  document.querySelectorAll('.h-counter-lbl')[1].textContent = t('counterCategories');
+  document.querySelector('#featuredSection .sec-title').textContent = t('featuredTitle');
+  document.querySelector('#featuredSection .sec-meta').textContent = t('featuredSub');
+  document.querySelector('#emptyState h3').textContent = t('emptyTitle');
+  document.querySelector('#emptyState p').textContent = t('emptySub');
+
+  document.querySelector('.quiz-badge').textContent = t('quizBadge');
+  document.querySelector('.quiz-title').innerHTML = t('quizTitle');
+  document.querySelector('.quiz-subtitle').textContent = t('quizSub');
+  document.querySelector('.quiz-start-btn').innerHTML = t('quizStart') + ' <span>' + t('quizArrow') + '</span>';
+  document.querySelector('.quiz-note').textContent = t('quizNote');
+
+  document.querySelector('.footer').innerHTML = '<strong>' + (currentLang === 'he' ? 'תן לישראל' : 'Give Israel') + '</strong> — ' + t('footerTagline') + '<div class="footer-rule"></div>' + t('footerDisclaimer1') + '<br>&copy; 2026 &middot; ' + t('footerDisclaimer2');
+
+  const modalTop = document.querySelector('.modal-top');
+  if (modalTop) {
+    modalTop.querySelector('h2').textContent = t('suggestTitle');
+    modalTop.querySelector('p').textContent = t('suggestSub');
+  }
+
+  const form = document.getElementById('suggestForm');
+  if (form) {
+    const labels = form.querySelectorAll('.fl');
+    const labelKeys = ['labelName', 'labelWebsite', 'labelDonation', 'labelCategory', 'labelDesc', 'labelYourName', 'labelYourEmail'];
+    labels.forEach((lbl, i) => {
+      if (labelKeys[i]) {
+        const req = lbl.querySelector('.req');
+        lbl.textContent = t(labelKeys[i]) + ' ';
+        if (req) lbl.appendChild(req);
+      }
+    });
+
+    form.querySelector('[name="charity_name"]').placeholder = t('phName');
+    form.querySelector('[name="website_url"]').placeholder = t('phWebsite');
+    form.querySelector('[name="donation_url"]').placeholder = t('phDonation');
+    form.querySelector('[name="description"]').placeholder = t('phDesc');
+    form.querySelector('[name="submitter_name"]').placeholder = t('phOptional');
+    form.querySelector('[name="submitter_email"]').placeholder = t('phOptional');
+
+    const sel = form.querySelector('select');
+    if (sel && sel.options[0]) sel.options[0].textContent = t('phCategory');
+
+    const submitBtn = document.getElementById('submitBtn');
+    if (submitBtn && !submitBtn.disabled) submitBtn.textContent = t('submitBtn');
+  }
+
+  const cookie = document.getElementById('cookieConsent');
+  if (cookie) {
+    cookie.querySelector('span').innerHTML = t('cookieMsg') + ' <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener" style="color:#5B94F0;text-decoration:underline;">' + t('cookieLearn') + '</a>';
+  }
+}
+
+function updateQuizText() {
+  const intro = document.getElementById('quizIntro');
+  if (intro && !intro.classList.contains('hide')) {
+    document.querySelector('.quiz-badge').textContent = t('quizBadge');
+    document.querySelector('.quiz-title').innerHTML = t('quizTitle');
+    document.querySelector('.quiz-subtitle').textContent = t('quizSub');
+    document.querySelector('.quiz-start-btn').innerHTML = t('quizStart') + ' <span>' + t('quizArrow') + '</span>';
+    document.querySelector('.quiz-note').textContent = t('quizNote');
+  }
+}
+
 let allCharities=[],allCategories=[],activeCat=null,sq='';
 
 // Sanitize strings to prevent XSS
@@ -1496,8 +1841,8 @@ async function fetchData(){
 function renderCats(){
   const bar=document.getElementById('categoriesBar');
   const cnt={};allCharities.forEach(c=>{cnt[c.category_id]=(cnt[c.category_id]||0)+1;});
-  let h=`<button class="cat-pill ${!activeCat?'active':''}" onclick="filterCat(null)"><span class="ci">✦</span>All<span class="cc">${allCharities.length}</span></button>`;
-  allCategories.forEach(c=>{if(!(cnt[c.id]||0))return;h+=`<button class="cat-pill ${activeCat===c.id?'active':''}" onclick="filterCat(${c.id})"><span class="ci">${esc(c.icon)}</span>${esc(c.name)}<span class="cc">${cnt[c.id]||0}</span></button>`;});
+  let h=`<button class="cat-pill ${!activeCat?'active':''}" onclick="filterCat(null)"><span class="ci">✦</span>${t('catAll')}<span class="cc">${allCharities.length}</span></button>`;
+  allCategories.forEach(c=>{if(!(cnt[c.id]||0))return;h+=`<button class="cat-pill ${activeCat===c.id?'active':''}" onclick="filterCat(${c.id})"><span class="ci">${esc(c.icon)}</span>${esc(catf(c,'name'))}<span class="cc">${cnt[c.id]||0}</span></button>`;});
   bar.innerHTML=h;
 }
 
@@ -1510,8 +1855,8 @@ function renderCards(){
   if(!activeCat&&!sq){const ft=f.filter(c=>c.is_featured);if(ft.length){fs.style.display='';fg.innerHTML=ft.map((c,i)=>card(c,i,true)).join('');}else fs.style.display='none';}else fs.style.display='none';
 
   const g=document.getElementById('charityGrid'),em=document.getElementById('emptyState'),st=document.getElementById('sectionTitle'),rc=document.getElementById('resultsCount');
-  if(activeCat){const ct=allCategories.find(c=>c.id===activeCat);st.textContent=ct?ct.name:'All Charities';}else if(sq)st.textContent=`Results for "${sq}"`;else st.textContent='All Charities';
-  rc.innerHTML=`<strong>${f.length}</strong> ${f.length===1?'charity':'charities'}`;
+  if(activeCat){const ct=allCategories.find(c=>c.id===activeCat);st.textContent=ct?catf(ct,'name'):t('allCharities');}else if(sq)st.textContent=t('resultsFor')+' "'+sq+'"';else st.textContent=t('allCharities');
+  rc.innerHTML=`<strong>${f.length}</strong> ${f.length===1?t('charitySingular'):t('charityPlural')}`;
   if(!f.length){g.innerHTML='';em.style.display='';}else{em.style.display='none';const ls=(activeCat||sq)?f:f.filter(c=>!c.is_featured);g.innerHTML=ls.map((c,i)=>card(c,i,false)).join('');}
 }
 
@@ -1519,13 +1864,13 @@ function card(ch,idx,feat){
   const ct=allCategories.find(c=>c.id===ch.category_id);
   const ini=esc(ch.name).split(/[\s&]+/).slice(0,2).map(w=>w[0]).join('').toUpperCase();
   let tg='';
-  if(ch.is_verified)tg+='<span class="tag tag-v">✓ Verified</span>';
-  if(ch.is_featured&&feat)tg+='<span class="tag tag-f">★ Featured</span>';
-  if(ch.is_tax_deductible_us)tg+='<span class="tag tag-t">US Tax Deductible</span>';
+  if(ch.is_verified)tg+='<span class="tag tag-v">'+t('verified')+'</span>';
+  if(ch.is_featured&&feat)tg+='<span class="tag tag-f">'+t('featured')+'</span>';
+  if(ch.is_tax_deductible_us)tg+='<span class="tag tag-t">'+t('taxDeductible')+'</span>';
   return`<div class="card ${ch.is_featured?'feat':''}" style="animation-delay:${Math.min(idx*0.04,0.35)}s">
-    <div class="card-head"><div class="card-mono">${ch.logo_url?`<img src="${esc(ch.logo_url)}" alt="${esc(ch.name)}" onerror="this.parentElement.textContent='${ini}'">`:ini}</div><div class="card-meta"><div class="card-name">${esc(ch.name)}</div>${ch.location?`<div class="card-loc">📍 ${esc(ch.location)}</div>`:''}<div class="card-tags">${tg}</div></div></div>
-    <div class="card-body"><div class="card-desc">${esc(ch.short_description||ch.description)}</div>${ct?`<div class="card-cat-label">${esc(ct.icon)} ${esc(ct.name)}</div>`:''}</div>
-    <div class="card-foot"><a href="${esc(ch.donation_url)}" target="_blank" rel="noopener" class="btn-donate"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>Donate</a>${ch.website_url?`<a href="${esc(ch.website_url)}" target="_blank" rel="noopener" class="btn-web">Website</a>`:''}</div></div>`;
+    <div class="card-head"><div class="card-mono">${ch.logo_url?`<img src="${esc(ch.logo_url)}" alt="${esc(ch.name)}" onerror="this.parentElement.textContent='${ini}'">`:ini}</div><div class="card-meta"><div class="card-name">${esc(cf(ch,'name'))}</div>${cf(ch,'location')?`<div class="card-loc">📍 ${esc(cf(ch,'location'))}</div>`:''}<div class="card-tags">${tg}</div></div></div>
+    <div class="card-body"><div class="card-desc">${esc(cf(ch,'short_description')||cf(ch,'description'))}</div>${ct?`<div class="card-cat-label">${esc(ct.icon)} ${esc(catf(ct,'name'))}</div>`:''}</div>
+    <div class="card-foot"><a href="${esc(ch.donation_url)}" target="_blank" rel="noopener" class="btn-donate"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>${t('donate')}</a>${ch.website_url?`<a href="${esc(ch.website_url)}" target="_blank" rel="noopener" class="btn-web">${t('website')}</a>`:''}</div></div>`;
 }
 
 function filterCat(id){activeCat=id;renderCats();renderCards();document.querySelector('.main').scrollIntoView({behavior:'smooth',block:'start'});}
@@ -1545,52 +1890,56 @@ function closeSuggestModal(e){if(e&&e.target!==e.currentTarget)return;document.g
 
 async function submitSuggestion(e){
   e.preventDefault();const form=e.target,btn=document.getElementById('submitBtn');
-  btn.disabled=true;btn.textContent='Submitting...';
+  btn.disabled=true;btn.textContent=t('submitting');
   const d={charity_name:form.charity_name.value,website_url:form.website_url.value||null,donation_url:form.donation_url.value||null,category:form.category.value||null,description:form.description.value||null,submitter_name:form.submitter_name.value||null,submitter_email:form.submitter_email.value||null,_hp_website:form._hp_website.value};
   try{const r=await fetch(`${SUPABASE_URL}/functions/v1/submit-suggestion`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});
     const res=await r.json();
-    if(r.ok&&res.success){document.getElementById('suggestFormBody').innerHTML='<div class="form-ok"><div class="form-ok-ico">✓</div><h3>Thank you!</h3><p>Your suggestion has been submitted. We\'ll review it and add the charity soon.</p></div>';}
-    else if(r.status===429){btn.disabled=false;btn.textContent='Submit Suggestion';alert('Too many submissions. Please try again in an hour.');}
+    if(r.ok&&res.success){document.getElementById('suggestFormBody').innerHTML='<div class="form-ok"><div class="form-ok-ico">✓</div><h3>'+t('successTitle')+'</h3><p>'+t('successMsg')+'</p></div>';}
+    else if(r.status===429){btn.disabled=false;btn.textContent=t('submitBtn');alert(t('errorRate'));}
     else throw new Error('fail');
-  }catch(err){btn.disabled=false;btn.textContent='Submit Suggestion';alert('Something went wrong. Please try again.');}
+  }catch(err){btn.disabled=false;btn.textContent=t('submitBtn');alert(t('errorGeneric'));}
 }
 
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSuggestModal();});
 
 // ===== FIND YOUR CAUSE QUIZ =====
-const quizQuestions=[
-  {text:"What draws you most to supporting Israel?",options:[
-    {icon:"🛡️",text:"Protecting those who protect Israel",sub:"Soldiers, first responders, those on the front lines",scores:{"Soldiers & Veterans":3,"Terror Victims":2,"Medical & Emergency":2}},
-    {icon:"💛",text:"Caring for the most vulnerable",sub:"Children in need, Holocaust survivors, families in poverty",scores:{"Poverty & Hunger":3,"Holocaust Survivors":3,"Children & Youth":2,"Special Needs":2}},
-    {icon:"🌱",text:"Building Israel's future",sub:"Education, technology, strengthening communities",scores:{"Education":3,"Technology & Innovation":3,"Community Development":2,"Women Empowerment":2}},
-    {icon:"✡️",text:"Preserving Israel's soul and beauty",sub:"The land, the culture, the traditions",scores:{"Environment & Land":3,"Religious & Spiritual":3,"Arts & Culture":2,"Animals":1}}
-  ]},
-  {text:"When you give, what matters most to you?",options:[
-    {icon:"🎯",text:"Knowing someone is safer because of me",sub:"Direct, tangible protection and safety",scores:{"Soldiers & Veterans":2,"Medical & Emergency":3,"Terror Victims":2}},
-    {icon:"🤲",text:"Seeing a life changed up close",sub:"One person's story transformed by support",scores:{"Children & Youth":3,"Special Needs":2,"Poverty & Hunger":2,"Holocaust Survivors":2}},
-    {icon:"🏗️",text:"Investing in long-term impact",sub:"Things that compound and grow over years",scores:{"Education":3,"Technology & Innovation":2,"Women Empowerment":2,"Community Development":2}},
-    {icon:"🕊️",text:"Protecting something irreplaceable",sub:"Things that once lost, can never come back",scores:{"Environment & Land":3,"Religious & Spiritual":2,"Arts & Culture":2,"Animals":2}}
-  ]},
-  {text:"Which story would move you most?",options:[
-    {icon:"🪖",text:"A soldier coming home to a family that needs support",sub:"",scores:{"Soldiers & Veterans":3,"Terror Victims":2,"Medical & Emergency":1}},
-    {icon:"👧",text:"A child getting a chance they almost didn't have",sub:"",scores:{"Children & Youth":3,"Education":2,"Special Needs":2}},
-    {icon:"🏘️",text:"A community rebuilding itself from the ground up",sub:"",scores:{"Community Development":3,"Women Empowerment":2,"Poverty & Hunger":2}},
-    {icon:"🕯️",text:"Ancient traditions being kept alive for the next generation",sub:"",scores:{"Religious & Spiritual":3,"Arts & Culture":2,"Holocaust Survivors":2,"Environment & Land":1}}
-  ]},
-  {text:"How would you describe your giving heart?",options:[
-    {icon:"⚔️",text:"Fierce protector",sub:"Drawn to shield those in harm's way",scores:{"Soldiers & Veterans":2,"Terror Victims":2,"Medical & Emergency":2}},
-    {icon:"🫶",text:"Gentle nurturer",sub:"Drawn to lift up those who are struggling",scores:{"Children & Youth":2,"Holocaust Survivors":2,"Special Needs":2,"Poverty & Hunger":2}},
-    {icon:"🔨",text:"Visionary builder",sub:"Drawn to create things that outlast me",scores:{"Education":2,"Technology & Innovation":2,"Community Development":2,"Women Empowerment":1}},
-    {icon:"🌿",text:"Soulful keeper",sub:"Drawn to preserve what makes Israel sacred",scores:{"Environment & Land":2,"Religious & Spiritual":2,"Arts & Culture":2,"Animals":2}}
-  ]}
-];
+function getQuizQuestions(){
+  return [
+    {text:t('q1'),options:[
+      {icon:"🛡️",text:t('q1a'),sub:t('q1as'),scores:{"Soldiers & Veterans":3,"Terror Victims":2,"Medical & Emergency":2}},
+      {icon:"💛",text:t('q1b'),sub:t('q1bs'),scores:{"Poverty & Hunger":3,"Holocaust Survivors":3,"Children & Youth":2,"Special Needs":2}},
+      {icon:"🌱",text:t('q1c'),sub:t('q1cs'),scores:{"Education":3,"Technology & Innovation":3,"Community Development":2,"Women Empowerment":2}},
+      {icon:"✡️",text:t('q1d'),sub:t('q1ds'),scores:{"Environment & Land":3,"Religious & Spiritual":3,"Arts & Culture":2,"Animals":1}}
+    ]},
+    {text:t('q2'),options:[
+      {icon:"🎯",text:t('q2a'),sub:t('q2as'),scores:{"Soldiers & Veterans":2,"Medical & Emergency":3,"Terror Victims":2}},
+      {icon:"🤲",text:t('q2b'),sub:t('q2bs'),scores:{"Children & Youth":3,"Special Needs":2,"Poverty & Hunger":2,"Holocaust Survivors":2}},
+      {icon:"🏗️",text:t('q2c'),sub:t('q2cs'),scores:{"Education":3,"Technology & Innovation":2,"Women Empowerment":2,"Community Development":2}},
+      {icon:"🕊️",text:t('q2d'),sub:t('q2ds'),scores:{"Environment & Land":3,"Religious & Spiritual":2,"Arts & Culture":2,"Animals":2}}
+    ]},
+    {text:t('q3'),options:[
+      {icon:"🪖",text:t('q3a'),sub:t('q3as'),scores:{"Soldiers & Veterans":3,"Terror Victims":2,"Medical & Emergency":1}},
+      {icon:"👧",text:t('q3b'),sub:t('q3bs'),scores:{"Children & Youth":3,"Education":2,"Special Needs":2}},
+      {icon:"🏘️",text:t('q3c'),sub:t('q3cs'),scores:{"Community Development":3,"Women Empowerment":2,"Poverty & Hunger":2}},
+      {icon:"🕯️",text:t('q3d'),sub:t('q3ds'),scores:{"Religious & Spiritual":3,"Arts & Culture":2,"Holocaust Survivors":2,"Environment & Land":1}}
+    ]},
+    {text:t('q4'),options:[
+      {icon:"⚔️",text:t('q4a'),sub:t('q4as'),scores:{"Soldiers & Veterans":2,"Terror Victims":2,"Medical & Emergency":2}},
+      {icon:"🫶",text:t('q4b'),sub:t('q4bs'),scores:{"Children & Youth":2,"Holocaust Survivors":2,"Special Needs":2,"Poverty & Hunger":2}},
+      {icon:"🔨",text:t('q4c'),sub:t('q4cs'),scores:{"Education":2,"Technology & Innovation":2,"Community Development":2,"Women Empowerment":1}},
+      {icon:"🌿",text:t('q4d'),sub:t('q4ds'),scores:{"Environment & Land":2,"Religious & Spiritual":2,"Arts & Culture":2,"Animals":2}}
+    ]}
+  ];
+}
 
-const quizPersonas={
-  guardian:{name:"The Guardian",emoji:"🛡️",desc:"You're driven to protect. Whether it's soldiers, terror survivors, or emergency responders — you show up for those who put themselves in harm's way for Israel.",cats:["Soldiers & Veterans","Terror Victims","Medical & Emergency"]},
-  nurturer:{name:"The Nurturer",emoji:"💛",desc:"Your heart goes to the most vulnerable. Children who need a champion, Holocaust survivors who deserve dignity, families fighting to get by — your compassion finds them.",cats:["Children & Youth","Holocaust Survivors","Special Needs","Poverty & Hunger"]},
-  builder:{name:"The Builder",emoji:"🌱",desc:"You think in decades. Education, technology, empowering women, strengthening communities — you invest in things that compound and shape Israel's future.",cats:["Education","Technology & Innovation","Community Development","Women Empowerment"]},
-  keeper:{name:"The Keeper",emoji:"✡️",desc:"You protect what makes Israel sacred — the land, the traditions, the culture. For you, giving is an act of preservation and love.",cats:["Environment & Land","Religious & Spiritual","Arts & Culture","Animals"]}
-};
+function getQuizPersonas(){
+  return {
+    guardian:{name:t('guardianName'),emoji:"🛡️",desc:t('guardianDesc'),cats:["Soldiers & Veterans","Terror Victims","Medical & Emergency"]},
+    nurturer:{name:t('nurturerName'),emoji:"💛",desc:t('nurturerDesc'),cats:["Children & Youth","Holocaust Survivors","Special Needs","Poverty & Hunger"]},
+    builder:{name:t('builderName'),emoji:"🌱",desc:t('builderDesc'),cats:["Education","Technology & Innovation","Community Development","Women Empowerment"]},
+    keeper:{name:t('keeperName'),emoji:"✡️",desc:t('keeperDesc'),cats:["Environment & Land","Religious & Spiritual","Arts & Culture","Animals"]}
+  };
+}
 
 let quizQ=0,quizScores={};
 
@@ -1603,23 +1952,25 @@ function quizStart(){
 }
 
 function quizRender(){
-  const q=quizQuestions[quizQ];
-  document.getElementById('quizCounter').textContent=`Question ${quizQ+1} of ${quizQuestions.length}`;
-  document.getElementById('quizProgress').style.width=`${(quizQ/quizQuestions.length)*100}%`;
+  const qq=getQuizQuestions();
+  const q=qq[quizQ];
+  document.getElementById('quizCounter').textContent=t('quizCounter').replace('{n}',quizQ+1).replace('{total}',qq.length);
+  document.getElementById('quizProgress').style.width=`${(quizQ/qq.length)*100}%`;
   document.getElementById('quizQuestion').textContent=q.text;
   const el=document.getElementById('quizOptions');
   el.innerHTML=q.options.map((o,i)=>`<div class="quiz-opt" onclick="quizPick(${i})"><div class="quiz-opt-icon">${o.icon}</div><div><div class="quiz-opt-text">${o.text}</div>${o.sub?`<div class="quiz-opt-sub">${o.sub}</div>`:''}</div></div>`).join('');
 }
 
 function quizPick(i){
+  const qq=getQuizQuestions();
   document.querySelectorAll('.quiz-opt').forEach(o=>o.classList.remove('chosen'));
   const chosenEl=document.querySelectorAll('.quiz-opt')[i];
   chosenEl.classList.add('chosen');
-  const chosen=quizQuestions[quizQ].options[i];
+  const chosen=qq[quizQ].options[i];
   Object.entries(chosen.scores).forEach(([cat,pts])=>{quizScores[cat]=(quizScores[cat]||0)+pts;});
   setTimeout(()=>{
     quizQ++;
-    if(quizQ<quizQuestions.length){
+    if(quizQ<qq.length){
       const qEl=document.getElementById('quizActive');
       qEl.style.transition='opacity 0.25s ease, transform 0.25s ease';
       qEl.style.opacity='0';
@@ -1644,9 +1995,10 @@ function quizShowResults(){
   const sorted=Object.entries(quizScores).sort((a,b)=>b[1]-a[1]);
   const top3=sorted.slice(0,3);
   const topCat=top3[0][0];
+  const qp=getQuizPersonas();
   let persona=null;
-  for(const[k,p]of Object.entries(quizPersonas)){if(p.cats.includes(topCat)){persona=p;break;}}
-  if(!persona)persona=quizPersonas.guardian;
+  for(const[k,p]of Object.entries(qp)){if(p.cats.includes(topCat)){persona=p;break;}}
+  if(!persona)persona=qp.guardian;
 
   // Map category names to real category data
   const catIcons={};
@@ -1656,7 +2008,7 @@ function quizShowResults(){
   el.innerHTML=`
     <div class="quiz-persona">
       <span class="quiz-persona-emoji">${persona.emoji}</span>
-      <div class="quiz-persona-label">Your Giving Persona</div>
+      <div class="quiz-persona-label">${t('quizPersonaLabel')}</div>
       <div class="quiz-persona-name">${persona.name}</div>
       <p class="quiz-persona-desc">${persona.desc}</p>
     </div>
@@ -1666,13 +2018,13 @@ function quizShowResults(){
         return`<div class="quiz-match" onclick="quizBrowse('${cat}')">
           <div class="quiz-match-icon">${ci.icon}</div>
           <div class="quiz-match-name">${cat}</div>
-          <div class="quiz-match-rank">${i===0?'Top Match':i===1?'Strong Match':'Also Resonates'}</div>
+          <div class="quiz-match-rank">${i===0?t('quizTopMatch'):i===1?t('quizStrongMatch'):t('quizAlsoResonates')}</div>
         </div>`;
       }).join('')}
     </div>
     <div class="quiz-result-actions">
-      <button class="quiz-btn-browse" onclick="quizBrowse('${top3[0][0]}')">See My Top Match →</button>
-      <button class="quiz-btn-retake" onclick="quizRetake()">Retake Quiz</button>
+      <button class="quiz-btn-browse" onclick="quizBrowse('${top3[0][0]}')">${t('quizSeeMatch')}</button>
+      <button class="quiz-btn-retake" onclick="quizRetake()">${t('quizRetake')}</button>
     </div>
   `;
   el.classList.add('show');
@@ -1709,6 +2061,7 @@ function quizConfetti(){
   setTimeout(()=>box.innerHTML='',5000);
 }
 
+detectLanguage();
 fetchData();
 </script>
 <!-- Cookie Consent Banner -->
