@@ -1655,7 +1655,7 @@ function quizShowResults(){
       }).join('')}
     </div>
     <div class="quiz-result-actions">
-      <button class="quiz-btn-browse" onclick="quizBrowse('${top3[0][0]}')">Browse My Top Match →</button>
+      <button class="quiz-btn-browse" onclick="quizBrowse('${top3[0][0]}')">See My Top Match →</button>
       <button class="quiz-btn-retake" onclick="quizRetake()">Retake Quiz</button>
     </div>
   `;
@@ -1694,6 +1694,40 @@ function quizConfetti(){
 }
 
 fetchData();
+</script>
+<!-- Cookie Consent Banner -->
+<div id="cookieConsent" style="display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(12,19,36,0.92);backdrop-filter:blur(8px);color:#ccc;font-family:'Figtree',sans-serif;font-size:13px;padding:10px 20px;z-index:99999;align-items:center;justify-content:center;gap:14px;">
+  <span>This site uses cookies to analyze traffic. <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener" style="color:#5B94F0;text-decoration:underline;">Learn more</a></span>
+  <button onclick="handleCookieConsent(true)" style="background:#0038B8;color:#fff;border:none;padding:5px 14px;border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit;">Accept</button>
+  <button onclick="handleCookieConsent(false)" style="background:transparent;color:#888;border:1px solid #444;padding:5px 14px;border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit;">Reject</button>
+</div>
+<script>
+// Cookie consent + Google Analytics (only loads if accepted)
+(function(){
+  var consent = localStorage.getItem('cookie_consent');
+  if(consent === null){
+    var el = document.getElementById('cookieConsent');
+    el.style.display = 'flex';
+  } else if(consent === 'accepted'){
+    loadGA();
+  }
+  window.handleCookieConsent = function(accepted){
+    localStorage.setItem('cookie_consent', accepted ? 'accepted' : 'rejected');
+    document.getElementById('cookieConsent').style.display = 'none';
+    if(accepted) loadGA();
+  };
+  function loadGA(){
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=G-C5C9JZCS9N';
+    document.head.appendChild(s);
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    window.gtag = gtag;
+    gtag('js', new Date());
+    gtag('config', 'G-C5C9JZCS9N');
+  }
+})();
 </script>
 </body>
 </html>
