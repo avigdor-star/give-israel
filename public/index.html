@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Give Israel — Explore & Support Israeli Charities</title>
 <meta name="description" content="Supporting Israel starts with finding the right cause. Browse verified charities, filter by category, and donate directly — all in one place.">
 <meta property="og:type" content="website">
@@ -142,20 +142,10 @@ body::after {
 }
 
 .logo-mark {
-  width: 38px;
-  height: 38px;
-  background: var(--il-blue);
-  border-radius: var(--r-md);
-  display: grid;
-  place-items: center;
-  position: relative;
-}
-
-.logo-mark::before {
-  content: '✡';
-  font-size: 18px;
-  color: var(--white);
-  line-height: 1;
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 
 .logo-wordmark {
@@ -1448,6 +1438,168 @@ html[dir="rtl"] .quiz-reminder-btn {
   .quiz-reminder-text { font-size: 13px; }
   .quiz-reminder-btn { font-size: 12px; padding: 5px 14px; }
 }
+
+/* ===== MOBILE UX FIXES (March 2026 Audit) ===== */
+
+/* FIX: Touch targets — Apple/Google require minimum 44px for comfortable tapping */
+@media (max-width: 680px) {
+  .cat-pill { height: 44px; padding: 0 14px; font-size: 13px; }
+  .btn-lang { height: 44px; min-width: 44px; padding: 0 12px; }
+  .btn-suggest { height: 44px; min-width: 44px; }
+  .search-btn { height: 38px; padding: 0 16px; font-size: 13px; }
+  .modal-x { width: 44px; height: 44px; font-size: 20px; }
+  .quiz-reminder-btn { min-height: 44px; padding: 8px 18px; }
+}
+
+/* FIX: iOS auto-zoom — inputs below 16px trigger Safari zoom on focus */
+@media (max-width: 680px) {
+  .search-input, .fi, .fs, .ft { font-size: 16px; }
+}
+
+/* FIX: Safe area insets for notched phones (iPhone X+, modern Android) */
+@supports (padding: env(safe-area-inset-left)) {
+  .header-inner {
+    padding-left: max(32px, env(safe-area-inset-left));
+    padding-right: max(32px, env(safe-area-inset-right));
+  }
+  @media (max-width: 680px) {
+    .header-inner {
+      padding-left: max(16px, env(safe-area-inset-left));
+      padding-right: max(16px, env(safe-area-inset-right));
+    }
+  }
+  .to-top {
+    bottom: max(24px, calc(12px + env(safe-area-inset-bottom)));
+    right: max(24px, env(safe-area-inset-right));
+  }
+  html[dir="rtl"] .to-top {
+    right: auto;
+    left: max(24px, env(safe-area-inset-left));
+  }
+  .footer {
+    padding-bottom: max(36px, calc(12px + env(safe-area-inset-bottom)));
+  }
+  #cookieConsent {
+    padding-bottom: max(10px, env(safe-area-inset-bottom)) !important;
+  }
+}
+
+/* FIX: Hover effects — only activate for devices with a mouse pointer */
+@media (hover: hover) and (pointer: fine) {
+  .card:hover { transform: translateY(-2px); }
+  .card:hover .card-line { transform: scaleX(1); }
+  .btn-donate:hover, .btn-web:hover, .cat-pill:hover,
+  .quiz-opt:hover, .quiz-match:hover, .quiz-btn-browse:hover,
+  .quiz-btn-retake:hover, .quiz-start-btn:hover, .to-top:hover,
+  .btn-suggest:hover, .btn-lang:hover, .modal-x:hover,
+  .quiz-reminder-btn:hover { /* these keep their existing hover rules */ }
+}
+/* Remove hover transforms on touch — add active feedback instead */
+@media (hover: none) {
+  .card:hover { transform: none; box-shadow: none; }
+  .card:hover .card-line { transform: scaleX(0); }
+  .quiz-opt:hover { transform: none; box-shadow: none; border-color: rgba(255,255,255,0.08); background: rgba(255,255,255,0.06); }
+  .quiz-opt:hover::before { opacity: 0; }
+  .quiz-opt:hover .quiz-opt-icon { transform: none; }
+  .quiz-match:hover { transform: none; box-shadow: none; }
+  .quiz-start-btn:hover { transform: none; box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
+  .quiz-btn-browse:hover { transform: none; }
+  .btn-donate:hover, .btn-web:hover { transform: none; }
+  .to-top:hover { transform: none; }
+  /* Subtle tap feedback via :active */
+  .card:active { transform: scale(0.98); transition-duration: 0.1s; }
+  .quiz-opt:active { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.25); transform: scale(0.97); transition-duration: 0.1s; }
+  .quiz-match:active { background: rgba(255,255,255,0.14); transform: scale(0.97); transition-duration: 0.1s; }
+  .cat-pill:active { transform: scale(0.95); transition-duration: 0.1s; }
+  .btn-donate:active, .btn-web:active { transform: scale(0.96); transition-duration: 0.1s; }
+  .quiz-start-btn:active { transform: scale(0.96); }
+  .quiz-btn-browse:active { transform: scale(0.96); }
+}
+
+/* FIX: Disable grain texture overlay on mobile for smoother scrolling */
+@media (max-width: 680px) {
+  body::after { display: none; }
+}
+
+/* FIX: Scroll-to-top button — move above phone gesture zone */
+@media (max-width: 680px) {
+  .to-top { bottom: 80px; }
+}
+
+/* FIX: Quiz text sizes — larger for mobile readability */
+@media (max-width: 680px) {
+  .quiz-opt-text { font-size: 15px; }
+  .quiz-opt-sub { font-size: 13px; }
+  .quiz-persona-label { font-size: 11px; letter-spacing: 2px; }
+  .quiz-persona-name { font-size: 1.6rem; }
+  .quiz-persona-desc { font-size: 15px; }
+  .quiz-match-name { font-size: 14px; }
+  .quiz-match-rank { font-size: 10px; }
+  .quiz-q-counter { font-size: 13px; }
+}
+
+/* FIX: Quiz result action buttons — stack vertically on small screens */
+@media (max-width: 420px) {
+  .quiz-result-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .quiz-btn-browse, .quiz-btn-retake {
+    width: 100%;
+    text-align: center;
+    padding: 16px 24px;
+  }
+}
+
+/* FIX: Quiz backdrop-filter — reduce on mobile for performance */
+@media (max-width: 680px) {
+  .quiz-opt { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(255,255,255,0.08); }
+  .quiz-persona { backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+  .quiz-match { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(255,255,255,0.08); }
+  .quiz-persona::after { display: none; } /* remove shimmer animation on mobile */
+}
+
+/* FIX: RTL quiz transition direction */
+html[dir="rtl"] .quiz-active { direction: rtl; }
+
+/* FIX: Cookie banner — ensure it doesn't overlap quiz on short screens */
+@media (max-width: 680px) {
+  #cookieConsent {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    padding: 12px 16px !important;
+    font-size: 12px !important;
+  }
+}
+
+/* FIX: Quiz back button styling */
+.quiz-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.5);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.25s var(--ease);
+  margin-bottom: 16px;
+}
+.quiz-back-btn:hover {
+  border-color: rgba(255,255,255,0.3);
+  color: rgba(255,255,255,0.75);
+  background: rgba(255,255,255,0.05);
+}
+@media (hover: none) {
+  .quiz-back-btn:hover { border-color: rgba(255,255,255,0.15); color: rgba(255,255,255,0.5); background: transparent; }
+  .quiz-back-btn:active { background: rgba(255,255,255,0.1); transform: scale(0.96); transition-duration: 0.1s; }
+}
+html[dir="rtl"] .quiz-back-btn { direction: rtl; }
+html[dir="rtl"] .quiz-back-btn .back-arrow { transform: scaleX(-1); }
 </style>
 </head>
 <body>
@@ -1457,8 +1609,8 @@ html[dir="rtl"] .quiz-reminder-btn {
 <!-- HEADER -->
 <header class="header">
   <div class="header-inner">
-    <a class="logo" onclick="resetFilters()">
-      <div class="logo-mark"></div>
+    <a class="logo" href="/" onclick="resetFilters(); return false;" aria-label="Give Israel — Home">
+      <img class="logo-mark" src="/give-israel-logo.png" alt="Give Israel logo">
       <div class="logo-wordmark">Give<span>Israel</span></div>
     </a>
 
@@ -1470,12 +1622,12 @@ html[dir="rtl"] .quiz-reminder-btn {
       </div>
     </div>
 
-    <button class="btn-suggest" onclick="openSuggestModal()">
+    <button class="btn-suggest" onclick="openSuggestModal()" aria-label="Suggest a Charity">
       <span class="desktop-text">+ Suggest a Charity</span>
       <span style="display:none" class="mobile-plus">+</span>
     </button>
 
-    <button class="btn-lang" id="langToggle" onclick="toggleLanguage()"><span class="lang-flag" id="langFlag">🇮🇱</span><span id="langText">עב</span></button>
+    <button class="btn-lang" id="langToggle" onclick="toggleLanguage()" aria-label="Switch language"><span class="lang-flag" id="langFlag">🇮🇱</span><span id="langText">עב</span></button>
 
     <div class="header-counters">
       <div class="h-counter"><div class="h-counter-val" id="totalCharities">—</div><div class="h-counter-lbl">Charities</div></div>
@@ -1504,7 +1656,7 @@ html[dir="rtl"] .quiz-reminder-btn {
         <div class="quiz-badge">✦ Start Here</div>
         <h2 class="quiz-title">Help Me Find<br>My Cause</h2>
         <p class="quiz-subtitle">Answer 4 quick questions and we'll match you with the Israeli charities that align with what moves you most.</p>
-        <button class="quiz-start-btn" onclick="quizStart()">Take The Quiz <span>→</span></button>
+        <button class="quiz-start-btn" onclick="quizStart()" aria-label="Take the Find Your Cause quiz">Take The Quiz <span>→</span></button>
         <p class="quiz-note">30 seconds · No sign-up needed</p>
       </div>
     </div>
@@ -1568,7 +1720,7 @@ html[dir="rtl"] .quiz-reminder-btn {
         <h2>Suggest a Charity</h2>
         <p>Know an Israeli charity that should be listed?</p>
       </div>
-      <button class="modal-x" onclick="closeSuggestModal()">&times;</button>
+      <button class="modal-x" onclick="closeSuggestModal()" aria-label="Close">&times;</button>
     </div>
     <div class="modal-content" id="suggestFormBody">
       <form id="suggestForm" onsubmit="submitSuggestion(event)">
@@ -1670,6 +1822,7 @@ const LANG = {
     quizAlsoResonates: 'Also Resonates',
     quizSeeMatch: 'See My Top Match →',
     quizRetake: 'Retake Quiz',
+    quizBack: 'Back',
     quizReminderText: 'Not sure what to search for? Let us help you find the right cause.',
     quizReminderBtn: 'Take the Quiz',
     footerTagline: 'connecting generous hearts with verified Israeli charities.',
@@ -1761,6 +1914,7 @@ const LANG = {
     quizAlsoResonates: 'גם מתחבר',
     quizSeeMatch: 'צפו בהתאמה המובילה ←',
     quizRetake: 'קחו את השאלון שוב',
+    quizBack: 'חזרה',
     quizReminderText: 'לא בטוחים מה לחפש? בואו נעזור לכם למצוא את המטרה הנכונה.',
     quizReminderBtn: 'קחו את השאלון',
     footerTagline: 'מחברים לבבות נדיבים עם עמותות ישראליות מאומתות.',
@@ -1856,6 +2010,8 @@ function setLanguage(lang, save) {
   const langText = document.getElementById('langText');
   if (langFlag) langFlag.textContent = lang === 'he' ? '🇺🇸' : '🇮🇱';
   if (langText) langText.textContent = lang === 'he' ? 'EN' : 'עב';
+  const langToggle = document.getElementById('langToggle');
+  if (langToggle) langToggle.setAttribute('aria-label', lang === 'he' ? 'Switch to English' : 'עבור לעברית');
 }
 
 function updateStaticText() {
@@ -1993,11 +2149,17 @@ document.getElementById('searchInput').addEventListener('keydown',e=>{if(e.key==
 window.addEventListener('scroll',()=>{document.getElementById('scrollTopBtn').classList.toggle('show',window.scrollY>300);});
 
 // Search focus: minimize quiz hero, show reminder strip
+// FIX: Do NOT minimize if quiz is actively being taken (quizQ > 0 or results showing)
 let quizMinimized=false;
+function isQuizInProgress(){
+  const active=document.getElementById('quizActive');
+  const results=document.getElementById('quizResults');
+  return (active && active.classList.contains('show')) || (results && results.classList.contains('show'));
+}
 document.getElementById('searchInput').addEventListener('focus',function(){
   const hero=document.getElementById('quizHero');
   const strip=document.getElementById('quizReminderStrip');
-  if(!quizMinimized){
+  if(!quizMinimized && !isQuizInProgress()){
     hero.classList.add('minimized');
     strip.classList.add('visible');
     quizMinimized=true;
@@ -2006,8 +2168,8 @@ document.getElementById('searchInput').addEventListener('focus',function(){
 
 document.getElementById('searchInput').addEventListener('blur',function(){
   const val=this.value.trim();
-  // Only expand back if search bar is empty
-  if(!val){
+  // Only expand back if search bar is empty and quiz was minimized by us
+  if(!val && quizMinimized){
     setTimeout(()=>{
       const hero=document.getElementById('quizHero');
       const strip=document.getElementById('quizReminderStrip');
@@ -2094,15 +2256,18 @@ function getQuizPersonas(){
   };
 }
 
-let quizQ=0,quizScores={};
+let quizQ=0,quizScores={},quizHistory=[];
 
 function quizStart(){
-  quizQ=0;quizScores={};
+  quizQ=0;quizScores={};quizHistory=[];
   document.getElementById('quizIntro').classList.add('hide');
   document.getElementById('quizResults').classList.remove('show');
   document.getElementById('quizActive').classList.add('show');
   quizRender();
 }
+
+// FIX: Detect RTL for animation direction
+function quizSlideDir(){return document.documentElement.dir==='rtl'?1:-1;}
 
 function quizRender(){
   const qq=getQuizQuestions();
@@ -2111,7 +2276,33 @@ function quizRender(){
   document.getElementById('quizProgress').style.width=`${(quizQ/qq.length)*100}%`;
   document.getElementById('quizQuestion').textContent=q.text;
   const el=document.getElementById('quizOptions');
-  el.innerHTML=q.options.map((o,i)=>`<div class="quiz-opt" onclick="quizPick(${i})"><div class="quiz-opt-icon">${o.icon}</div><div><div class="quiz-opt-text">${o.text}</div>${o.sub?`<div class="quiz-opt-sub">${o.sub}</div>`:''}</div></div>`).join('');
+  // FIX: Add back button for question 2+ so users can undo accidental taps
+  const backBtn=quizQ>0?`<button class="quiz-back-btn" onclick="quizBack()"><span class="back-arrow">${document.documentElement.dir==='rtl'?'→':'←'}</span> ${t('quizBack')||'Back'}</button>`:'';
+  el.innerHTML=backBtn+q.options.map((o,i)=>`<div class="quiz-opt" onclick="quizPick(${i})"><div class="quiz-opt-icon">${o.icon}</div><div><div class="quiz-opt-text">${o.text}</div>${o.sub?`<div class="quiz-opt-sub">${o.sub}</div>`:''}</div></div>`).join('');
+}
+
+// FIX: Back button — undo last answer and go to previous question
+function quizBack(){
+  if(quizQ<=0)return;
+  const prev=quizHistory.pop();
+  // Remove previous answer's scores
+  if(prev&&prev.scores){
+    Object.entries(prev.scores).forEach(([cat,pts])=>{quizScores[cat]=(quizScores[cat]||0)-pts;if(quizScores[cat]<=0)delete quizScores[cat];});
+  }
+  quizQ--;
+  const qEl=document.getElementById('quizActive');
+  const d=quizSlideDir();
+  qEl.style.transition='opacity 0.25s ease, transform 0.25s ease';
+  qEl.style.opacity='0';
+  qEl.style.transform=`translateX(${12*d}px)`;
+  setTimeout(()=>{
+    quizRender();
+    qEl.style.transform=`translateX(${-12*d}px)`;
+    requestAnimationFrame(()=>{
+      qEl.style.opacity='1';
+      qEl.style.transform='translateX(0)';
+    });
+  },220);
 }
 
 function quizPick(i){
@@ -2121,16 +2312,20 @@ function quizPick(i){
   chosenEl.classList.add('chosen');
   const chosen=qq[quizQ].options[i];
   Object.entries(chosen.scores).forEach(([cat,pts])=>{quizScores[cat]=(quizScores[cat]||0)+pts;});
+  // FIX: Store answer in history so Back button can undo it
+  quizHistory.push({questionIndex:quizQ,optionIndex:i,scores:chosen.scores});
+  const d=quizSlideDir();
   setTimeout(()=>{
     quizQ++;
     if(quizQ<qq.length){
       const qEl=document.getElementById('quizActive');
       qEl.style.transition='opacity 0.25s ease, transform 0.25s ease';
       qEl.style.opacity='0';
-      qEl.style.transform='translateX(-12px)';
+      // FIX: Slide direction respects RTL
+      qEl.style.transform=`translateX(${-12*d}px)`;
       setTimeout(()=>{
         quizRender();
-        qEl.style.transform='translateX(12px)';
+        qEl.style.transform=`translateX(${12*d}px)`;
         requestAnimationFrame(()=>{
           qEl.style.opacity='1';
           qEl.style.transform='translateX(0)';
