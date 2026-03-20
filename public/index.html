@@ -142,8 +142,8 @@ body::after {
 }
 
 .logo-mark {
-  width: 42px;
-  height: 42px;
+  width: 52px;
+  height: 52px;
   object-fit: contain;
   flex-shrink: 0;
 }
@@ -1487,7 +1487,7 @@ html[dir="rtl"] .quiz-reminder-btn {
 /* FIX: Hover effects — only activate for devices with a mouse pointer */
 @media (hover: hover) and (pointer: fine) {
   .card:hover { transform: translateY(-2px); }
-  .card:hover .card-line { transform: scaleX(1); }
+  .card:hover::before { transform: scaleX(1); }
   .btn-donate:hover, .btn-web:hover, .cat-pill:hover,
   .quiz-opt:hover, .quiz-match:hover, .quiz-btn-browse:hover,
   .quiz-btn-retake:hover, .quiz-start-btn:hover, .to-top:hover,
@@ -1497,7 +1497,7 @@ html[dir="rtl"] .quiz-reminder-btn {
 /* Remove hover transforms on touch — add active feedback instead */
 @media (hover: none) {
   .card:hover { transform: none; box-shadow: none; }
-  .card:hover .card-line { transform: scaleX(0); }
+  .card:hover::before { transform: scaleX(0); }
   .quiz-opt:hover { transform: none; box-shadow: none; border-color: rgba(255,255,255,0.08); background: rgba(255,255,255,0.06); }
   .quiz-opt:hover::before { opacity: 0; }
   .quiz-opt:hover .quiz-opt-icon { transform: none; }
@@ -1521,9 +1521,9 @@ html[dir="rtl"] .quiz-reminder-btn {
   body::after { display: none; }
 }
 
-/* FIX: Scroll-to-top button — move above phone gesture zone */
+/* FIX: Scroll-to-top button — move above phone gesture zone + respect safe area */
 @media (max-width: 680px) {
-  .to-top { bottom: 80px; }
+  .to-top { bottom: max(80px, calc(68px + env(safe-area-inset-bottom, 0px))); }
 }
 
 /* FIX: Quiz text sizes — larger for mobile readability */
