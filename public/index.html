@@ -7,6 +7,7 @@
 <meta name="description" content="Discover and donate to verified Israeli charities. Browse by category, search by name, and give directly to causes you care about.">
 <meta property="og:title" content="Give Israel — Find & Support Israeli Charities">
 <meta property="og:description" content="The most comprehensive directory of Israeli charities. Find your cause. Make your impact.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230038B8'/%3E%3Cpath d='M32 12 L44 32 L32 52 L20 32 Z' fill='none' stroke='white' stroke-width='2.5' opacity='0.3'/%3E%3Cpath d='M32 16 L20 36 L44 36 Z' fill='none' stroke='white' stroke-width='2.2' opacity='0.85'/%3E%3Cpath d='M32 48 L20 28 L44 28 Z' fill='none' stroke='white' stroke-width='2.2' opacity='0.85'/%3E%3Cpath d='M32 26 C32 26 27 30 27 33.5 C27 36.2 29.2 38 32 38 C34.8 38 37 36.2 37 33.5 C37 30 32 26 32 26Z' fill='white' opacity='0.95'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Figtree:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -705,6 +706,573 @@ body::after {
 .to-top.show { opacity: 1; pointer-events: all; }
 .to-top:hover { background: var(--il-blue-deep); transform: translateY(-2px); }
 
+/* ===== FIND YOUR CAUSE QUIZ — Hero Section (10x Edition) ===== */
+.quiz-hero {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: linear-gradient(165deg, #001233 0%, #001B5E 30%, #002A8C 60%, #0038B8 100%);
+}
+
+/* Atmospheric geometric decorations */
+.quiz-hero::before {
+  content: '';
+  position: absolute;
+  top: -20%;
+  right: -10%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(91,148,240,0.12) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: heroOrb 12s ease-in-out infinite alternate;
+}
+
+.quiz-hero::after {
+  content: '';
+  position: absolute;
+  bottom: -30%;
+  left: -5%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(212,168,67,0.08) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: heroOrb 15s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes heroOrb {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(30px, -20px) scale(1.1); }
+}
+
+/* Floating Star of David geometric shapes */
+.quiz-geo {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.06;
+  color: #fff;
+  z-index: 0;
+}
+
+.quiz-geo-1 {
+  top: 12%;
+  left: 8%;
+  font-size: 80px;
+  animation: geoFloat 18s ease-in-out infinite;
+}
+
+.quiz-geo-2 {
+  top: 20%;
+  right: 12%;
+  font-size: 40px;
+  animation: geoFloat 14s ease-in-out infinite reverse;
+}
+
+.quiz-geo-3 {
+  bottom: 15%;
+  right: 20%;
+  font-size: 60px;
+  animation: geoFloat 20s ease-in-out infinite 2s;
+}
+
+.quiz-geo-4 {
+  bottom: 25%;
+  left: 15%;
+  font-size: 35px;
+  animation: geoFloat 16s ease-in-out infinite 1s reverse;
+}
+
+@keyframes geoFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-12px) rotate(3deg); }
+  50% { transform: translateY(6px) rotate(-2deg); }
+  75% { transform: translateY(-8px) rotate(1deg); }
+}
+
+/* Noise texture overlay */
+.quiz-noise {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.quiz-card {
+  position: relative;
+  z-index: 1;
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 56px 32px 52px;
+}
+
+/* Intro state */
+.quiz-intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0;
+  animation: heroEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes heroEntrance {
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.quiz-intro-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.quiz-badge {
+  display: inline-block;
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: rgba(255,255,255,0.7);
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  padding: 7px 18px;
+  border-radius: 100px;
+  border: 1px solid rgba(255,255,255,0.1);
+  margin-bottom: 24px;
+  animation: heroEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+}
+
+.quiz-title {
+  font-family: var(--font-display);
+  font-size: 52px;
+  font-weight: 600;
+  font-style: italic;
+  color: #FFFFFF;
+  line-height: 1.05;
+  margin-bottom: 16px;
+  letter-spacing: -0.5px;
+  animation: heroEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+}
+
+.quiz-subtitle {
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.65;
+  max-width: 480px;
+  font-weight: 300;
+  animation: heroEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+}
+
+.quiz-start-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 32px;
+  padding: 16px 36px;
+  background: #FFFFFF;
+  color: var(--il-blue-dark);
+  border: none;
+  border-radius: 100px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2), 0 0 0 0 rgba(255,255,255,0.3);
+  letter-spacing: 0.3px;
+  animation: heroEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both;
+}
+
+.quiz-start-btn span {
+  display: inline-block;
+  transition: transform 0.3s var(--ease);
+}
+
+.quiz-start-btn:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.25), 0 0 0 3px rgba(255,255,255,0.15);
+}
+
+.quiz-start-btn:hover span {
+  transform: translateX(4px);
+}
+
+.quiz-start-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.quiz-note {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: rgba(255,255,255,0.3);
+  margin-top: 14px;
+  font-weight: 400;
+  letter-spacing: 0.4px;
+  animation: heroEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+}
+
+.quiz-intro-icon {
+  display: none; /* Replaced by atmospheric geometric elements */
+}
+
+/* ===== Quiz Active State ===== */
+.quiz-active {
+  display: none;
+  padding: 0;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.quiz-active.show {
+  display: block;
+  animation: quizSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.quiz-intro.hide { display: none; }
+
+@keyframes quizSlideIn {
+  0% { opacity: 0; transform: translateY(20px) scale(0.97); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.quiz-progress {
+  height: 3px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 3px;
+  margin-bottom: 36px;
+  overflow: hidden;
+}
+
+.quiz-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, rgba(255,255,255,0.4), rgba(255,255,255,0.9));
+  border-radius: 3px;
+  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 12px rgba(255,255,255,0.3);
+}
+
+.quiz-q-counter {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.35);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+
+.quiz-question {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 600;
+  font-style: italic;
+  color: #FFFFFF;
+  line-height: 1.15;
+  margin-bottom: 28px;
+  letter-spacing: -0.3px;
+}
+
+.quiz-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.quiz-opt {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 20px;
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1.5px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+}
+
+.quiz-opt::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.08), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: 14px;
+}
+
+.quiz-opt:hover {
+  border-color: rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+
+.quiz-opt:hover::before { opacity: 1; }
+
+.quiz-opt.chosen {
+  border-color: rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.14);
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.1), 0 8px 32px rgba(0,0,0,0.2);
+  transform: scale(1.02);
+}
+
+.quiz-opt-icon {
+  font-size: 1.4rem;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.1);
+  border-radius: 12px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+  transition: transform 0.3s var(--ease-back);
+}
+
+.quiz-opt:hover .quiz-opt-icon {
+  transform: scale(1.1) rotate(-3deg);
+}
+
+.quiz-opt-text {
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.9);
+  line-height: 1.35;
+  position: relative;
+  z-index: 1;
+}
+
+.quiz-opt-sub {
+  font-size: 11.5px;
+  color: rgba(255,255,255,0.4);
+  font-weight: 400;
+  margin-top: 2px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== Results State ===== */
+.quiz-results {
+  display: none;
+  padding: 0;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.quiz-results.show {
+  display: block;
+  animation: personaReveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes personaReveal {
+  0% { opacity: 0; transform: scale(0.92) translateY(20px); }
+  50% { opacity: 1; }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.quiz-persona {
+  text-align: center;
+  padding: 40px 28px 36px;
+  background: rgba(255,255,255,0.07);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 20px;
+  color: var(--white);
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.quiz-persona::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(212,168,67,0.1) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.quiz-persona::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(from 0deg, transparent, rgba(255,255,255,0.02), transparent, rgba(255,255,255,0.02), transparent);
+  animation: personaShimmer 8s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes personaShimmer {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.quiz-persona-emoji {
+  font-size: 3.2rem;
+  display: block;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 8px;
+  animation: emojiPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+}
+
+@keyframes emojiPop {
+  0% { transform: scale(0) rotate(-15deg); opacity: 0; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+.quiz-persona-label {
+  font-family: var(--font-body);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  opacity: 0.45;
+  position: relative;
+  z-index: 1;
+}
+
+.quiz-persona-name {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  font-weight: 600;
+  font-style: italic;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 8px;
+  margin-top: 4px;
+  letter-spacing: -0.3px;
+}
+
+.quiz-persona-desc {
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.65;
+  opacity: 0.65;
+  max-width: 480px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+  font-weight: 300;
+}
+
+.quiz-matches-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.quiz-match {
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 14px;
+  padding: 20px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.quiz-match:hover {
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.2);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.2);
+}
+
+.quiz-match-icon { font-size: 1.7rem; margin-bottom: 6px; }
+.quiz-match-name { font-family: var(--font-body); font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.85); line-height: 1.25; }
+.quiz-match-rank { font-size: 9px; font-weight: 700; color: rgba(212,168,67,0.8); text-transform: uppercase; letter-spacing: 1px; margin-top: 6px; }
+
+.quiz-result-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
+  justify-content: center;
+}
+
+.quiz-btn-browse {
+  padding: 15px 32px;
+  background: #FFFFFF;
+  color: var(--il-blue-dark);
+  border: none;
+  border-radius: 100px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.2);
+  letter-spacing: 0.2px;
+}
+
+.quiz-btn-browse:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 12px 36px rgba(0,0,0,0.25);
+}
+
+.quiz-btn-retake {
+  padding: 15px 24px;
+  background: transparent;
+  color: rgba(255,255,255,0.5);
+  border: 1.5px solid rgba(255,255,255,0.15);
+  border-radius: 100px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.quiz-btn-retake:hover {
+  border-color: rgba(255,255,255,0.35);
+  color: rgba(255,255,255,0.75);
+  background: rgba(255,255,255,0.05);
+}
+
+/* Confetti */
+.confetti-box { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9998; overflow: hidden; }
+.confetti-p { position: absolute; top: -12px; animation: confettiFall 3s ease-out forwards; }
+@keyframes confettiFall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  80% { opacity: 1; }
+  100% { transform: translateY(100vh) rotate(800deg); opacity: 0; }
+}
+
+/* ===== Quiz Responsive ===== */
+@media (max-width: 680px) {
+  .quiz-card { padding: 40px 20px 36px; }
+  .quiz-title { font-size: 34px; }
+  .quiz-subtitle { font-size: 14px; }
+  .quiz-start-btn { padding: 14px 28px; font-size: 14px; }
+  .quiz-active, .quiz-results { max-width: 100%; }
+  .quiz-options { grid-template-columns: 1fr; }
+  .quiz-question { font-size: 24px; }
+  .quiz-matches-row { grid-template-columns: 1fr; }
+  .quiz-persona-name { font-size: 1.8rem; }
+  .quiz-geo { display: none; }
+  .quiz-hero::before, .quiz-hero::after { display: none; }
+}
+
 /* ===== ANIMATIONS ===== */
 @keyframes rise {
   from { opacity: 0; transform: translateY(14px); }
@@ -780,6 +1348,34 @@ body::after {
     <div class="cat-scroll" id="categoriesBar"></div>
   </div>
 </nav>
+
+<!-- FIND YOUR CAUSE QUIZ -->
+<section class="quiz-hero" id="quizHero">
+  <div class="quiz-noise"></div>
+  <div class="quiz-geo quiz-geo-1">✡</div>
+  <div class="quiz-geo quiz-geo-2">✦</div>
+  <div class="quiz-geo quiz-geo-3">✡</div>
+  <div class="quiz-geo quiz-geo-4">✦</div>
+  <div class="quiz-card">
+    <div class="quiz-intro" id="quizIntro">
+      <div class="quiz-intro-left">
+        <div class="quiz-badge">✦ Start Here</div>
+        <h2 class="quiz-title">Help Me Find<br>My Cause</h2>
+        <p class="quiz-subtitle">Answer 4 quick questions and we'll match you with the Israeli charities that align with what moves you most.</p>
+        <button class="quiz-start-btn" onclick="quizStart()">Take The Quiz <span>→</span></button>
+        <p class="quiz-note">30 seconds · No sign-up needed</p>
+      </div>
+    </div>
+    <div class="quiz-active" id="quizActive">
+      <div class="quiz-progress"><div class="quiz-progress-fill" id="quizProgress"></div></div>
+      <div class="quiz-q-counter" id="quizCounter"></div>
+      <h3 class="quiz-question" id="quizQuestion"></h3>
+      <div class="quiz-options" id="quizOptions"></div>
+    </div>
+    <div class="quiz-results" id="quizResults"></div>
+  </div>
+</section>
+<div class="confetti-box" id="confettiBox"></div>
 
 <!-- MAIN -->
 <main class="main">
@@ -944,6 +1540,158 @@ async function submitSuggestion(e){
 }
 
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSuggestModal();});
+
+// ===== FIND YOUR CAUSE QUIZ =====
+const quizQuestions=[
+  {text:"What draws you most to supporting Israel?",options:[
+    {icon:"🛡️",text:"Protecting those who protect Israel",sub:"Soldiers, first responders, those on the front lines",scores:{"Soldiers & Veterans":3,"Terror Victims":2,"Medical & Emergency":2}},
+    {icon:"💛",text:"Caring for the most vulnerable",sub:"Children in need, Holocaust survivors, families in poverty",scores:{"Poverty & Hunger":3,"Holocaust Survivors":3,"Children & Youth":2,"Special Needs":2}},
+    {icon:"🌱",text:"Building Israel's future",sub:"Education, technology, strengthening communities",scores:{"Education":3,"Technology & Innovation":3,"Community Development":2,"Women Empowerment":2}},
+    {icon:"✡️",text:"Preserving Israel's soul and beauty",sub:"The land, the culture, the traditions",scores:{"Environment & Land":3,"Religious & Spiritual":3,"Arts & Culture":2,"Animals":1}}
+  ]},
+  {text:"When you give, what matters most to you?",options:[
+    {icon:"🎯",text:"Knowing someone is safer because of me",sub:"Direct, tangible protection and safety",scores:{"Soldiers & Veterans":2,"Medical & Emergency":3,"Terror Victims":2}},
+    {icon:"🤲",text:"Seeing a life changed up close",sub:"One person's story transformed by support",scores:{"Children & Youth":3,"Special Needs":2,"Poverty & Hunger":2,"Holocaust Survivors":2}},
+    {icon:"🏗️",text:"Investing in long-term impact",sub:"Things that compound and grow over years",scores:{"Education":3,"Technology & Innovation":2,"Women Empowerment":2,"Community Development":2}},
+    {icon:"🕊️",text:"Protecting something irreplaceable",sub:"Things that once lost, can never come back",scores:{"Environment & Land":3,"Religious & Spiritual":2,"Arts & Culture":2,"Animals":2}}
+  ]},
+  {text:"Which story would move you most?",options:[
+    {icon:"🪖",text:"A soldier coming home to a family that needs support",sub:"",scores:{"Soldiers & Veterans":3,"Terror Victims":2,"Medical & Emergency":1}},
+    {icon:"👧",text:"A child getting a chance they almost didn't have",sub:"",scores:{"Children & Youth":3,"Education":2,"Special Needs":2}},
+    {icon:"🏘️",text:"A community rebuilding itself from the ground up",sub:"",scores:{"Community Development":3,"Women Empowerment":2,"Poverty & Hunger":2}},
+    {icon:"🕯️",text:"Ancient traditions being kept alive for the next generation",sub:"",scores:{"Religious & Spiritual":3,"Arts & Culture":2,"Holocaust Survivors":2,"Environment & Land":1}}
+  ]},
+  {text:"How would you describe your giving heart?",options:[
+    {icon:"⚔️",text:"Fierce protector",sub:"Drawn to shield those in harm's way",scores:{"Soldiers & Veterans":2,"Terror Victims":2,"Medical & Emergency":2}},
+    {icon:"🫶",text:"Gentle nurturer",sub:"Drawn to lift up those who are struggling",scores:{"Children & Youth":2,"Holocaust Survivors":2,"Special Needs":2,"Poverty & Hunger":2}},
+    {icon:"🔨",text:"Visionary builder",sub:"Drawn to create things that outlast me",scores:{"Education":2,"Technology & Innovation":2,"Community Development":2,"Women Empowerment":1}},
+    {icon:"🌿",text:"Soulful keeper",sub:"Drawn to preserve what makes Israel sacred",scores:{"Environment & Land":2,"Religious & Spiritual":2,"Arts & Culture":2,"Animals":2}}
+  ]}
+];
+
+const quizPersonas={
+  guardian:{name:"The Guardian",emoji:"🛡️",desc:"You're driven to protect. Whether it's soldiers, terror survivors, or emergency responders — you show up for those who put themselves in harm's way for Israel.",cats:["Soldiers & Veterans","Terror Victims","Medical & Emergency"]},
+  nurturer:{name:"The Nurturer",emoji:"💛",desc:"Your heart goes to the most vulnerable. Children who need a champion, Holocaust survivors who deserve dignity, families fighting to get by — your compassion finds them.",cats:["Children & Youth","Holocaust Survivors","Special Needs","Poverty & Hunger"]},
+  builder:{name:"The Builder",emoji:"🌱",desc:"You think in decades. Education, technology, empowering women, strengthening communities — you invest in things that compound and shape Israel's future.",cats:["Education","Technology & Innovation","Community Development","Women Empowerment"]},
+  keeper:{name:"The Keeper",emoji:"✡️",desc:"You protect what makes Israel sacred — the land, the traditions, the culture. For you, giving is an act of preservation and love.",cats:["Environment & Land","Religious & Spiritual","Arts & Culture","Animals"]}
+};
+
+let quizQ=0,quizScores={};
+
+function quizStart(){
+  quizQ=0;quizScores={};
+  document.getElementById('quizIntro').classList.add('hide');
+  document.getElementById('quizResults').classList.remove('show');
+  document.getElementById('quizActive').classList.add('show');
+  quizRender();
+}
+
+function quizRender(){
+  const q=quizQuestions[quizQ];
+  document.getElementById('quizCounter').textContent=`Question ${quizQ+1} of ${quizQuestions.length}`;
+  document.getElementById('quizProgress').style.width=`${(quizQ/quizQuestions.length)*100}%`;
+  document.getElementById('quizQuestion').textContent=q.text;
+  const el=document.getElementById('quizOptions');
+  el.innerHTML=q.options.map((o,i)=>`<div class="quiz-opt" onclick="quizPick(${i})"><div class="quiz-opt-icon">${o.icon}</div><div><div class="quiz-opt-text">${o.text}</div>${o.sub?`<div class="quiz-opt-sub">${o.sub}</div>`:''}</div></div>`).join('');
+}
+
+function quizPick(i){
+  document.querySelectorAll('.quiz-opt').forEach(o=>o.classList.remove('chosen'));
+  const chosenEl=document.querySelectorAll('.quiz-opt')[i];
+  chosenEl.classList.add('chosen');
+  const chosen=quizQuestions[quizQ].options[i];
+  Object.entries(chosen.scores).forEach(([cat,pts])=>{quizScores[cat]=(quizScores[cat]||0)+pts;});
+  setTimeout(()=>{
+    quizQ++;
+    if(quizQ<quizQuestions.length){
+      const qEl=document.getElementById('quizActive');
+      qEl.style.transition='opacity 0.25s ease, transform 0.25s ease';
+      qEl.style.opacity='0';
+      qEl.style.transform='translateX(-12px)';
+      setTimeout(()=>{
+        quizRender();
+        qEl.style.transform='translateX(12px)';
+        requestAnimationFrame(()=>{
+          qEl.style.opacity='1';
+          qEl.style.transform='translateX(0)';
+        });
+      },220);
+    }else{
+      document.getElementById('quizProgress').style.width='100%';
+      setTimeout(quizShowResults,400);
+    }
+  },350);
+}
+
+function quizShowResults(){
+  document.getElementById('quizActive').classList.remove('show');
+  const sorted=Object.entries(quizScores).sort((a,b)=>b[1]-a[1]);
+  const top3=sorted.slice(0,3);
+  const topCat=top3[0][0];
+  let persona=null;
+  for(const[k,p]of Object.entries(quizPersonas)){if(p.cats.includes(topCat)){persona=p;break;}}
+  if(!persona)persona=quizPersonas.guardian;
+
+  // Map category names to real category data
+  const catIcons={};
+  allCategories.forEach(c=>{catIcons[c.name]={icon:c.icon,id:c.id};});
+
+  const el=document.getElementById('quizResults');
+  el.innerHTML=`
+    <div class="quiz-persona">
+      <span class="quiz-persona-emoji">${persona.emoji}</span>
+      <div class="quiz-persona-label">Your Giving Persona</div>
+      <div class="quiz-persona-name">${persona.name}</div>
+      <p class="quiz-persona-desc">${persona.desc}</p>
+    </div>
+    <div class="quiz-matches-row">
+      ${top3.map(([cat,score],i)=>{
+        const ci=catIcons[cat]||{icon:'✦',id:null};
+        return`<div class="quiz-match" onclick="quizBrowse('${cat}')">
+          <div class="quiz-match-icon">${ci.icon}</div>
+          <div class="quiz-match-name">${cat}</div>
+          <div class="quiz-match-rank">${i===0?'Top Match':i===1?'Strong Match':'Also Resonates'}</div>
+        </div>`;
+      }).join('')}
+    </div>
+    <div class="quiz-result-actions">
+      <button class="quiz-btn-browse" onclick="quizBrowse('${top3[0][0]}')">Browse My Top Match →</button>
+      <button class="quiz-btn-retake" onclick="quizRetake()">Retake Quiz</button>
+    </div>
+  `;
+  el.classList.add('show');
+  quizConfetti();
+}
+
+function quizBrowse(catName){
+  const cat=allCategories.find(c=>c.name===catName);
+  if(cat){filterCat(cat.id);document.querySelector('.main').scrollIntoView({behavior:'smooth',block:'start'});}
+}
+
+function quizRetake(){
+  document.getElementById('quizResults').classList.remove('show');
+  quizStart();
+}
+
+function quizReset(){
+  document.getElementById('quizActive').classList.remove('show');
+  document.getElementById('quizResults').classList.remove('show');
+  document.getElementById('quizIntro').classList.remove('hide');
+}
+
+function quizConfetti(){
+  const box=document.getElementById('confettiBox');box.innerHTML='';
+  const colors=['#0038B8','#D4A843','#5B94F0','#F0D98A','#FFFFFF','#002A8C'];
+  for(let i=0;i<50;i++){
+    const p=document.createElement('div');p.className='confetti-p';
+    p.style.left=Math.random()*100+'%';p.style.background=colors[Math.floor(Math.random()*colors.length)];
+    p.style.width=(5+Math.random()*6)+'px';p.style.height=(5+Math.random()*6)+'px';
+    p.style.borderRadius=Math.random()>0.5?'50%':'2px';
+    p.style.animationDelay=Math.random()*0.8+'s';p.style.animationDuration=(2.5+Math.random()*2)+'s';
+    box.appendChild(p);
+  }
+  setTimeout(()=>box.innerHTML='',5000);
+}
 
 fetchData();
 </script>
