@@ -89,39 +89,151 @@ body { font-family: var(--font); background: var(--ink-03); color: var(--ink); -
 .btn-reject:hover { background: var(--red-bg); color: var(--red); }
 .btn-publish { background: var(--blue); color: var(--white); }
 .btn-publish:hover { background: var(--blue-deep); }
+.btn-edit { background: var(--blue-pale); color: var(--blue); }
+.btn-edit:hover { background: var(--blue); color: var(--white); }
+.btn-delete { background: var(--red-bg); color: var(--red); }
+.btn-delete:hover { background: var(--red); color: var(--white); }
+.btn-edit-sub { background: var(--amber-bg); color: var(--amber); }
+.btn-edit-sub:hover { background: var(--amber); color: var(--white); }
 
 /* Toast */
 .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--ink); color: var(--white); padding: 12px 24px; border-radius: var(--r); font-size: 14px; font-weight: 600; box-shadow: 0 8px 24px rgba(0,0,0,0.2); transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); z-index: 999; pointer-events: none; }
 .toast.show { transform: translateX(-50%) translateY(0); }
 
-/* Form panel for publishing */
-.publish-form { padding: 20px 22px; display: none; border-top: 2px solid var(--blue-pale); background: var(--blue-ghost); }
-.publish-form.open { display: block; }
-.pf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
-.pf-full { margin-bottom: 12px; }
-.pf-label { font-size: 11px; font-weight: 700; color: var(--ink-60); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; display: block; }
-.pf-input, .pf-select, .pf-textarea { width: 100%; padding: 9px 12px; border: 1.5px solid var(--ink-12); border-radius: 8px; font-family: var(--font); font-size: 13px; color: var(--ink); background: var(--white); outline: none; }
-.pf-input:focus, .pf-select:focus, .pf-textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(0,56,184,0.08); }
-.pf-textarea { resize: vertical; min-height: 60px; }
-.pf-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px; }
-.btn-cancel { height: 36px; padding: 0 16px; background: var(--white); color: var(--ink-40); border: 1px solid var(--ink-12); border-radius: 8px; font-family: var(--font); font-size: 13px; font-weight: 600; cursor: pointer; }
-.btn-do-publish { height: 36px; padding: 0 20px; background: var(--blue); color: var(--white); border: none; border-radius: 8px; font-family: var(--font); font-size: 13px; font-weight: 700; cursor: pointer; }
-.btn-do-publish:hover { background: var(--blue-deep); }
+/* ===== SLIDE-OUT EDIT PANEL ===== */
+.panel-overlay {
+  position: fixed; inset: 0;
+  background: rgba(12,19,36,0.35);
+  backdrop-filter: blur(2px);
+  z-index: 900;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.panel-overlay.open { opacity: 1; pointer-events: all; }
 
-/* Edit form for charities */
-.edit-form { padding: 20px 22px; display: none; border-top: 2px solid var(--blue-pale); background: var(--blue-ghost); }
-.edit-form.open { display: block; }
-.btn-edit { background: var(--blue-pale); color: var(--blue); }
-.btn-edit:hover { background: var(--blue); color: var(--white); }
-.btn-save { background: var(--green); color: var(--white); }
-.btn-save:hover { background: #15803D; }
-.btn-delete { background: var(--red-bg); color: var(--red); }
-.btn-delete:hover { background: var(--red); color: var(--white); }
-.btn-edit-sub { background: var(--amber-bg); color: var(--amber); }
-.btn-edit-sub:hover { background: var(--amber); color: var(--white); }
-.pf-check { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
-.pf-check input { width: 16px; height: 16px; accent-color: var(--blue); }
-.pf-check label { font-size: 12px; color: var(--ink-60); font-weight: 600; }
+.slide-panel {
+  position: fixed; top: 0; right: 0; bottom: 0;
+  width: 580px; max-width: 96vw;
+  background: var(--white);
+  z-index: 910;
+  transform: translateX(100%);
+  transition: transform 0.35s cubic-bezier(0.22, 0.68, 0.31, 1.0);
+  display: flex; flex-direction: column;
+  box-shadow: -12px 0 48px rgba(0,56,184,0.08);
+}
+.slide-panel.open { transform: translateX(0); }
+
+.sp-header {
+  padding: 24px 32px 20px;
+  border-bottom: 1px solid var(--ink-06);
+  display: flex; align-items: flex-start; justify-content: space-between;
+  flex-shrink: 0;
+  background: var(--white);
+}
+.sp-title { font-size: 20px; font-weight: 800; color: var(--ink); letter-spacing: -0.3px; }
+.sp-subtitle { font-size: 13px; color: var(--ink-40); margin-top: 2px; font-weight: 500; }
+.sp-close {
+  width: 36px; height: 36px; border: none; background: var(--ink-03);
+  border-radius: 8px; cursor: pointer; font-size: 18px; color: var(--ink-40);
+  display: flex; align-items: center; justify-content: center;
+  transition: 0.2s; flex-shrink: 0;
+}
+.sp-close:hover { background: var(--red-bg); color: var(--red); }
+
+.sp-body {
+  flex: 1; overflow-y: auto; padding: 28px 32px 32px;
+  scrollbar-width: thin; scrollbar-color: var(--ink-12) transparent;
+}
+.sp-body::-webkit-scrollbar { width: 6px; }
+.sp-body::-webkit-scrollbar-thumb { background: var(--ink-12); border-radius: 3px; }
+
+.sp-section {
+  margin-bottom: 28px;
+}
+.sp-section-title {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1px; color: var(--ink-40); margin-bottom: 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+.sp-section-title::after {
+  content: ''; flex: 1; height: 1px; background: var(--ink-06);
+}
+.sp-section-title.hebrew { color: var(--amber); }
+.sp-section-title.hebrew::after { background: var(--amber-bg); }
+
+.sp-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;
+}
+.sp-full { margin-bottom: 16px; }
+
+.sp-field label {
+  display: block; font-size: 12px; font-weight: 600; color: var(--ink-60);
+  margin-bottom: 6px;
+}
+.sp-field input,
+.sp-field select,
+.sp-field textarea {
+  width: 100%; padding: 11px 14px;
+  border: 1.5px solid var(--ink-12); border-radius: 8px;
+  font-family: var(--font); font-size: 14px; color: var(--ink);
+  background: var(--white); outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.sp-field input:focus,
+.sp-field select:focus,
+.sp-field textarea:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(0,56,184,0.08);
+}
+.sp-field textarea {
+  resize: vertical; min-height: 100px; line-height: 1.6;
+}
+.sp-field input::placeholder,
+.sp-field textarea::placeholder {
+  color: var(--ink-12); font-weight: 400;
+}
+
+/* Checkbox row */
+.sp-checks {
+  display: flex; gap: 20px; flex-wrap: wrap; margin-top: 4px;
+}
+.sp-check {
+  display: flex; align-items: center; gap: 8px; cursor: pointer;
+}
+.sp-check input[type="checkbox"] {
+  width: 20px; height: 20px; accent-color: var(--blue); cursor: pointer;
+  border-radius: 4px;
+}
+.sp-check span {
+  font-size: 14px; color: var(--ink-60); font-weight: 600;
+}
+
+/* Footer bar */
+.sp-footer {
+  padding: 18px 32px; border-top: 1px solid var(--ink-06);
+  display: flex; gap: 10px; justify-content: flex-end; align-items: center;
+  flex-shrink: 0; background: var(--ink-03);
+}
+.sp-footer .sp-footer-info {
+  margin-right: auto; font-size: 12px; color: var(--ink-40); font-weight: 500;
+}
+.sp-btn {
+  height: 42px; padding: 0 22px; border: none; border-radius: 8px;
+  font-family: var(--font); font-size: 14px; font-weight: 700;
+  cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px;
+}
+.sp-btn-cancel {
+  background: var(--white); color: var(--ink-40); border: 1px solid var(--ink-12);
+}
+.sp-btn-cancel:hover { background: var(--ink-03); color: var(--ink-60); }
+.sp-btn-save {
+  background: var(--blue); color: var(--white);
+}
+.sp-btn-save:hover { background: var(--blue-deep); }
+.sp-btn-publish-action {
+  background: var(--green); color: var(--white);
+}
+.sp-btn-publish-action:hover { background: #15803D; }
 
 /* Empty */
 .empty-row td { text-align: center; color: var(--ink-40); padding: 40px; font-size: 14px; }
@@ -130,8 +242,12 @@ body { font-family: var(--font); background: var(--ink-03); color: var(--ink); -
 @media (max-width: 768px) {
   .page { padding: 16px; }
   .tbl { display: block; overflow-x: auto; }
-  .pf-row { grid-template-columns: 1fr; }
   .nav-tabs { display: none; }
+  .slide-panel { width: 100vw; }
+  .sp-row { grid-template-columns: 1fr; }
+  .sp-header { padding: 20px 20px 16px; }
+  .sp-body { padding: 20px; }
+  .sp-footer { padding: 14px 20px; }
 }
 </style>
 </head>
@@ -236,6 +352,20 @@ sbAuth.auth.onAuthStateChange((event,session)=>{authSession=session;});
   </div>
 </div>
 
+<!-- SLIDE-OUT PANEL (shared for all edit/publish forms) -->
+<div class="panel-overlay" id="panelOverlay" onclick="closePanel()"></div>
+<div class="slide-panel" id="slidePanel">
+  <div class="sp-header">
+    <div>
+      <div class="sp-title" id="spTitle">Edit Charity</div>
+      <div class="sp-subtitle" id="spSubtitle"></div>
+    </div>
+    <button class="sp-close" onclick="closePanel()">&times;</button>
+  </div>
+  <div class="sp-body" id="spBody"></div>
+  <div class="sp-footer" id="spFooter"></div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -248,6 +378,7 @@ function getHeaders(){
 }
 
 let suggestions=[],charities=[],categories=[];
+let currentPanelId=null, currentPanelType=null;
 
 // Sanitize strings to prevent XSS
 function esc(str){if(!str)return '';const d=document.createElement('div');d.textContent=str;return d.innerHTML;}
@@ -285,7 +416,7 @@ function renderSuggestions(){
     const d=new Date(s.created_at);
     const date=d.toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
     const statusCls=s.status==='pending'?'status-pending':s.status==='approved'?'status-approved':'status-rejected';
-    return`<tr id="sug-${s.id}">
+    return`<tr>
       <td>
         <div class="cell-name">${esc(s.charity_name)}</div>
         ${s.website_url?`<a href="${esc(s.website_url)}" target="_blank" rel="noopener" class="cell-url">${esc(s.website_url)}</a>`:''}
@@ -300,54 +431,10 @@ function renderSuggestions(){
       <td>
         <div class="actions">
           ${s.status==='pending'?`
-            <button class="btn-sm btn-edit-sub" onclick="openEditSub('${s.id}')">Edit</button>
-            <button class="btn-sm btn-publish" onclick="openPublish('${s.id}')">Publish</button>
+            <button class="btn-sm btn-edit-sub" onclick="openEditSubPanel('${s.id}')">Edit</button>
+            <button class="btn-sm btn-publish" onclick="openPublishPanel('${s.id}')">Publish</button>
             <button class="btn-sm btn-reject" onclick="rejectSuggestion('${s.id}')">Reject</button>
           `:`<span style="font-size:12px;color:var(--ink-40);">—</span>`}
-        </div>
-        <!-- Edit Submission Form -->
-        <div class="edit-form" id="ef-${s.id}">
-          <div style="font-size:13px;font-weight:700;color:var(--blue);margin-bottom:12px;">Edit Submission</div>
-          <div class="pf-row">
-            <div><label class="pf-label">Charity Name</label><input class="pf-input" id="ef-name-${s.id}" value="${esc(s.charity_name)}"></div>
-            <div><label class="pf-label">Category</label><select class="pf-select" id="ef-cat-${s.id}"><option value="">—</option>${categories.map(c=>`<option value="${esc(c.name)}" ${s.category===c.name?'selected':''}>${esc(c.name)}</option>`).join('')}</select></div>
-          </div>
-          <div class="pf-row">
-            <div><label class="pf-label">Website</label><input class="pf-input" id="ef-web-${s.id}" value="${esc(s.website_url||'')}"></div>
-            <div><label class="pf-label">Donation URL</label><input class="pf-input" id="ef-don-${s.id}" value="${esc(s.donation_url||'')}"></div>
-          </div>
-          <div class="pf-full"><label class="pf-label">Description</label><textarea class="pf-textarea" id="ef-desc-${s.id}">${esc(s.description||'')}</textarea></div>
-          <div class="pf-actions">
-            <button class="btn-cancel" onclick="closeEditSub('${s.id}')">Cancel</button>
-            <button class="btn-sm btn-save" onclick="saveEditSub('${s.id}')">Save Changes</button>
-          </div>
-        </div>
-        <!-- Publish Form -->
-        <div class="publish-form" id="pf-${s.id}">
-          <div style="font-size:13px;font-weight:700;color:var(--blue);margin-bottom:12px;">Review & Publish</div>
-          <div class="pf-row">
-            <div><label class="pf-label">Charity Name</label><input class="pf-input" id="pf-name-${s.id}" value="${esc(s.charity_name)}"></div>
-            <div><label class="pf-label">Category</label><select class="pf-select" id="pf-cat-${s.id}">${categories.map(c=>`<option value="${c.id}" ${s.category===c.name?'selected':''}>${esc(c.name)}</option>`).join('')}</select></div>
-          </div>
-          <div class="pf-row">
-            <div><label class="pf-label">Website</label><input class="pf-input" id="pf-web-${s.id}" value="${esc(s.website_url||'')}"></div>
-            <div><label class="pf-label">Donation URL</label><input class="pf-input" id="pf-don-${s.id}" value="${esc(s.donation_url||s.website_url||'')}"></div>
-          </div>
-          <div class="pf-row">
-            <div><label class="pf-label">Location</label><input class="pf-input" id="pf-loc-${s.id}" value="" placeholder="e.g. Jerusalem, Israel-wide"></div>
-            <div><label class="pf-label">Short Description</label><input class="pf-input" id="pf-short-${s.id}" value="" placeholder="One-liner for card display"></div>
-          </div>
-          <div class="pf-full"><label class="pf-label">Full Description</label><textarea class="pf-textarea" id="pf-desc-${s.id}">${esc(s.description||'')}</textarea></div>
-          <div style="margin:16px 0 8px;padding-top:12px;border-top:1px dashed var(--ink-12);font-size:12px;font-weight:700;color:var(--amber);">🇮🇱 Hebrew Translations (optional — can add later)</div>
-          <div class="pf-row">
-            <div><label class="pf-label">Name (Hebrew)</label><input class="pf-input" id="pf-name-he-${s.id}" value="" placeholder="שם העמותה" dir="rtl"></div>
-            <div><label class="pf-label">Short Desc (Hebrew)</label><input class="pf-input" id="pf-short-he-${s.id}" value="" placeholder="תיאור קצר" dir="rtl"></div>
-          </div>
-          <div class="pf-full"><label class="pf-label">Full Description (Hebrew)</label><textarea class="pf-textarea" id="pf-desc-he-${s.id}" placeholder="תיאור מלא" dir="rtl"></textarea></div>
-          <div class="pf-actions">
-            <button class="btn-cancel" onclick="closePublish('${s.id}')">Cancel</button>
-            <button class="btn-do-publish" onclick="doPublish('${s.id}')">Publish to Directory</button>
-          </div>
         </div>
       </td>
     </tr>`;
@@ -359,7 +446,7 @@ function renderCharities(){
   document.getElementById('charitiesCount').textContent=charities.length;
   body.innerHTML=charities.map(c=>{
     const cat=categories.find(ct=>ct.id===c.category_id);
-    return`<tr id="chr-${c.id}">
+    return`<tr>
       <td><div class="cell-name">${esc(c.name)}</div>${c.is_featured?'<span class="status status-approved" style="margin-top:4px;">Featured</span>':''}</td>
       <td>${cat?`${esc(cat.icon)} ${esc(cat.name)}`:'-'}</td>
       <td class="cell-date">${esc(c.location||'-')}</td>
@@ -367,135 +454,265 @@ function renderCharities(){
       <td><a href="${esc(c.donation_url)}" target="_blank" rel="noopener" class="cell-url">${esc((c.donation_url||'').replace('https://','').slice(0,35))}...</a></td>
       <td>
         <div class="actions">
-          <button class="btn-sm btn-edit" onclick="openEditCharity('${c.id}')">Edit</button>
+          <button class="btn-sm btn-edit" onclick="openEditCharityPanel('${c.id}')">Edit</button>
           <button class="btn-sm btn-delete" onclick="deleteCharity('${c.id}','${esc(c.name).replace(/'/g,"\\'")}')">Delete</button>
-        </div>
-        <div class="edit-form" id="ec-${c.id}">
-          <div style="font-size:13px;font-weight:700;color:var(--blue);margin-bottom:12px;">Edit Charity</div>
-          <div class="pf-row">
-            <div><label class="pf-label">Charity Name</label><input class="pf-input" id="ec-name-${c.id}" value="${esc(c.name)}"></div>
-            <div><label class="pf-label">Category</label><select class="pf-select" id="ec-cat-${c.id}">${categories.map(ct=>`<option value="${ct.id}" ${ct.id===c.category_id?'selected':''}>${esc(ct.name)}</option>`).join('')}</select></div>
-          </div>
-          <div class="pf-row">
-            <div><label class="pf-label">Website</label><input class="pf-input" id="ec-web-${c.id}" value="${esc(c.website_url||'')}"></div>
-            <div><label class="pf-label">Donation URL</label><input class="pf-input" id="ec-don-${c.id}" value="${esc(c.donation_url||'')}"></div>
-          </div>
-          <div class="pf-row">
-            <div><label class="pf-label">Location</label><input class="pf-input" id="ec-loc-${c.id}" value="${esc(c.location||'')}"></div>
-            <div><label class="pf-label">Short Description</label><input class="pf-input" id="ec-short-${c.id}" value="${esc(c.short_description||'')}"></div>
-          </div>
-          <div class="pf-full"><label class="pf-label">Full Description</label><textarea class="pf-textarea" id="ec-desc-${c.id}">${esc(c.description||'')}</textarea></div>
-          <div style="margin:16px 0 8px;padding-top:12px;border-top:1px dashed var(--ink-12);font-size:12px;font-weight:700;color:var(--amber);">🇮🇱 Hebrew Translations</div>
-          <div class="pf-row">
-            <div><label class="pf-label">Name (Hebrew)</label><input class="pf-input" id="ec-name-he-${c.id}" value="${esc(c.name_he||'')}" dir="rtl"></div>
-            <div><label class="pf-label">Short Desc (Hebrew)</label><input class="pf-input" id="ec-short-he-${c.id}" value="${esc(c.short_description_he||'')}" dir="rtl"></div>
-          </div>
-          <div class="pf-row">
-            <div><label class="pf-label">Location (Hebrew)</label><input class="pf-input" id="ec-loc-he-${c.id}" value="${esc(c.location_he||'')}" dir="rtl"></div>
-            <div></div>
-          </div>
-          <div class="pf-full"><label class="pf-label">Full Description (Hebrew)</label><textarea class="pf-textarea" id="ec-desc-he-${c.id}" dir="rtl">${esc(c.description_he||'')}</textarea></div>
-          <div class="pf-check">
-            <input type="checkbox" id="ec-feat-${c.id}" ${c.is_featured?'checked':''}>
-            <label for="ec-feat-${c.id}">Featured</label>
-            <input type="checkbox" id="ec-ver-${c.id}" ${c.is_verified?'checked':''}>
-            <label for="ec-ver-${c.id}">Verified</label>
-            <input type="checkbox" id="ec-tax-${c.id}" ${c.is_tax_deductible_us?'checked':''}>
-            <label for="ec-tax-${c.id}">US Tax Deductible</label>
-          </div>
-          <div class="pf-actions">
-            <button class="btn-cancel" onclick="closeEditCharity('${c.id}')">Cancel</button>
-            <button class="btn-sm btn-save" onclick="saveEditCharity('${c.id}')">Save Changes</button>
-          </div>
         </div>
       </td>
     </tr>`;
   }).join('');
 }
 
-function openPublish(id){closeEditSub(id);document.getElementById('pf-'+id).classList.add('open');}
-function closePublish(id){document.getElementById('pf-'+id).classList.remove('open');}
+/* ===== SLIDE PANEL LOGIC ===== */
 
-// Edit submission (before publish)
-function openEditSub(id){closePublish(id);document.getElementById('ef-'+id).classList.add('open');}
-function closeEditSub(id){document.getElementById('ef-'+id).classList.remove('open');}
-async function saveEditSub(id){
-  const data={
-    charity_name: document.getElementById('ef-name-'+id).value,
-    category: document.getElementById('ef-cat-'+id).value||null,
-    website_url: document.getElementById('ef-web-'+id).value||null,
-    donation_url: document.getElementById('ef-don-'+id).value||null,
-    description: document.getElementById('ef-desc-'+id).value||null
-  };
-  const r=await fetch(`${SUPA}/rest/v1/charity_suggestions?id=eq.${id}`,{method:'PATCH',headers:{...getHeaders(),'Prefer':'return=minimal'},body:JSON.stringify(data)});
-  if(r.ok){toast('Submission updated!');load();}
-  else toast('Error saving changes.');
+function openPanel(){
+  document.getElementById('panelOverlay').classList.add('open');
+  document.getElementById('slidePanel').classList.add('open');
+  document.body.style.overflow='hidden';
 }
 
-// Edit published charity
-function openEditCharity(id){document.getElementById('ec-'+id).classList.add('open');}
-function closeEditCharity(id){document.getElementById('ec-'+id).classList.remove('open');}
-async function saveEditCharity(id){
+function closePanel(){
+  document.getElementById('panelOverlay').classList.remove('open');
+  document.getElementById('slidePanel').classList.remove('open');
+  document.body.style.overflow='';
+  currentPanelId=null; currentPanelType=null;
+}
+
+// Close on Escape key
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanel();});
+
+function catOptions(selectedId){
+  return categories.map(c=>`<option value="${c.id}" ${c.id===selectedId?'selected':''}>${esc(c.name)}</option>`).join('');
+}
+function catOptionsByName(selectedName){
+  return `<option value="">—</option>`+categories.map(c=>`<option value="${esc(c.name)}" ${selectedName===c.name?'selected':''}>${esc(c.name)}</option>`).join('');
+}
+
+/* --- EDIT CHARITY PANEL --- */
+function openEditCharityPanel(id){
+  const c=charities.find(x=>x.id===id);
+  if(!c)return;
+  currentPanelId=id; currentPanelType='editCharity';
+
+  document.getElementById('spTitle').textContent='Edit Charity';
+  document.getElementById('spSubtitle').textContent=c.name;
+
+  document.getElementById('spBody').innerHTML=`
+    <div class="sp-section">
+      <div class="sp-section-title">Basic Information</div>
+      <div class="sp-row">
+        <div class="sp-field"><label>Charity Name</label><input id="sp-name" value="${esc(c.name)}"></div>
+        <div class="sp-field"><label>Category</label><select id="sp-cat">${catOptions(c.category_id)}</select></div>
+      </div>
+      <div class="sp-row">
+        <div class="sp-field"><label>Website</label><input id="sp-web" value="${esc(c.website_url||'')}"></div>
+        <div class="sp-field"><label>Donation URL</label><input id="sp-don" value="${esc(c.donation_url||'')}"></div>
+      </div>
+      <div class="sp-row">
+        <div class="sp-field"><label>Location</label><input id="sp-loc" value="${esc(c.location||'')}" placeholder="e.g. Jerusalem, Tel Aviv"></div>
+        <div class="sp-field"><label>Short Description</label><input id="sp-short" value="${esc(c.short_description||'')}" placeholder="One-liner for card display"></div>
+      </div>
+      <div class="sp-full sp-field">
+        <label>Full Description</label>
+        <textarea id="sp-desc">${esc(c.description||'')}</textarea>
+      </div>
+    </div>
+
+    <div class="sp-section">
+      <div class="sp-section-title hebrew">Hebrew Translations</div>
+      <div class="sp-row">
+        <div class="sp-field"><label>Name (Hebrew)</label><input id="sp-name-he" value="${esc(c.name_he||'')}" dir="rtl" placeholder="שם העמותה"></div>
+        <div class="sp-field"><label>Short Desc (Hebrew)</label><input id="sp-short-he" value="${esc(c.short_description_he||'')}" dir="rtl" placeholder="תיאור קצר"></div>
+      </div>
+      <div class="sp-row">
+        <div class="sp-field"><label>Location (Hebrew)</label><input id="sp-loc-he" value="${esc(c.location_he||'')}" dir="rtl" placeholder="מיקום"></div>
+        <div class="sp-field"></div>
+      </div>
+      <div class="sp-full sp-field">
+        <label>Full Description (Hebrew)</label>
+        <textarea id="sp-desc-he" dir="rtl" placeholder="תיאור מלא">${esc(c.description_he||'')}</textarea>
+      </div>
+    </div>
+
+    <div class="sp-section">
+      <div class="sp-section-title">Settings</div>
+      <div class="sp-checks">
+        <label class="sp-check"><input type="checkbox" id="sp-feat" ${c.is_featured?'checked':''}><span>Featured</span></label>
+        <label class="sp-check"><input type="checkbox" id="sp-ver" ${c.is_verified?'checked':''}><span>Verified</span></label>
+        <label class="sp-check"><input type="checkbox" id="sp-tax" ${c.is_tax_deductible_us?'checked':''}><span>US Tax Deductible</span></label>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('spFooter').innerHTML=`
+    <button class="sp-btn sp-btn-cancel" onclick="closePanel()">Cancel</button>
+    <button class="sp-btn sp-btn-save" onclick="saveEditCharity()">Save Changes</button>
+  `;
+
+  openPanel();
+}
+
+async function saveEditCharity(){
+  const id=currentPanelId;
   const data={
-    name: document.getElementById('ec-name-'+id).value,
-    category_id: parseInt(document.getElementById('ec-cat-'+id).value),
-    website_url: document.getElementById('ec-web-'+id).value||null,
-    donation_url: document.getElementById('ec-don-'+id).value||'#',
-    location: document.getElementById('ec-loc-'+id).value||null,
-    short_description: document.getElementById('ec-short-'+id).value||null,
-    description: document.getElementById('ec-desc-'+id).value||'',
-    is_featured: document.getElementById('ec-feat-'+id).checked,
-    is_verified: document.getElementById('ec-ver-'+id).checked,
-    is_tax_deductible_us: document.getElementById('ec-tax-'+id).checked,
-    name_he: document.getElementById('ec-name-he-'+id).value||null,
-    short_description_he: document.getElementById('ec-short-he-'+id).value||null,
-    description_he: document.getElementById('ec-desc-he-'+id).value||null,
-    location_he: document.getElementById('ec-loc-he-'+id).value||null
+    name: document.getElementById('sp-name').value,
+    category_id: parseInt(document.getElementById('sp-cat').value),
+    website_url: document.getElementById('sp-web').value||null,
+    donation_url: document.getElementById('sp-don').value||'#',
+    location: document.getElementById('sp-loc').value||null,
+    short_description: document.getElementById('sp-short').value||null,
+    description: document.getElementById('sp-desc').value||'',
+    is_featured: document.getElementById('sp-feat').checked,
+    is_verified: document.getElementById('sp-ver').checked,
+    is_tax_deductible_us: document.getElementById('sp-tax').checked,
+    name_he: document.getElementById('sp-name-he').value||null,
+    short_description_he: document.getElementById('sp-short-he').value||null,
+    description_he: document.getElementById('sp-desc-he').value||null,
+    location_he: document.getElementById('sp-loc-he').value||null
   };
   const r=await fetch(`${SUPA}/rest/v1/charities?id=eq.${id}`,{method:'PATCH',headers:{...getHeaders(),'Prefer':'return=minimal'},body:JSON.stringify(data)});
-  if(r.ok){toast('Charity updated!');load();}
+  if(r.ok){closePanel();toast('Charity updated!');load();}
   else toast('Error saving changes.');
 }
 
-// Delete charity
-async function deleteCharity(id,name){
-  if(!confirm('Are you sure you want to delete "'+name+'" from the directory? This cannot be undone.'))return;
-  const r=await fetch(`${SUPA}/rest/v1/charities?id=eq.${id}`,{method:'DELETE',headers:{...getHeaders(),'Prefer':'return=minimal'}});
-  if(r.ok){toast('Charity deleted.');load();}
-  else toast('Error deleting charity.');
+/* --- EDIT SUGGESTION PANEL --- */
+function openEditSubPanel(id){
+  const s=suggestions.find(x=>x.id===id);
+  if(!s)return;
+  currentPanelId=id; currentPanelType='editSub';
+
+  document.getElementById('spTitle').textContent='Edit Submission';
+  document.getElementById('spSubtitle').textContent=s.charity_name;
+
+  document.getElementById('spBody').innerHTML=`
+    <div class="sp-section">
+      <div class="sp-section-title">Submission Details</div>
+      <div class="sp-row">
+        <div class="sp-field"><label>Charity Name</label><input id="sp-name" value="${esc(s.charity_name)}"></div>
+        <div class="sp-field"><label>Category</label><select id="sp-cat">${catOptionsByName(s.category)}</select></div>
+      </div>
+      <div class="sp-row">
+        <div class="sp-field"><label>Website</label><input id="sp-web" value="${esc(s.website_url||'')}"></div>
+        <div class="sp-field"><label>Donation URL</label><input id="sp-don" value="${esc(s.donation_url||'')}"></div>
+      </div>
+      <div class="sp-full sp-field">
+        <label>Description</label>
+        <textarea id="sp-desc">${esc(s.description||'')}</textarea>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('spFooter').innerHTML=`
+    <button class="sp-btn sp-btn-cancel" onclick="closePanel()">Cancel</button>
+    <button class="sp-btn sp-btn-save" onclick="saveEditSub()">Save Changes</button>
+  `;
+
+  openPanel();
 }
 
-async function doPublish(id){
-  const name=document.getElementById('pf-name-'+id).value;
+async function saveEditSub(){
+  const id=currentPanelId;
+  const data={
+    charity_name: document.getElementById('sp-name').value,
+    category: document.getElementById('sp-cat').value||null,
+    website_url: document.getElementById('sp-web').value||null,
+    donation_url: document.getElementById('sp-don').value||null,
+    description: document.getElementById('sp-desc').value||null
+  };
+  const r=await fetch(`${SUPA}/rest/v1/charity_suggestions?id=eq.${id}`,{method:'PATCH',headers:{...getHeaders(),'Prefer':'return=minimal'},body:JSON.stringify(data)});
+  if(r.ok){closePanel();toast('Submission updated!');load();}
+  else toast('Error saving changes.');
+}
+
+/* --- PUBLISH PANEL --- */
+function openPublishPanel(id){
+  const s=suggestions.find(x=>x.id===id);
+  if(!s)return;
+  currentPanelId=id; currentPanelType='publish';
+
+  document.getElementById('spTitle').textContent='Review & Publish';
+  document.getElementById('spSubtitle').textContent='Add "'+s.charity_name+'" to the live directory';
+
+  document.getElementById('spBody').innerHTML=`
+    <div class="sp-section">
+      <div class="sp-section-title">Basic Information</div>
+      <div class="sp-row">
+        <div class="sp-field"><label>Charity Name</label><input id="sp-name" value="${esc(s.charity_name)}"></div>
+        <div class="sp-field"><label>Category</label><select id="sp-cat">${catOptions(categories.find(c=>c.name===s.category)?.id||categories[0]?.id)}</select></div>
+      </div>
+      <div class="sp-row">
+        <div class="sp-field"><label>Website</label><input id="sp-web" value="${esc(s.website_url||'')}"></div>
+        <div class="sp-field"><label>Donation URL</label><input id="sp-don" value="${esc(s.donation_url||s.website_url||'')}"></div>
+      </div>
+      <div class="sp-row">
+        <div class="sp-field"><label>Location</label><input id="sp-loc" value="" placeholder="e.g. Jerusalem, Israel-wide"></div>
+        <div class="sp-field"><label>Short Description</label><input id="sp-short" value="" placeholder="One-liner for card display"></div>
+      </div>
+      <div class="sp-full sp-field">
+        <label>Full Description</label>
+        <textarea id="sp-desc">${esc(s.description||'')}</textarea>
+      </div>
+    </div>
+
+    <div class="sp-section">
+      <div class="sp-section-title hebrew">Hebrew Translations (optional — can add later)</div>
+      <div class="sp-row">
+        <div class="sp-field"><label>Name (Hebrew)</label><input id="sp-name-he" value="" dir="rtl" placeholder="שם העמותה"></div>
+        <div class="sp-field"><label>Short Desc (Hebrew)</label><input id="sp-short-he" value="" dir="rtl" placeholder="תיאור קצר"></div>
+      </div>
+      <div class="sp-full sp-field">
+        <label>Full Description (Hebrew)</label>
+        <textarea id="sp-desc-he" dir="rtl" placeholder="תיאור מלא"></textarea>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('spFooter').innerHTML=`
+    <button class="sp-btn sp-btn-cancel" onclick="closePanel()">Cancel</button>
+    <button class="sp-btn sp-btn-publish-action" onclick="doPublish()">Publish to Directory</button>
+  `;
+
+  openPanel();
+}
+
+async function doPublish(){
+  const id=currentPanelId;
+  const name=document.getElementById('sp-name').value;
   const slug=name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
   const data={
     name,
     slug: slug+'-'+Date.now().toString(36),
-    description: document.getElementById('pf-desc-'+id).value||name,
-    short_description: document.getElementById('pf-short-'+id).value||null,
-    category_id: parseInt(document.getElementById('pf-cat-'+id).value),
-    website_url: document.getElementById('pf-web-'+id).value||null,
-    donation_url: document.getElementById('pf-don-'+id).value||document.getElementById('pf-web-'+id).value||'#',
-    location: document.getElementById('pf-loc-'+id).value||null,
+    description: document.getElementById('sp-desc').value||name,
+    short_description: document.getElementById('sp-short').value||null,
+    category_id: parseInt(document.getElementById('sp-cat').value),
+    website_url: document.getElementById('sp-web').value||null,
+    donation_url: document.getElementById('sp-don').value||document.getElementById('sp-web').value||'#',
+    location: document.getElementById('sp-loc').value||null,
     is_verified: false,
-    name_he: document.getElementById('pf-name-he-'+id).value||null,
-    short_description_he: document.getElementById('pf-short-he-'+id).value||null,
-    description_he: document.getElementById('pf-desc-he-'+id).value||null
+    name_he: document.getElementById('sp-name-he').value||null,
+    short_description_he: document.getElementById('sp-short-he').value||null,
+    description_he: document.getElementById('sp-desc-he').value||null
   };
 
-  // Insert into charities
   const r1=await fetch(`${SUPA}/rest/v1/charities`,{method:'POST',headers:{...getHeaders(),'Prefer':'return=minimal'},body:JSON.stringify(data)});
-  // Update suggestion status
   const r2=await fetch(`${SUPA}/rest/v1/charity_suggestions?id=eq.${id}`,{method:'PATCH',headers:{...getHeaders(),'Prefer':'return=minimal'},body:JSON.stringify({status:'approved'})});
 
-  if(r1.ok&&r2.ok){ toast('Published! Charity is now live.'); load(); }
+  if(r1.ok&&r2.ok){closePanel();toast('Published! Charity is now live.');load();}
   else toast('Error publishing. Check the data.');
 }
+
+/* --- OTHER ACTIONS (unchanged logic) --- */
 
 async function rejectSuggestion(id){
   await fetch(`${SUPA}/rest/v1/charity_suggestions?id=eq.${id}`,{method:'PATCH',headers:{...getHeaders(),'Prefer':'return=minimal'},body:JSON.stringify({status:'rejected'})});
   toast('Suggestion rejected.');
   load();
+}
+
+async function deleteCharity(id,name){
+  if(!confirm('Are you sure you want to delete "'+name+'" from the directory? This cannot be undone.'))return;
+  const r=await fetch(`${SUPA}/rest/v1/charities?id=eq.${id}`,{method:'DELETE',headers:{...getHeaders(),'Prefer':'return=minimal'}});
+  if(r.ok){toast('Charity deleted.');load();}
+  else toast('Error deleting charity.');
 }
 
 async function toggleFeatured(id,checked){
