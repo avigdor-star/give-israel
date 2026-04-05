@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Partner Card Preview</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Figtree:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --il-blue: #0038B8;
+  --il-blue-deep: #002A8C;
+  --il-blue-mist: #D6E4FA;
+  --il-blue-ghost: #EDF2FD;
+  --il-blue-tint: #F6F9FF;
+  --white: #FFFFFF;
+  --ivory: #FAFBFD;
+  --ink: #0C1324;
+  --ink-60: #4A5578;
+  --ink-40: #7B849E;
+  --ink-06: #EBEEF5;
+  --ink-03: #F4F6FA;
+  --success: #0D9F5F;
+  --success-bg: #E6F9F0;
+  --amber: #B8860B;
+  --amber-bg: #FFF8E6;
+  --r-lg: 14px;
+  --r-md: 10px;
+  --r-sm: 6px;
+  --font-display: 'Cormorant Garamond', serif;
+  --font-body: 'Figtree', sans-serif;
+  --dur: 0.25s;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--ivory);
+  color: var(--ink);
+  padding: 40px;
+  -webkit-font-smoothing: antialiased;
+}
+
+h2 {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  color: var(--ink-40);
+  font-size: 14px;
+  margin-bottom: 32px;
+}
+
+.compare {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+  max-width: 1100px;
+}
+
+.label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--ink-40);
+  margin-bottom: 10px;
+}
+
+/* ---- CARD STYLES (copied from live site) ---- */
+.card {
+  background: var(--white);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--ink-06);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: all var(--dur) var(--ease);
+  position: relative;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--il-blue);
+  opacity: 0;
+  transition: opacity var(--dur) var(--ease);
+}
+
+.card:hover {
+  border-color: var(--il-blue-mist);
+  box-shadow: 0 8px 28px rgba(0,42,140,0.08), 0 2px 8px rgba(0,42,140,0.04);
+  transform: translateY(-2px);
+}
+
+.card:hover::before { opacity: 1; }
+
+/* ---- PARTNER CARD STYLING ---- */
+.card.partner {
+  border: 3px solid var(--il-blue);
+  box-shadow: 0 4px 20px rgba(0,56,184,0.12);
+}
+
+.card.partner::before {
+  opacity: 0;
+  height: 0;
+}
+
+.partner-banner {
+  background: var(--il-blue);
+  color: var(--white);
+  text-align: center;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  padding: 6px 0;
+}
+
+/* ---- Card internals ---- */
+.card-head {
+  padding: 20px 20px 0;
+  display: flex;
+  gap: 14px;
+}
+
+.card-mono {
+  width: 46px;
+  height: 46px;
+  border-radius: var(--r-md);
+  background: var(--ink-03);
+  color: var(--il-blue);
+  display: grid;
+  place-items: center;
+  font-size: 15px;
+  font-weight: 700;
+  flex-shrink: 0;
+  letter-spacing: -0.5px;
+  font-family: var(--font-body);
+  overflow: hidden;
+  border: 1px solid var(--ink-06);
+}
+
+.card-mono img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 6px;
+}
+
+.card-meta { flex: 1; min-width: 0; }
+
+.card-name {
+  font-family: var(--font-body);
+  font-size: 15.5px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.3;
+}
+
+.card-loc {
+  font-size: 11.5px;
+  color: var(--ink-40);
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.card-tags {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.tag {
+  padding: 2px 7px;
+  border-radius: var(--r-sm);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.tag-v { background: var(--success-bg); color: var(--success); }
+.tag-t { background: var(--amber-bg); color: var(--amber); }
+
+.card-body {
+  padding: 12px 20px;
+  flex: 1;
+}
+
+.card-desc {
+  font-size: 13px;
+  color: var(--ink-60);
+  line-height: 1.55;
+}
+
+.card-cat-label {
+  margin-top: 10px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--il-blue);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.card-foot {
+  padding: 14px 20px;
+  border-top: 1px solid var(--ink-03);
+  display: flex;
+  gap: 8px;
+}
+
+.btn-donate {
+  flex: 1;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: var(--il-blue);
+  color: var(--white);
+  border: none;
+  border-radius: var(--r-sm);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background var(--dur) var(--ease);
+}
+
+.btn-donate:hover { background: var(--il-blue-deep); }
+
+.btn-web {
+  height: 40px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: var(--il-blue);
+  border: 1.5px solid var(--ink-06);
+  border-radius: var(--r-sm);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--dur) var(--ease);
+}
+
+.btn-web:hover { border-color: var(--il-blue); background: var(--il-blue-tint); }
+</style>
+</head>
+<body>
+
+<h2>Partner Card Preview</h2>
+<p class="subtitle">Side-by-side: normal card vs. Partner card with prominent banner and thicker border</p>
+
+<div class="compare">
+
+  <!-- NORMAL CARD -->
+  <div>
+    <div class="label">Normal Card</div>
+    <div class="card">
+      <div class="card-head">
+        <div class="card-mono"><img src="https://www.google.com/s2/favicons?domain=aleh.org&sz=128" alt="ALEH"></div>
+        <div class="card-meta">
+          <div class="card-name">ALEH</div>
+          <div class="card-loc">📍 Israel-wide</div>
+          <div class="card-tags">
+            <span class="tag tag-v">✓ Verified</span>
+            <span class="tag tag-t">US Tax Deductible</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-desc">Israel's largest network of care for children with severe disabilities, providing residential, rehabilitative and educational services.</div>
+        <div class="card-cat-label">♿ Special Needs</div>
+      </div>
+      <div class="card-foot">
+        <a href="#" class="btn-donate"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>Donate</a>
+        <a href="#" class="btn-web">Website</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- PARTNER CARD -->
+  <div>
+    <div class="label">Partner Card</div>
+    <div class="card partner">
+      <div class="partner-banner">★ Partner</div>
+      <div class="card-head">
+        <div class="card-mono"><img src="https://www.google.com/s2/favicons?domain=aleh.org&sz=128" alt="ALEH"></div>
+        <div class="card-meta">
+          <div class="card-name">ALEH</div>
+          <div class="card-loc">📍 Israel-wide</div>
+          <div class="card-tags">
+            <span class="tag tag-v">✓ Verified</span>
+            <span class="tag tag-t">US Tax Deductible</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-desc">Israel's largest network of care for children with severe disabilities, providing residential, rehabilitative and educational services.</div>
+        <div class="card-cat-label">♿ Special Needs</div>
+      </div>
+      <div class="card-foot">
+        <a href="#" class="btn-donate"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>Donate</a>
+        <a href="#" class="btn-web">Website</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- PARTNER CARD (another example) -->
+  <div>
+    <div class="label">Partner Card (Featured too)</div>
+    <div class="card partner">
+      <div class="partner-banner">★ Partner</div>
+      <div class="card-head">
+        <div class="card-mono"><img src="https://www.google.com/s2/favicons?domain=natal.org.il&sz=128" alt="NATAL"></div>
+        <div class="card-meta">
+          <div class="card-name">NATAL — Israel Trauma & Resiliency</div>
+          <div class="card-loc">📍 Tel Aviv</div>
+          <div class="card-tags">
+            <span class="tag tag-v">✓ Verified</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-desc">National center for psychotrauma, providing free emotional support and therapy for victims of terror and war.</div>
+        <div class="card-cat-label">🎗️ Terror Victims</div>
+      </div>
+      <div class="card-foot">
+        <a href="#" class="btn-donate"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>Donate</a>
+        <a href="#" class="btn-web">Website</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
