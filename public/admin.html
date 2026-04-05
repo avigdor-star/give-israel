@@ -345,7 +345,7 @@ sbAuth.auth.onAuthStateChange((event,session)=>{authSession=session;});
         <div class="panel-count" id="charitiesCount">0</div>
       </div>
       <table class="tbl">
-        <thead><tr><th>Name</th><th>Category</th><th>Location</th><th>Featured</th><th>Donation Link</th><th>Actions</th></tr></thead>
+        <thead><tr><th>Name</th><th>Category</th><th>Location</th><th>Featured</th><th>Partner</th><th>Donation Link</th><th>Actions</th></tr></thead>
         <tbody id="charitiesBody"></tbody>
       </table>
     </div>
@@ -447,10 +447,11 @@ function renderCharities(){
   body.innerHTML=charities.map(c=>{
     const cat=categories.find(ct=>ct.id===c.category_id);
     return`<tr>
-      <td><div class="cell-name">${esc(c.name)}</div>${c.is_featured?'<span class="status status-approved" style="margin-top:4px;">Featured</span>':''}</td>
+      <td><div class="cell-name">${esc(c.name)}</div>${c.is_featured?'<span class="status status-approved" style="margin-top:4px;">Featured</span>':''}${c.is_partner?'<span class="status" style="margin-top:4px;background:var(--blue);color:#fff;">Partner</span>':''}</td>
       <td>${cat?`${esc(cat.icon)} ${esc(cat.name)}`:'-'}</td>
       <td class="cell-date">${esc(c.location||'-')}</td>
       <td><input type="checkbox" ${c.is_featured?'checked':''} onchange="toggleFeatured('${c.id}',this.checked)" style="width:18px;height:18px;accent-color:var(--green);cursor:pointer;"></td>
+      <td><input type="checkbox" ${c.is_partner?'checked':''} onchange="togglePartner('${c.id}',this.checked)" style="width:18px;height:18px;accent-color:var(--blue);cursor:pointer;"></td>
       <td><a href="${esc(c.donation_url)}" target="_blank" rel="noopener" class="cell-url">${esc((c.donation_url||'').replace('https://','').slice(0,35))}...</a></td>
       <td>
         <div class="actions">
@@ -539,6 +540,7 @@ function openEditCharityPanel(id){
         <label class="sp-check"><input type="checkbox" id="sp-feat" ${c.is_featured?'checked':''}><span>Featured</span></label>
         <label class="sp-check"><input type="checkbox" id="sp-ver" ${c.is_verified?'checked':''}><span>Verified</span></label>
         <label class="sp-check"><input type="checkbox" id="sp-tax" ${c.is_tax_deductible_us?'checked':''}><span>US Tax Deductible</span></label>
+        <label class="sp-check"><input type="checkbox" id="sp-partner" ${c.is_partner?'checked':''}><span>Partner</span></label>
       </div>
     </div>
   `;
@@ -564,6 +566,7 @@ async function saveEditCharity(){
     is_featured: document.getElementById('sp-feat').checked,
     is_verified: document.getElementById('sp-ver').checked,
     is_tax_deductible_us: document.getElementById('sp-tax').checked,
+    is_partner: document.getElementById('sp-partner').checked,
     name_he: document.getElementById('sp-name-he').value||null,
     short_description_he: document.getElementById('sp-short-he').value||null,
     description_he: document.getElementById('sp-desc-he').value||null,
@@ -719,6 +722,12 @@ async function toggleFeatured(id,checked){
   const r=await fetch(`${SUPA}/rest/v1/charities?id=eq.${id}`,{method:'PATCH',headers:{...getHeaders(),'Prefer':'return=minimal'},body:JSON.stringify({is_featured:checked})});
   if(r.ok){toast(checked?'Charity featured!':'Charity unfeatured.');load();}
   else toast('Error updating featured status.');
+}
+
+async function togglePartner(id,checked){
+  const r=await fetch(`${SUPA}/rest/v1/charities?id=eq.${id}`,{method:'PATCH',headers:{...getHeaders(),'Prefer':'return=minimal'},body:JSON.stringify({is_partner:checked})});
+  if(r.ok){toast(checked?'Charity marked as Partner!':'Partner status removed.');load();}
+  else toast('Error updating partner status.');
 }
 
 function showTab(tab){

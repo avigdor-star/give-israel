@@ -391,6 +391,9 @@ body::after {
 .card.feat::before { opacity: 1; }
 .card.feat { border-color: var(--il-blue-mist); }
 
+.card.partner { border: 2.5px solid var(--il-blue); box-shadow: 0 4px 16px rgba(0,56,184,0.10); }
+.card.partner::before { opacity: 1; height: 4px; }
+
 /* Card internals */
 .card-head {
   padding: 20px 20px 0;
@@ -458,6 +461,7 @@ body::after {
 .tag-v { background: var(--success-bg); color: var(--success); }
 .tag-f { background: var(--il-blue-ghost); color: var(--il-blue); }
 .tag-t { background: var(--amber-bg); color: var(--amber); }
+.tag-p { background: var(--il-blue); color: var(--white); }
 
 .card-body {
   padding: 12px 20px;
@@ -1804,6 +1808,7 @@ const LANG = {
     charityPlural: 'charities',
     verified: '✓ Verified',
     featured: '★ Featured',
+    partner: '★ Partner',
     taxDeductible: 'US Tax Deductible',
     donate: 'Donate',
     website: 'Website',
@@ -1896,6 +1901,7 @@ const LANG = {
     charityPlural: 'עמותות',
     verified: '✓ מאומת',
     featured: '★ מומלץ',
+    partner: '★ שותף',
     taxDeductible: 'מוכר למס בארה״ב',
     donate: 'לתרומה',
     website: 'אתר',
@@ -2157,8 +2163,9 @@ function card(ch,idx,feat){
   let tg='';
   if(ch.is_verified)tg+='<span class="tag tag-v">'+t('verified')+'</span>';
   if(ch.is_featured&&feat)tg+='<span class="tag tag-f">'+t('featured')+'</span>';
+  if(ch.is_partner)tg+='<span class="tag tag-p">'+t('partner')+'</span>';
   if(ch.is_tax_deductible_us)tg+='<span class="tag tag-t">'+t('taxDeductible')+'</span>';
-  return`<div class="card ${ch.is_featured?'feat':''}" style="animation-delay:${Math.min(idx*0.04,0.35)}s">
+  return`<div class="card ${ch.is_featured?'feat':''}${ch.is_partner?' partner':''}" style="animation-delay:${Math.min(idx*0.04,0.35)}s">
     <div class="card-head"><div class="card-mono">${ch.logo_url?`<img src="${esc(ch.logo_url)}" alt="${esc(ch.name)}" onerror="this.parentElement.textContent='${ini}'">`:ini}</div><div class="card-meta"><div class="card-name">${esc(cf(ch,'name'))}</div>${cf(ch,'location')?`<div class="card-loc">📍 ${esc(cf(ch,'location'))}</div>`:''}<div class="card-tags">${tg}</div></div></div>
     <div class="card-body"><div class="card-desc">${esc(cf(ch,'short_description')||cf(ch,'description'))}</div>${ct?`<div class="card-cat-label">${esc(ct.icon)} ${esc(catf(ct,'name'))}</div>`:''}</div>
     <div class="card-foot"><a href="${esc(ch.donation_url)}" target="_blank" rel="noopener" class="btn-donate"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>${t('donate')}</a>${ch.website_url?`<a href="${esc(ch.website_url)}" target="_blank" rel="noopener" class="btn-web">${t('website')}</a>`:''}</div></div>`;

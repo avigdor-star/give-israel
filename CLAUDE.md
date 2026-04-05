@@ -23,6 +23,7 @@ Desktop/give-israel/
 ├── public/                     ← DEPLOYED FOLDER (Vercel serves this)
 │   ├── index.html              ← The entire main site (single file — HTML, CSS, JS all in one)
 │   ├── admin.html              ← Admin dashboard for reviewing & publishing suggestions
+│   ├── give-israel-logo.png     ← Shield logo icon (128×128, used in header)
 │   ├── og-image.jpg            ← Feature image for social sharing (WhatsApp, Facebook, Twitter)
 │   └── og-image.png            ← Backup/generated OG image (map style, not currently in use)
 ├── vercel.json                 ← Vercel hosting config (headers, security, routing)
@@ -155,6 +156,7 @@ Desktop/give-israel/
 - **OG Image**: /og-image.jpg (custom image showing the app interface with Jerusalem background)
 - **Twitter Card**: summary_large_image
 - **Favicon**: Inline SVG — blue square with Star of David and heart
+- **Header Logo**: Blue shield icon with Star of David cutout (`/give-israel-logo.png`, 70×70px) alongside "GiveIsrael" wordmark text
 
 NOTE: The og:image URLs currently use relative paths (/og-image.jpg). For full social media compatibility, these should be updated to absolute URLs (https://giveisrael.charity/og-image.jpg) once confirmed.
 
@@ -366,3 +368,8 @@ March 2026 — Built with Claude using the Mikoshi Protocol for research and pla
   - **Established verification rule**: a charity is "verified" only if it has all three: working website, Amuta number, and donation link
   - **Directory grew from 45 → 57 charities** across all 15 categories (Technology & Innovation no longer empty)
 - **March 20, 2026** — Removed CSS truncation on charity card descriptions: deleted `-webkit-line-clamp: 2` and related overflow rules from `.card-desc` so the full short_description text is always visible on every card. Cards grow taller as needed. Works in both English and Hebrew/RTL views.
+- **March 20, 2026** — New logo and mobile UX improvements:
+  - **New logo icon**: Replaced the CSS blue square + Star of David emoji with the actual Give Israel shield logo (`give-israel-logo.png` in `/public`). Icon displays at 70×70px alongside the "GiveIsrael" wordmark. Original 1024×1024 PNG resized to 128×128 (~6 KB) for fast loading.
+  - **Mobile suggest button**: Styled as a filled blue circle with white "+" icon, properly centered, pushed to the right next to the language toggle.
+  - **Scroll offset fix**: All `scrollIntoView` calls replaced with a `scrollToEl()` helper that accounts for the sticky header and category nav height. Quiz results and category filters now scroll to the correct visible position.
+  - **Auto-hide header on mobile**: Header slides up and hides when scrolling down (below 680px width), reappears on scroll up. Category nav adjusts its top position accordingly. Desktop header remains sticky and always visible.
