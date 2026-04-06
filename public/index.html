@@ -2193,6 +2193,11 @@ function updateQuizText() {
     document.querySelector('.quiz-start-btn').innerHTML = t('quizStart') + ' <span>' + t('quizArrow') + '</span>';
     document.querySelector('.quiz-note').textContent = t('quizNote');
   }
+  // If quiz is active (mid-question), re-render so translations update
+  const active = document.getElementById('quizActive');
+  if (active && active.classList.contains('show')) {
+    quizRender();
+  }
 }
 
 let allCharities=[],allCategories=[],activeCat=null,sq='',quizMatchData=null;
