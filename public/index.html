@@ -1289,6 +1289,78 @@ html[dir="rtl"] .to-top { right: auto; left: 24px; }
   background: rgba(255,255,255,0.05);
 }
 
+/* ===== Quiz Match Results (Option C) ===== */
+.quiz-match-hero {
+  display: none;
+  background: linear-gradient(165deg, #001B5E 0%, #0038B8 40%, #1456D6 100%);
+  padding: 48px 24px 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.quiz-match-hero.show {
+  display: block;
+  animation: personaReveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.quiz-match-hero::before,
+.quiz-match-hero::after {
+  content: '✡'; position: absolute; font-size: 120px; opacity: 0.04; color: white;
+}
+.quiz-match-hero::before { top: -20px; left: -30px; }
+.quiz-match-hero::after { bottom: -20px; right: -30px; }
+
+.qm-icon { font-size: 2.8rem; display: block; margin-bottom: 8px; animation: emojiPop 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.2s both; }
+.qm-label { font-family: var(--font-body); font-size: 0.65rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.45); margin-bottom: 4px; }
+.qm-name { font-family: var(--font-display); font-size: 2.4rem; font-weight: 600; font-style: italic; color: white; margin-bottom: 8px; }
+html[dir="rtl"] .qm-name { font-family: var(--font-display-he); }
+.qm-desc { font-size: 0.9rem; color: rgba(255,255,255,0.65); max-width: 500px; margin: 0 auto 28px; line-height: 1.6; font-weight: 300; }
+
+.qm-badges { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+.qm-badge {
+  display: flex; align-items: center; gap: 7px;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 100px; padding: 8px 14px 8px 11px;
+  cursor: pointer; transition: all 0.3s ease;
+  font-family: var(--font-body); color: white; font-size: 0.78rem; font-weight: 600;
+}
+.qm-badge:hover { background: rgba(255,255,255,0.15); transform: translateY(-2px); }
+.qm-badge.active { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.3); box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.qm-badge-icon { font-size: 1.1rem; }
+.qm-badge-rank { font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.08em; padding: 2px 7px; border-radius: 100px; font-weight: 700; }
+.qm-badge-rank.rank-top { background: var(--gold); color: #1a1a1a; }
+.qm-badge-rank.rank-strong { background: rgba(255,255,255,0.18); color: white; }
+.qm-badge-rank.rank-also { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.6); }
+
+.grid-all:has(.qm-group) { display: block; }
+.qm-group { margin-bottom: 32px; }
+.qm-group-header {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 16px; padding-bottom: 10px;
+  border-bottom: 1px solid var(--il-blue-mist);
+}
+.qm-group-icon { font-size: 1.2rem; }
+.qm-group-name { font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; color: var(--ink); }
+html[dir="rtl"] .qm-group-name { font-family: var(--font-display-he); }
+.qm-rank-pill { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; padding: 3px 9px; border-radius: 100px; }
+.qm-rank-pill.pill-top { background: #FFF8E7; color: var(--amber); }
+.qm-rank-pill.pill-strong { background: var(--il-blue-ghost); color: var(--il-blue); }
+.qm-rank-pill.pill-also { background: #f0f0f5; color: var(--ink-40); }
+
+.qm-bottom-bar { text-align: center; padding: 28px 24px; border-top: 1px solid var(--il-blue-mist); margin-top: 16px; }
+.qm-bottom-bar p { font-size: 0.82rem; color: var(--ink-40); margin-bottom: 14px; }
+.qm-bottom-btn { padding: 11px 24px; border-radius: 8px; font-family: var(--font-body); font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.25s ease; margin: 0 5px; }
+.qm-bottom-btn.qm-retake { background: none; border: 1.5px solid var(--il-blue-mist); color: var(--il-blue); }
+.qm-bottom-btn.qm-retake:hover { border-color: var(--il-blue); background: var(--il-blue-tint); }
+.qm-bottom-btn.qm-browse { background: var(--il-blue); border: none; color: white; }
+.qm-bottom-btn.qm-browse:hover { background: var(--il-blue-deep); }
+
+@media (max-width: 680px) {
+  .quiz-match-hero { padding: 32px 16px 28px; }
+  .qm-name { font-size: 1.8rem; }
+  .qm-badges { gap: 6px; }
+  .qm-badge { padding: 6px 10px 6px 8px; font-size: 0.7rem; }
+}
+
 /* Confetti */
 .confetti-box { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9998; overflow: hidden; }
 .confetti-p { position: absolute; top: -12px; animation: confettiFall 3s ease-out forwards; }
@@ -1698,6 +1770,9 @@ html[dir="rtl"] .quiz-back-btn .back-arrow { transform: scaleX(-1); }
 </section>
 <div class="confetti-box" id="confettiBox"></div>
 
+<!-- QUIZ MATCH RESULTS (Option C reveal) -->
+<section class="quiz-match-hero" id="quizMatchHero"></section>
+
 <!-- QUIZ REMINDER STRIP (shown when search is focused) -->
 <div class="quiz-reminder-strip" id="quizReminderStrip">
   <div class="quiz-reminder-inner">
@@ -1848,8 +1923,11 @@ const LANG = {
     quizTopMatch: 'Top Match',
     quizStrongMatch: 'Strong Match',
     quizAlsoResonates: 'Also Resonates',
-    quizSeeMatch: 'See My Top Match →',
+    quizSeeMatch: 'See My Matches →',
     quizRetake: 'Retake Quiz',
+    quizMatchAll: 'All Matches',
+    quizBrowseAll: 'Browse All {n} Charities',
+    quizWantDifferent: 'Want to see something different?',
     quizBack: 'Back',
     quizReminderText: 'Not sure what to search for? Let us help you find the right cause.',
     quizReminderBtn: 'Take the Quiz',
@@ -1941,8 +2019,11 @@ const LANG = {
     quizTopMatch: 'ההתאמה הטובה ביותר',
     quizStrongMatch: 'התאמה חזקה',
     quizAlsoResonates: 'גם מתחבר',
-    quizSeeMatch: 'צפו בהתאמה המובילה ←',
+    quizSeeMatch: 'צפו בהתאמות שלכם ←',
     quizRetake: 'קחו את השאלון שוב',
+    quizMatchAll: 'כל ההתאמות',
+    quizBrowseAll: 'עיינו בכל {n} העמותות',
+    quizWantDifferent: 'רוצים לראות משהו אחר?',
     quizBack: 'חזרה',
     quizReminderText: 'לא בטוחים מה לחפש? בואו נעזור לכם למצוא את המטרה הנכונה.',
     quizReminderBtn: 'קחו את השאלון',
@@ -2114,7 +2195,7 @@ function updateQuizText() {
   }
 }
 
-let allCharities=[],allCategories=[],activeCat=null,sq='';
+let allCharities=[],allCategories=[],activeCat=null,sq='',quizMatchData=null;
 
 // Sanitize strings to prevent XSS
 function esc(str){if(!str)return '';const d=document.createElement('div');d.textContent=str;return d.innerHTML;}
@@ -2145,6 +2226,54 @@ function renderCats(){
 
 function renderCards(){
   let f=[...allCharities];
+
+  // Quiz match mode: grouped display
+  if(quizMatchData){
+    const fs=document.getElementById('featuredSection');
+    fs.style.display='none';
+    const g=document.getElementById('charityGrid'),em=document.getElementById('emptyState'),st=document.getElementById('sectionTitle'),rc=document.getElementById('resultsCount');
+    const matchIds=quizMatchData.matchCatIds;
+    const ranks=[t('quizTopMatch'),t('quizStrongMatch'),t('quizAlsoResonates')];
+    const pillClasses=['pill-top','pill-strong','pill-also'];
+
+    // Filter to matched categories (or single if activeCat is set)
+    if(activeCat){f=f.filter(c=>c.category_id===activeCat);}
+    else{f=f.filter(c=>matchIds.includes(c.category_id));}
+
+    st.textContent=activeCat?catf(allCategories.find(c=>c.id===activeCat),'name'):t('quizMatchAll');
+    rc.innerHTML=`<strong>${f.length}</strong> ${f.length===1?t('charitySingular'):t('charityPlural')}`;
+
+    if(!f.length){g.innerHTML='';em.style.display='';return;}
+    em.style.display='none';
+
+    // Build grouped HTML
+    let html='';
+    const catsToShow=activeCat?[activeCat]:matchIds;
+    catsToShow.forEach((catId,idx)=>{
+      const catChars=f.filter(c=>c.category_id===catId);
+      if(!catChars.length)return;
+      const cat=allCategories.find(c=>c.id===catId);
+      const rankIdx=activeCat?matchIds.indexOf(catId):idx;
+      html+=`<div class="qm-group">
+        <div class="qm-group-header">
+          <span class="qm-group-icon">${cat?esc(cat.icon):'✦'}</span>
+          <span class="qm-group-name">${cat?esc(catf(cat,'name')):''}</span>
+          <span class="qm-rank-pill ${pillClasses[rankIdx]||'pill-also'}">${ranks[rankIdx]||''}</span>
+        </div>
+        <div class="grid grid-all">${catChars.map((c,i)=>card(c,i,false)).join('')}</div>
+      </div>`;
+    });
+    // Bottom bar
+    html+=`<div class="qm-bottom-bar">
+      <p>${t('quizWantDifferent')}</p>
+      <button class="qm-bottom-btn qm-retake" onclick="quizMatchRetake()">${t('quizRetake')}</button>
+      <button class="qm-bottom-btn qm-browse" onclick="quizMatchBrowseAll()">${t('quizBrowseAll').replace('{n}',allCharities.length)}</button>
+    </div>`;
+    g.innerHTML=html;
+    return;
+  }
+
+  // Normal mode (unchanged)
   if(activeCat)f=f.filter(c=>c.category_id===activeCat);
   if(sq){const q=sq.toLowerCase();f=f.filter(c=>c.name.toLowerCase().includes(q)||(c.description||'').toLowerCase().includes(q)||(c.short_description||'').toLowerCase().includes(q)||(c.search_text||'').toLowerCase().includes(q)||(c.tags||[]).some(t=>t.toLowerCase().includes(q)));}
 
@@ -2172,9 +2301,9 @@ function card(ch,idx,feat){
 }
 
 function scrollToEl(el){const hdr=document.querySelector('.header');const offset=hdr?hdr.offsetHeight:0;const catNav=document.querySelector('.cat-nav');const catH=catNav?catNav.offsetHeight:0;const top=el.getBoundingClientRect().top+window.scrollY-offset-catH-8;window.scrollTo({top:Math.max(0,top),behavior:'smooth'});}
-function filterCat(id){activeCat=id;renderCats();renderCards();scrollToEl(document.querySelector('.main'));}
-function handleSearch(){sq=document.getElementById('searchInput').value.trim();activeCat=null;renderCats();renderCards();}
-function resetFilters(){activeCat=null;sq='';document.getElementById('searchInput').value='';renderCats();renderCards();window.scrollTo({top:0,behavior:'smooth'});}
+function filterCat(id){activeCat=id;if(quizMatchData){quizMatchData=null;document.getElementById('quizMatchHero').classList.remove('show');document.getElementById('quizMatchHero').innerHTML='';document.getElementById('quizHero').classList.remove('minimized');}renderCats();renderCards();scrollToEl(document.querySelector('.main'));}
+function handleSearch(){sq=document.getElementById('searchInput').value.trim();activeCat=null;if(quizMatchData){quizMatchData=null;document.getElementById('quizMatchHero').classList.remove('show');document.getElementById('quizMatchHero').innerHTML='';document.getElementById('quizHero').classList.remove('minimized');}renderCats();renderCards();}
+function resetFilters(){activeCat=null;sq='';document.getElementById('searchInput').value='';if(quizMatchData){quizMatchData=null;document.getElementById('quizMatchHero').classList.remove('show');document.getElementById('quizMatchHero').innerHTML='';document.getElementById('quizHero').classList.remove('minimized');}renderCats();renderCards();window.scrollTo({top:0,behavior:'smooth'});}
 
 document.getElementById('searchInput').addEventListener('keydown',e=>{if(e.key==='Enter')handleSearch();if(e.key==='Escape'){e.target.value='';sq='';renderCards();e.target.blur();}});
 let lastScrollY=0;let headerHideTimeout;
@@ -2414,7 +2543,7 @@ function quizShowResults(){
       }).join('')}
     </div>
     <div class="quiz-result-actions">
-      <button class="quiz-btn-browse" onclick="quizBrowse('${top3[0][0]}')">${t('quizSeeMatch')}</button>
+      <button class="quiz-btn-browse" onclick="quizShowMatches()">${t('quizSeeMatch')}</button>
       <button class="quiz-btn-retake" onclick="quizRetake()">${t('quizRetake')}</button>
     </div>
   `;
@@ -2427,8 +2556,92 @@ function quizBrowse(catName){
   if(cat){filterCat(cat.id);scrollToEl(document.querySelector('.main'));}
 }
 
+function quizShowMatches(){
+  // Build match data from last quiz run
+  const sorted=Object.entries(quizScores).sort((a,b)=>b[1]-a[1]);
+  const top3=sorted.slice(0,3);
+  const topCat=top3[0][0];
+  const qp=getQuizPersonas();
+  let persona=null;
+  for(const[k,p]of Object.entries(qp)){if(p.cats.includes(topCat)){persona=p;break;}}
+  if(!persona)persona=qp.guardian;
+
+  const matchCatIds=top3.map(([catName])=>{const c=allCategories.find(x=>x.name===catName);return c?c.id:null;}).filter(Boolean);
+  quizMatchData={top3,persona,matchCatIds};
+
+  // Build match hero
+  const hero=document.getElementById('quizMatchHero');
+  const ranks=[t('quizTopMatch'),t('quizStrongMatch'),t('quizAlsoResonates')];
+  const rankClasses=['rank-top','rank-strong','rank-also'];
+  hero.innerHTML=`
+    <div class="qm-persona">
+      <span class="qm-icon">${persona.emoji}</span>
+      <div class="qm-label">${t('quizPersonaLabel')}</div>
+      <div class="qm-name">${persona.name}</div>
+      <p class="qm-desc">${persona.desc}</p>
+    </div>
+    <div class="qm-badges">
+      <button class="qm-badge active" onclick="quizFilterMatch(null)">
+        <span class="qm-badge-icon">✦</span>
+        <span class="qm-badge-text">${t('quizMatchAll')}</span>
+      </button>
+      ${top3.map(([catName,score],i)=>{
+        const c=allCategories.find(x=>x.name===catName);
+        return`<button class="qm-badge" onclick="quizFilterMatch(${c?c.id:'null'})">
+          <span class="qm-badge-icon">${c?esc(c.icon):'✦'}</span>
+          <span class="qm-badge-text">${c?esc(catf(c,'name')):esc(catName)}</span>
+          <span class="qm-badge-rank ${rankClasses[i]}">${ranks[i]}</span>
+        </button>`;
+      }).join('')}
+    </div>`;
+
+  // Collapse quiz hero, show match hero
+  document.getElementById('quizHero').classList.add('minimized');
+  hero.classList.add('show');
+
+  // Render matched cards
+  activeCat=null;
+  renderCats();
+  renderCards();
+  scrollToEl(document.querySelector('.main'));
+}
+
+function quizFilterMatch(catId){
+  activeCat=catId;
+  // Update active badge
+  const badges=document.querySelectorAll('#quizMatchHero .qm-badge');
+  badges.forEach((b,i)=>{
+    b.classList.remove('active');
+    if(catId===null&&i===0)b.classList.add('active');
+    else if(catId&&quizMatchData.matchCatIds.indexOf(catId)===(i-1))b.classList.add('active');
+  });
+  renderCards();
+  scrollToEl(document.querySelector('.main'));
+}
+
+function quizMatchRetake(){
+  quizMatchData=null;activeCat=null;
+  document.getElementById('quizMatchHero').classList.remove('show');
+  document.getElementById('quizMatchHero').innerHTML='';
+  document.getElementById('quizHero').classList.remove('minimized');
+  renderCats();renderCards();
+  quizStart();
+}
+
+function quizMatchBrowseAll(){
+  quizMatchData=null;activeCat=null;
+  document.getElementById('quizMatchHero').classList.remove('show');
+  document.getElementById('quizMatchHero').innerHTML='';
+  document.getElementById('quizHero').classList.remove('minimized');
+  renderCats();renderCards();
+  scrollToEl(document.querySelector('.main'));
+}
+
 function quizRetake(){
   document.getElementById('quizResults').classList.remove('show');
+  quizMatchData=null;
+  document.getElementById('quizMatchHero').classList.remove('show');
+  document.getElementById('quizMatchHero').innerHTML='';
   quizStart();
 }
 
@@ -2436,6 +2649,9 @@ function quizReset(){
   document.getElementById('quizActive').classList.remove('show');
   document.getElementById('quizResults').classList.remove('show');
   document.getElementById('quizIntro').classList.remove('hide');
+  quizMatchData=null;
+  document.getElementById('quizMatchHero').classList.remove('show');
+  document.getElementById('quizMatchHero').innerHTML='';
 }
 
 function quizConfetti(){

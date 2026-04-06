@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Option C Preview — The All-In-One Reveal</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Figtree:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --il-blue: #0038B8;
+  --il-blue-deep: #002A8C;
+  --il-blue-dark: #001B5E;
+  --il-blue-vivid: #1456D6;
+  --il-blue-soft: #5B94F0;
+  --il-blue-mist: #D6E4FA;
+  --il-blue-ghost: #EDF2FD;
+  --il-blue-tint: #F6F9FF;
+  --white: #FFFFFF;
+  --ivory: #FAFBFD;
+  --ink: #0C1324;
+  --ink-80: #2A3550;
+  --ink-60: #4A5578;
+  --ink-40: #7B849E;
+  --ink-25: #A8B0C4;
+  --success: #0D9F5F;
+  --amber: #B8860B;
+  --gold: #D4A843;
+  --font-display: 'Cormorant Garamond', serif;
+  --font-body: 'Figtree', sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--ivory);
+  color: var(--ink);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── SIMULATED HEADER ── */
+.header {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--white);
+  border-bottom: 1px solid var(--il-blue-mist);
+  padding: 12px 24px;
+  display: flex; align-items: center; gap: 16px;
+  box-shadow: 0 2px 12px rgba(0,56,184,0.06);
+}
+.header-logo {
+  font-family: var(--font-display);
+  font-size: 1.5rem; font-weight: 700;
+  color: var(--il-blue-dark);
+  letter-spacing: -0.02em;
+}
+.header-logo span { color: var(--il-blue); }
+.header-stats {
+  margin-left: auto;
+  display: flex; gap: 20px;
+  font-size: 0.8rem; color: var(--ink-40);
+  text-transform: uppercase; letter-spacing: 0.08em;
+}
+.header-stats strong { display: block; font-size: 1.2rem; color: var(--il-blue); }
+
+/* ── QUIZ RESULTS HERO (the reveal moment) ── */
+.results-hero {
+  position: relative;
+  background: linear-gradient(165deg, #001B5E 0%, #0038B8 40%, #1456D6 100%);
+  padding: 60px 24px 50px;
+  text-align: center;
+  overflow: hidden;
+  animation: heroReveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes heroReveal {
+  from { opacity: 0; transform: translateY(-30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Floating Star of David decorations */
+.results-hero::before,
+.results-hero::after {
+  content: '✡'; position: absolute;
+  font-size: 120px; opacity: 0.04; color: white;
+  animation: float 20s ease-in-out infinite;
+}
+.results-hero::before { top: -20px; left: -30px; }
+.results-hero::after { bottom: -20px; right: -30px; animation-delay: -10s; }
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-15px) rotate(5deg); }
+}
+
+.persona-icon {
+  width: 72px; height: 72px;
+  margin: 0 auto 16px;
+  background: rgba(255,255,255,0.12);
+  border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.15);
+  animation: iconPop 0.6s 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+@keyframes iconPop {
+  from { opacity: 0; transform: scale(0.5); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.persona-label {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 8px;
+  animation: fadeUp 0.6s 0.4s ease both;
+}
+.persona-name {
+  font-family: var(--font-display);
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: white;
+  font-style: italic;
+  margin-bottom: 12px;
+  animation: fadeUp 0.6s 0.5s ease both;
+}
+.persona-desc {
+  font-size: 0.95rem;
+  color: rgba(255,255,255,0.7);
+  max-width: 520px;
+  margin: 0 auto 32px;
+  line-height: 1.6;
+  animation: fadeUp 0.6s 0.6s ease both;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── MATCH BADGES (the 3 categories) ── */
+.match-badges {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  animation: fadeUp 0.6s 0.7s ease both;
+}
+.match-badge {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 100px;
+  padding: 8px 16px 8px 12px;
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.match-badge:hover {
+  background: rgba(255,255,255,0.18);
+  transform: translateY(-2px);
+}
+.match-badge.active {
+  background: rgba(255,255,255,0.22);
+  border-color: rgba(255,255,255,0.35);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+.badge-icon { font-size: 1.2rem; }
+.badge-text {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: white;
+}
+.badge-rank {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 2px 8px;
+  border-radius: 100px;
+  font-weight: 700;
+}
+.rank-top { background: var(--gold); color: #1a1a1a; }
+.rank-strong { background: rgba(255,255,255,0.2); color: white; }
+.rank-also { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); }
+
+/* ── FILTER TABS ── */
+.filter-bar {
+  background: var(--white);
+  border-bottom: 1px solid var(--il-blue-mist);
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  overflow-x: auto;
+  position: sticky;
+  top: 56px;
+  z-index: 90;
+  -webkit-overflow-scrolling: touch;
+}
+.filter-tab {
+  padding: 14px 18px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ink-40);
+  border: none;
+  background: none;
+  cursor: pointer;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: all 0.25s ease;
+  font-family: var(--font-body);
+}
+.filter-tab:hover { color: var(--ink-80); }
+.filter-tab.active {
+  color: var(--il-blue);
+  border-bottom-color: var(--il-blue);
+}
+.filter-tab .tab-count {
+  display: inline-block;
+  background: var(--il-blue-ghost);
+  color: var(--il-blue);
+  font-size: 0.7rem;
+  padding: 1px 7px;
+  border-radius: 100px;
+  margin-left: 6px;
+  font-weight: 700;
+}
+.filter-tab.active .tab-count {
+  background: var(--il-blue);
+  color: white;
+}
+
+/* ── RESULTS SECTION ── */
+.results-section {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 32px 24px 80px;
+}
+
+.section-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--il-blue-mist);
+}
+.section-icon { font-size: 1.3rem; }
+.section-name {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+.section-rank-pill {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 100px;
+}
+.pill-top { background: #FFF8E7; color: var(--amber); }
+.pill-strong { background: var(--il-blue-ghost); color: var(--il-blue); }
+.pill-also { background: #f0f0f5; color: var(--ink-40); }
+
+.category-group { margin-bottom: 40px; }
+.category-group.hidden { display: none; }
+
+/* ── CHARITY CARDS ── */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.charity-card {
+  background: var(--white);
+  border-radius: 14px;
+  border: 1px solid #E8ECF4;
+  overflow: hidden;
+  transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: relative;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: cardIn 0.5s ease forwards;
+}
+.charity-card:nth-child(1) { animation-delay: 0.1s; }
+.charity-card:nth-child(2) { animation-delay: 0.2s; }
+.charity-card:nth-child(3) { animation-delay: 0.3s; }
+.charity-card:nth-child(4) { animation-delay: 0.4s; }
+.charity-card:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes cardIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.charity-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--il-blue);
+  transform: scaleX(0);
+  transition: transform 0.35s ease;
+}
+.charity-card:hover::before { transform: scaleX(1); }
+.charity-card:hover {
+  border-color: var(--il-blue-mist);
+  box-shadow: 0 8px 32px rgba(0,56,184,0.1);
+  transform: translateY(-4px);
+}
+
+/* Match indicator dot */
+.match-dot {
+  position: absolute;
+  top: 14px; right: 14px;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.9);
+}
+.dot-top { background: var(--gold); box-shadow: 0 0 0 3px rgba(255,255,255,0.9), 0 0 8px rgba(212,168,67,0.4); }
+.dot-strong { background: var(--il-blue-soft); }
+.dot-also { background: var(--ink-25); }
+
+.card-inner { padding: 22px; }
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.card-logo {
+  width: 48px; height: 48px;
+  border-radius: 10px;
+  background: var(--il-blue-ghost);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--il-blue);
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.card-logo img {
+  width: 100%; height: 100%;
+  object-fit: contain;
+}
+.card-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.3;
+}
+.card-location {
+  font-size: 0.75rem;
+  color: var(--ink-40);
+  margin-top: 2px;
+}
+
+.card-desc {
+  font-size: 0.88rem;
+  color: var(--ink-60);
+  line-height: 1.55;
+  margin-bottom: 16px;
+}
+
+.card-badges {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.card-badge {
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 100px;
+}
+.badge-verified { background: #E6F7EF; color: var(--success); }
+.badge-tax { background: #FFF8E7; color: var(--amber); }
+.badge-featured { background: #FFF8E7; color: var(--amber); }
+
+.card-actions {
+  display: flex; gap: 8px;
+}
+.btn-donate {
+  flex: 1;
+  padding: 10px 16px;
+  background: var(--il-blue);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.btn-donate:hover { background: var(--il-blue-deep); transform: translateY(-1px); }
+.btn-website {
+  padding: 10px 16px;
+  background: none;
+  color: var(--il-blue);
+  border: 1.5px solid var(--il-blue-mist);
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.btn-website:hover { border-color: var(--il-blue); background: var(--il-blue-tint); }
+
+/* ── RETAKE / BROWSE ALL BAR ── */
+.bottom-bar {
+  text-align: center;
+  padding: 32px 24px;
+  border-top: 1px solid var(--il-blue-mist);
+  margin-top: 20px;
+}
+.bottom-bar p {
+  font-size: 0.85rem;
+  color: var(--ink-40);
+  margin-bottom: 16px;
+}
+.btn-retake {
+  padding: 12px 28px;
+  background: none;
+  border: 1.5px solid var(--il-blue-mist);
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--il-blue);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  margin: 0 6px;
+}
+.btn-retake:hover { border-color: var(--il-blue); background: var(--il-blue-tint); }
+.btn-browse-all {
+  padding: 12px 28px;
+  background: var(--il-blue);
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  margin: 0 6px;
+}
+.btn-browse-all:hover { background: var(--il-blue-deep); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 680px) {
+  .persona-name { font-size: 2rem; }
+  .match-badges { gap: 8px; }
+  .match-badge { padding: 6px 12px 6px 10px; }
+  .badge-text { font-size: 0.72rem; }
+  .card-grid { grid-template-columns: 1fr; }
+  .results-hero { padding: 40px 20px 36px; }
+  .filter-bar { padding: 0 16px; }
+  .results-section { padding: 24px 16px 60px; }
+}
+
+/* ── DEMO NOTICE ── */
+.demo-notice {
+  background: #FFF8E7;
+  border-bottom: 1px solid #F0E0B8;
+  padding: 10px 24px;
+  font-size: 0.78rem;
+  color: var(--amber);
+  text-align: center;
+  font-weight: 600;
+}
+</style>
+</head>
+<body>
+
+<div class="demo-notice">Preview Only — Option C: "The All-In-One Reveal" concept for Give Israel quiz results</div>
+
+<!-- SIMULATED HEADER -->
+<div class="header">
+  <div class="header-logo"><span>Give</span>Israel</div>
+  <div class="header-stats">
+    <div><strong>60</strong>Charities</div>
+    <div><strong>15</strong>Categories</div>
+  </div>
+</div>
+
+<!-- QUIZ RESULTS HERO — THE REVEAL -->
+<div class="results-hero">
+  <div class="persona-icon">🛡️</div>
+  <div class="persona-label">Your Giving Persona</div>
+  <div class="persona-name">The Keeper</div>
+  <div class="persona-desc">
+    You protect what makes Israel sacred — the land, the traditions, the culture.<br>
+    For you, giving is an act of preservation and love.
+  </div>
+  <div class="match-badges">
+    <div class="match-badge active" onclick="filterTo('all')">
+      <span class="badge-icon">✦</span>
+      <span class="badge-text">All Matches</span>
+      <span class="badge-rank rank-top">15</span>
+    </div>
+    <div class="match-badge" onclick="filterTo('env')">
+      <span class="badge-icon">🌿</span>
+      <span class="badge-text">Environment & Land</span>
+      <span class="badge-rank rank-top">Top</span>
+    </div>
+    <div class="match-badge" onclick="filterTo('rel')">
+      <span class="badge-icon">🕎</span>
+      <span class="badge-text">Religious & Spiritual</span>
+      <span class="badge-rank rank-strong">Strong</span>
+    </div>
+    <div class="match-badge" onclick="filterTo('art')">
+      <span class="badge-icon">🎭</span>
+      <span class="badge-text">Arts & Culture</span>
+      <span class="badge-rank rank-also">Also</span>
+    </div>
+  </div>
+</div>
+
+<!-- FILTER TABS (sticky below header) -->
+<div class="filter-bar">
+  <button class="filter-tab active" onclick="filterTo('all')">All Matches <span class="tab-count">15</span></button>
+  <button class="filter-tab" onclick="filterTo('env')">🌿 Environment & Land <span class="tab-count">5</span></button>
+  <button class="filter-tab" onclick="filterTo('rel')">🕎 Religious & Spiritual <span class="tab-count">5</span></button>
+  <button class="filter-tab" onclick="filterTo('art')">🎭 Arts & Culture <span class="tab-count">5</span></button>
+</div>
+
+<!-- RESULTS -->
+<div class="results-section">
+
+  <!-- ENVIRONMENT & LAND — TOP MATCH -->
+  <div class="category-group" data-cat="env">
+    <div class="section-label">
+      <span class="section-icon">🌿</span>
+      <span class="section-name">Environment & Land</span>
+      <span class="section-rank-pill pill-top">Top Match</span>
+    </div>
+    <div class="card-grid">
+
+      <div class="charity-card">
+        <div class="match-dot dot-top"></div>
+        <div class="card-inner">
+          <div class="card-header">
+            <div class="card-logo">JNF</div>
+            <div>
+              <div class="card-title">Jewish National Fund</div>
+              <div class="card-location">Nationwide, Israel</div>
+            </div>
+          </div>
+          <div class="card-desc">Building infrastructure, planting forests, and developing communities across Israel since 1901.</div>
+          <div class="card-badges">
+            <span class="card-badge badge-verified">✓ Verified</span>
+            <span class="card-badge badge-tax">US Tax Deductible</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-donate">Donate</button>
+            <button class="btn-website">Website</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="charity-card">
+        <div class="match-dot dot-top"></div>
+        <div class="card-inner">
+          <div class="card-header">
+            <div class="card-logo">ZE</div>
+            <div>
+              <div class="card-title">Zalul Environmental Association</div>
+              <div class="card-location">Tel Aviv, Israel</div>
+            </div>
+          </div>
+          <div class="card-desc">Protecting Israel's seas, rivers, and streams through advocacy, education, and cleanup efforts.</div>
+          <div class="card-badges">
+            <span class="card-badge badge-verified">✓ Verified</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-donate">Donate</button>
+            <button class="btn-website">Website</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="charity-card">
+        <div class="match-dot dot-top"></div>
+        <div class="card-inner">
+          <div class="card-header">
+            <div class="card-logo">HC</div>
+            <div>
+              <div class="card-title">Heschel Center for Sustainability</div>
+              <div class="card-location">Tel Aviv, Israel</div>
+            </div>
+          </div>
+          <div class="card-desc">Training Israel's next generation of environmental leaders and promoting sustainable development.</div>
+          <div class="card-badges">
+            <span class="card-badge badge-verified">✓ Verified</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-donate">Donate</button>
+            <button class="btn-website">Website</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- RELIGIOUS & SPIRITUAL — STRONG MATCH -->
+  <div class="category-group" data-cat="rel">
+    <div class="section-label">
+      <span class="section-icon">🕎</span>
+      <span class="section-name">Religious & Spiritual</span>
+      <span class="section-rank-pill pill-strong">Strong Match</span>
+    </div>
+    <div class="card-grid">
+
+      <div class="charity-card">
+        <div class="match-dot dot-strong"></div>
+        <div class="card-inner">
+          <div class="card-header">
+            <div class="card-logo">TZ</div>
+            <div>
+              <div class="card-title">Tzohar</div>
+              <div class="card-location">Nationwide, Israel</div>
+            </div>
+          </div>
+          <div class="card-desc">Making Jewish life accessible to all Israelis through open, welcoming religious services and lifecycle events.</div>
+          <div class="card-badges">
+            <span class="card-badge badge-verified">✓ Verified</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-donate">Donate</button>
+            <button class="btn-website">Website</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="charity-card">
+        <div class="match-dot dot-strong"></div>
+        <div class="card-inner">
+          <div class="card-header">
+            <div class="card-logo">BA</div>
+            <div>
+              <div class="card-title">Bnei Akiva</div>
+              <div class="card-location">Nationwide, Israel</div>
+            </div>
+          </div>
+          <div class="card-desc">The world's largest religious Zionist youth movement, inspiring young people through Torah values and love of Israel.</div>
+          <div class="card-badges">
+            <span class="card-badge badge-verified">✓ Verified</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-donate">Donate</button>
+            <button class="btn-website">Website</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="charity-card">
+        <div class="match-dot dot-strong"></div>
+        <div class="card-inner">
+          <div class="card-header">
+            <div class="card-logo">OJ</div>
+            <div>
+              <div class="card-title">Ohr Torah Stone</div>
+              <div class="card-location">Jerusalem, Israel</div>
+            </div>
+          </div>
+          <div class="card-desc">A network of institutions bringing innovative, open Orthodox education and leadership to Israel and the world.</div>
+          <div class="card-badges">
+            <span class="card-badge badge-verified">✓ Verified</span>
+            <span class="card-badge badge-tax">US Tax Deductible</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-donate">Donate</button>
+            <button class="btn-website">Website</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ARTS & CULTURE — ALSO RESONATES -->
+  <div class="category-group" data-cat="art">
+    <div class="section-label">
+      <span class="section-icon">🎭</span>
+      <span class="section-name">Arts & Culture</span>
+      <span class="section-rank-pill pill-also">Also Resonates</span>
+    </div>
+    <div class="card-grid">
+
+      <div class="charity-card">
+        <div class="match-dot dot-also"></div>
+        <div class="card-inner">
+          <div class="card-header">
+            <div class="card-logo">RF</div>
+            <div>
+              <div class="card-title">Rabinovich Foundation</div>
+              <div class="card-location">Tel Aviv, Israel</div>
+            </div>
+          </div>
+          <div class="card-desc">Supporting Israeli cinema, theater, and the arts through grants, funding, and cultural investment.</div>
+          <div class="card-badges">
+            <span class="card-badge badge-verified">✓ Verified</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-donate">Donate</button>
+            <button class="btn-website">Website</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="charity-card">
+        <div class="match-dot dot-also"></div>
+        <div class="card-inner">
+          <div class="card-header">
+            <div class="card-logo">IM</div>
+            <div>
+              <div class="card-title">Israel Museum</div>
+              <div class="card-location">Jerusalem, Israel</div>
+            </div>
+          </div>
+          <div class="card-desc">Home to the Dead Sea Scrolls and world-class collections of art, archaeology, and Jewish heritage.</div>
+          <div class="card-badges">
+            <span class="card-badge badge-verified">✓ Verified</span>
+            <span class="card-badge badge-tax">US Tax Deductible</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-donate">Donate</button>
+            <button class="btn-website">Website</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="charity-card">
+        <div class="match-dot dot-also"></div>
+        <div class="card-inner">
+          <div class="card-header">
+            <div class="card-logo">HT</div>
+            <div>
+              <div class="card-title">Habima National Theatre</div>
+              <div class="card-location">Tel Aviv, Israel</div>
+            </div>
+          </div>
+          <div class="card-desc">Israel's national theater, staging world-class Hebrew-language productions since 1918.</div>
+          <div class="card-badges">
+            <span class="card-badge badge-verified">✓ Verified</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-donate">Donate</button>
+            <button class="btn-website">Website</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- BOTTOM BAR -->
+  <div class="bottom-bar">
+    <p>Want to see something different?</p>
+    <button class="btn-retake">Retake Quiz</button>
+    <button class="btn-browse-all">Browse All 60 Charities</button>
+  </div>
+
+</div>
+
+<script>
+function filterTo(cat) {
+  // Update badge active states
+  document.querySelectorAll('.match-badge').forEach((b, i) => {
+    b.classList.remove('active');
+    if (cat === 'all' && i === 0) b.classList.add('active');
+    if (cat === 'env' && i === 1) b.classList.add('active');
+    if (cat === 'rel' && i === 2) b.classList.add('active');
+    if (cat === 'art' && i === 3) b.classList.add('active');
+  });
+
+  // Update filter tabs
+  document.querySelectorAll('.filter-tab').forEach((t, i) => {
+    t.classList.remove('active');
+    if (cat === 'all' && i === 0) t.classList.add('active');
+    if (cat === 'env' && i === 1) t.classList.add('active');
+    if (cat === 'rel' && i === 2) t.classList.add('active');
+    if (cat === 'art' && i === 3) t.classList.add('active');
+  });
+
+  // Show/hide category groups
+  document.querySelectorAll('.category-group').forEach(g => {
+    if (cat === 'all') {
+      g.classList.remove('hidden');
+    } else {
+      g.classList.toggle('hidden', g.dataset.cat !== cat);
+    }
+  });
+
+  // Re-trigger card animations
+  document.querySelectorAll('.charity-card').forEach((c, i) => {
+    c.style.animation = 'none';
+    c.offsetHeight; // force reflow
+    c.style.animation = `cardIn 0.5s ${i * 0.08}s ease forwards`;
+  });
+
+  // Scroll to results
+  document.querySelector('.results-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+</script>
+
+</body>
+</html>
