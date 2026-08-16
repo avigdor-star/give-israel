@@ -1968,7 +1968,7 @@ const LANG = {
     suggestTitle: 'הציעו עמותה',
     suggestSub: 'מכירים עמותה ישראלית שצריכה להיות כאן? ספרו לנו עליה.',
     aboutTitle: 'יוזמה התנדבותית',
-    aboutBody1: 'Give Israel הוא פרויקט המופעל בהתנדבות — מדריך חינמי שנועד לעזור לאנשים למצוא עמותות ישראליות ולתמוך בהן. אין מאחורי הפרויקט ארגון, וכספים אינם עוברים דרך האתר.',
+    aboutBody1: '<a href="https://giveisrael.charity/" style="color:var(--il-blue);font-weight:600;text-decoration:underline;">תן לישראל</a> הוא פרויקט המופעל בהתנדבות — מדריך חינמי שנועד לעזור לאנשים למצוא עמותות ישראליות ולתמוך בהן. אין מאחורי הפרויקט ארגון, וכספים אינם עוברים דרך האתר.',
     aboutBody2a: 'אם אתם מכירים עמותה ישראלית שמתאימה להופיע כאן, כתבו לנו לכתובת ',
     aboutBody2b: ' ונשמח לבדוק אותה.',
     aboutEmailBtn: 'שלחו מייל',
@@ -2326,7 +2326,7 @@ function updateAboutText(){
   const title = document.getElementById('aboutTitle');
   if (!title) return;
   title.textContent = t('aboutTitle');
-  document.getElementById('aboutBody1').textContent = t('aboutBody1');
+  document.getElementById('aboutBody1').innerHTML = t('aboutBody1');
   document.getElementById('aboutBody2').innerHTML = t('aboutBody2a') +
     '<a href="' + ABOUT_MAILTO + '" style="color:var(--il-blue);font-weight:600;text-decoration:underline;">avigdor@crunchybuzz.com</a>' +
     t('aboutBody2b');
