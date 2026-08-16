@@ -1721,10 +1721,10 @@ html[dir="rtl"] .quiz-back-btn .back-arrow { transform: scaleX(-1); }
       </div>
     </div>
 
-    <a class="btn-suggest" href="mailto:avigdor@crunchybuzz.com?subject=Give%20Israel%20%E2%80%94%20charity%20suggestion" aria-label="Suggest a charity by email">
+    <button type="button" class="btn-suggest" onclick="openAbout()" aria-label="Suggest a charity">
       <span class="desktop-text">+ Suggest a Charity</span>
       <span style="display:none" class="mobile-plus">+</span>
-    </a>
+    </button>
 
     <button class="btn-lang" id="langToggle" onclick="toggleLanguage()" aria-label="Switch language"><span class="lang-flag" id="langFlag">🇮🇱</span><span id="langText">עב</span></button>
 
@@ -1820,6 +1820,21 @@ html[dir="rtl"] .quiz-back-btn .back-arrow { transform: scaleX(-1); }
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
 </button>
 
+<!-- ABOUT / SUGGEST POPUP -->
+<div class="modal-bg" id="aboutModal" onclick="if(event.target===this)closeAbout()">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
+    <div class="modal-top">
+      <h2 id="aboutTitle">A Volunteer Initiative</h2>
+      <button class="modal-x" type="button" onclick="closeAbout()" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-content">
+      <p id="aboutBody1" style="font-size:15px;line-height:1.7;color:var(--ink-60);margin-bottom:14px;">Give Israel is a volunteer-run project — a free directory built to help people find and support Israeli charities. There's no organization behind it, and no money passes through this site.</p>
+      <p id="aboutBody2" style="font-size:15px;line-height:1.7;color:var(--ink-60);margin-bottom:22px;">If you know an Israeli charity that belongs here, email <a href="mailto:avigdor@crunchybuzz.com?subject=Give%20Israel%20%E2%80%94%20charity%20suggestion" style="color:var(--il-blue);font-weight:600;text-decoration:underline;">avigdor@crunchybuzz.com</a> and we'll take a look.</p>
+      <a id="aboutEmailBtn" href="mailto:avigdor@crunchybuzz.com?subject=Give%20Israel%20%E2%80%94%20charity%20suggestion" style="display:block;text-align:center;background:var(--il-blue);color:var(--white);padding:13px 20px;border-radius:var(--r-md);font-weight:600;font-size:15px;text-decoration:none;">Email Us</a>
+    </div>
+  </div>
+</div>
+
 <!-- Charity + category data. To add or edit a charity, edit public/data.js -->
 <script src="/data.js"></script>
 
@@ -1851,6 +1866,11 @@ const LANG = {
     errorSub: 'Check your connection and refresh.',
     suggestTitle: 'Suggest a Charity',
     suggestSub: 'Know an Israeli charity that should be listed? Tell us about it.',
+    aboutTitle: 'A Volunteer Initiative',
+    aboutBody1: 'Give Israel is a volunteer-run project — a free directory built to help people find and support Israeli charities. There\'s no organization behind it, and no money passes through this site.',
+    aboutBody2a: 'If you know an Israeli charity that belongs here, email ',
+    aboutBody2b: ' and we\'ll take a look.',
+    aboutEmailBtn: 'Email Us',
     labelName: 'Charity Name',
     labelWebsite: 'Website',
     labelDonation: 'Donation Page',
@@ -1947,6 +1967,11 @@ const LANG = {
     errorSub: 'בדקו את החיבור לאינטרנט ורעננו את הדף.',
     suggestTitle: 'הציעו עמותה',
     suggestSub: 'מכירים עמותה ישראלית שצריכה להיות כאן? ספרו לנו עליה.',
+    aboutTitle: 'יוזמה התנדבותית',
+    aboutBody1: 'Give Israel הוא פרויקט המופעל בהתנדבות — מדריך חינמי שנועד לעזור לאנשים למצוא עמותות ישראליות ולתמוך בהן. אין מאחורי הפרויקט ארגון, וכספים אינם עוברים דרך האתר.',
+    aboutBody2a: 'אם אתם מכירים עמותה ישראלית שמתאימה להופיע כאן, כתבו לנו לכתובת ',
+    aboutBody2b: ' ונשמח לבדוק אותה.',
+    aboutEmailBtn: 'שלחו מייל',
     labelName: 'שם העמותה',
     labelWebsite: 'אתר אינטרנט',
     labelDonation: 'דף תרומות',
@@ -2087,6 +2112,7 @@ function updateStaticText() {
   document.getElementById('searchInput').placeholder = t('searchPlaceholder');
   document.querySelector('.search-btn').textContent = t('searchBtn');
   document.querySelector('.btn-suggest .desktop-text').textContent = t('suggestBtn');
+  updateAboutText();
   document.querySelectorAll('.h-counter-lbl')[0].textContent = t('counterCharities');
   document.querySelectorAll('.h-counter-lbl')[1].textContent = t('counterCategories');
   document.querySelector('#featuredSection .sec-title').textContent = t('featuredTitle');
@@ -2292,6 +2318,35 @@ function expandQuizFromReminder(){
   scrollToEl(hero);
   setTimeout(()=>quizStart(),600);
 }
+
+// About / suggest popup
+const ABOUT_MAILTO = 'mailto:avigdor@crunchybuzz.com?subject=Give%20Israel%20%E2%80%94%20charity%20suggestion';
+
+function updateAboutText(){
+  const title = document.getElementById('aboutTitle');
+  if (!title) return;
+  title.textContent = t('aboutTitle');
+  document.getElementById('aboutBody1').textContent = t('aboutBody1');
+  document.getElementById('aboutBody2').innerHTML = t('aboutBody2a') +
+    '<a href="' + ABOUT_MAILTO + '" style="color:var(--il-blue);font-weight:600;text-decoration:underline;">avigdor@crunchybuzz.com</a>' +
+    t('aboutBody2b');
+  document.getElementById('aboutEmailBtn').textContent = t('aboutEmailBtn');
+}
+
+function openAbout(){
+  updateAboutText();
+  document.getElementById('aboutModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeAbout(){
+  document.getElementById('aboutModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Escape' && document.getElementById('aboutModal').classList.contains('open')) closeAbout();
+});
 
 // Mobile suggest button
 function updateSuggestBtn(){const w=window.innerWidth;document.querySelectorAll('.desktop-text').forEach(e=>e.style.display=w<=680?'none':'');document.querySelectorAll('.mobile-plus').forEach(e=>e.style.display=w<=680?'':'none');}
