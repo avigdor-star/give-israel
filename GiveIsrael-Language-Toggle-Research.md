@@ -1,4 +1,12 @@
 # Give Israel — Hebrew/English Language Toggle
+
+> ⚠️ **Historical research document — one part is out of date.**
+> Written in March 2026, when Give Israel used a Supabase database.
+> **That database was removed on 16 August 2026.** Where this document says the Hebrew
+> text is stored in Supabase columns, it now lives in the `_he` fields inside
+> `public/data.js` (for example `name_he`, `short_description_he`, `location_he`).
+> The research, translations, and design decisions below are all still valid.
+> See `CLAUDE.md` for how the project actually works today.
 ## Mikoshi Protocol Research Findings
 
 **Date:** March 19, 2026

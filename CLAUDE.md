@@ -6,31 +6,53 @@ Give Israel (giveisrael.charity) is the most comprehensive online directory of I
 
 The owner (Avigdor) is not a developer. All explanations and changes should be simple, clear, and jargon-free. Never change anything unless Avigdor has explicitly said to.
 
+**There is no database.** All charity and category data lives in one plain file: `public/data.js`. Supabase was removed on 16 August 2026.
+
+---
+
+## ⚠️ Open Item — Charity Logos
+
+> **⚠️ Open item — charity logos.** `public/data.js` points 50 charities at `/logos/*.png`, but `public/logos/` does not exist yet, so those cards currently show the charity's initials instead. The original images are still in the old Supabase Storage bucket — `download-logos.sh` will fetch them all, and `backup-supabase/logo-urls.txt` lists them. **Do not delete the Supabase project until this is resolved.** Avigdor has decided he'd rather link logos directly from each charity's own website instead of hosting them; see `LOGO-HANDOFF.md` for the full brief.
+
 ---
 
 ## Live URLs
 
 - **Main site**: https://giveisrael.charity
-- **Admin dashboard**: https://giveisrael.charity/admin
 - **GitHub repo**: https://github.com/avigdor-star/give-israel
+
+(There is no admin dashboard any more. It was retired on 16 August 2026.)
 
 ---
 
 ## Project Structure
 
 ```
-Desktop/give-israel/
+~/dev/give-israel/
 ├── public/                     ← DEPLOYED FOLDER (Vercel serves this)
 │   ├── index.html              ← The entire main site (single file — HTML, CSS, JS all in one)
-│   ├── admin.html              ← Admin dashboard for reviewing & publishing suggestions
-│   ├── give-israel-logo.png     ← Shield logo icon (128×128, used in header)
+│   ├── data.js                 ← ALL charity + category data. THE SINGLE SOURCE OF TRUTH
+│   ├── logos/                  ← Charity logo images (NOT created yet — see the open item above)
+│   ├── give-israel-logo.png    ← Shield logo icon (128×128, used in header)
 │   ├── og-image.jpg            ← Feature image for social sharing (WhatsApp, Facebook, Twitter)
 │   └── og-image.png            ← Backup/generated OG image (map style, not currently in use)
+├── retired/                    ← Old admin dashboard, kept for reference only (NOT deployed)
+│   ├── admin.html
+│   └── README.md               ← Explains why it was retired
+├── backup-supabase/            ← One-time raw JSON backup of the old database (historical only)
+│   ├── categories.json
+│   ├── charities.json
+│   ├── charity_suggestions.json
+│   └── logo-urls.txt
+├── download-logos.sh           ← One-time helper that pulled the logos out of the old storage (already run)
 ├── vercel.json                 ← Vercel hosting config (headers, security, routing)
-├── package.json                ← Project metadata (no build step — static site)
+├── package.json                ← Project metadata (no build step)
 ├── .gitignore                  ← Ignores node_modules, .vercel, .DS_Store
 ├── README.md                   ← Short GitHub readme
-├── GIVE-ISRAEL-DOCS.md         ← Full project documentation (tables, categories, how-tos)
+├── GIVE-ISRAEL-DOCS.md         ← Full project documentation (data structure, categories, how-tos)
+├── NEXT-TASK-PROMPTS.md        ← Ready-to-paste prompts for upcoming jobs
+├── LOGO-HANDOFF.md             ← Brief for the future session that will sort out the charity logos
+├── LOGO-TASK-LIST.md           ← The list of charities whose logos still need sorting
 ├── LIGHT-UP-ISRAEL-FEATURE-SPEC.md ← Feature spec for the "Light Up Israel" interactive map (not yet built)
 ├── GiveIsrael-Language-Toggle-Research.md ← Mikoshi Protocol research for Hebrew/English i18n
 ├── GiveIsrael-Security-Stress-Test.docx ← Security audit document
@@ -47,84 +69,76 @@ Desktop/give-israel/
 
 | Piece | What It Is | Details |
 |-------|-----------|---------|
-| **Frontend** | Single HTML files | No frameworks, no build tools. All CSS and JS are inline in each HTML file |
-| **Database** | Supabase (free tier) | Stores all charity data, categories, and community suggestions |
+| **Frontend** | Single HTML file | No frameworks, no build tools. All CSS and JS are inline in `public/index.html` |
+| **Data** | Plain JS file — no database | `public/data.js` holds every charity and category. Edit the file, push, done |
+| **Suggestions** | Plain email link — no form, no backend | The "Suggest a Charity" button is a `mailto:` link to avigdor@crunchybuzz.com |
 | **Hosting** | Vercel (free tier) | Auto-deploys from GitHub on every push |
 | **Domain** | giveisrael.charity | Registered on Namecheap, DNS pointed to Vercel |
 | **Code repo** | GitHub | github.com/avigdor-star/give-israel |
 | **Fonts** | Google Fonts | English: Cormorant Garamond + Figtree · Hebrew: Frank Ruhl Libre + Heebo |
 | **i18n** | Built-in toggle | Hebrew/English with RTL support, geolocation default, localStorage persistence |
 | **Geolocation** | ipapi.co (free) | Detects Israel visitors → defaults to Hebrew; everyone else → English |
-| **Logos** | Google Favicon API | Auto-pulled via `https://www.google.com/s2/favicons?domain=DOMAIN&sz=128` |
+| **Logos** | Local image files | Most logos are real files in `public/logos/`, referenced as `/logos/name.png` |
 
 ---
 
-## Supabase Database
+## Where The Data Lives: public/data.js
 
-- **Project name**: Give Israel
-- **Project ID**: psrtcjaxfeutecirypwd
-- **Region**: us-east-1
-- **Dashboard**: https://supabase.com/dashboard/project/psrtcjaxfeutecirypwd
-- **API URL**: https://psrtcjaxfeutecirypwd.supabase.co
-- **Anon Key** (public, read-only): eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBzcnRjamF4ZmV1dGVjaXJ5cHdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5NTcxMDIsImV4cCI6MjA4OTUzMzEwMn0.4aJK0277vZudaRtvmCpEhfWhHkbrXyHIc_2f8DgqZkQ
+`public/data.js` is a plain JavaScript file with two lists in it:
 
-### Row Level Security (RLS)
-- Anyone can **read** charities and categories
-- Anyone can **submit** suggestions (via edge function)
-- Only Avigdor can edit/delete via the Supabase dashboard
-- Admin auth uses Supabase Auth (email/password login on admin.html)
+```js
+const GI_CATEGORIES = [ ... ]   // 15 categories, in display_order
+const GI_CHARITIES  = [ ... ]   // 60 charities, featured ones first, then alphabetical
+```
 
-### Tables
+`index.html` loads it just before its own script:
 
-**categories** — 15 charity categories
-| Column | Type | What It Stores |
-|--------|------|---------------|
-| id | serial | Auto-generated number |
-| name | text | Category name in English (e.g. "Soldiers & Veterans") |
-| name_he | text | Category name in Hebrew (e.g. "חיילים וותיקים") |
-| slug | text | URL-friendly version (e.g. "soldiers-veterans") |
-| description | text | Short explanation of the category (English) |
-| description_he | text | Short explanation of the category (Hebrew) |
-| icon | text | Emoji icon for the category |
-| display_order | int | What order to show them in |
+```html
+<script src="/data.js"></script>
+```
 
-**charities** — 57 charity listings
-| Column | Type | What It Stores |
-|--------|------|---------------|
-| id | UUID | Unique ID |
-| name | text | Charity name (English) |
-| name_he | text | Charity name (Hebrew) |
-| slug | text | URL-friendly name |
-| description | text | Full description (English) |
-| description_he | text | Full description (Hebrew) |
-| short_description | text | One-liner shown on cards (English) |
-| short_description_he | text | One-liner shown on cards (Hebrew) |
-| category_id | int | Links to categories table |
-| logo_url | text | Auto-pulled logo from their website |
-| website_url | text | Their main website |
-| donation_url | text | Direct link to their donate page |
-| location | text | Where in Israel they operate (English) |
-| location_he | text | Where in Israel they operate (Hebrew) |
-| amuta_number | text | Official registration number |
-| is_verified | boolean | Whether we've confirmed they're legit |
-| is_featured | boolean | Shows them in the "Featured" section |
-| is_tax_deductible_us | boolean | Tax deductible for US donors |
-| tags | text[] (array) | Keywords for search (use `{"tag1","tag2"}` format) |
-| search_text | text | Combined text for search matching |
+**This file is the single source of truth for all charity data.** To change what the site shows, edit this file and push.
 
-**charity_suggestions** — Community-submitted charities
-| Column | Type | What It Stores |
-|--------|------|---------------|
-| id | UUID | Unique ID |
-| charity_name | text | Name of suggested charity |
-| website_url | text | Their website |
-| donation_url | text | Their donate page |
-| category | text | Which category they fit |
-| description | text | Why they should be listed |
-| submitter_name | text | Who suggested it (optional) |
-| submitter_email | text | Their email (optional) |
-| status | text | "pending", "approved", or "rejected" |
-| created_at | timestamp | When it was submitted |
+Current counts: **15 categories · 60 charities · 18 featured · 1 partner**. All 60 charities have Hebrew names.
+
+### Fields on each charity
+
+| Field | What It Stores |
+|-------|---------------|
+| id | Unique ID |
+| name | Charity name (English) |
+| name_he | Charity name (Hebrew) |
+| slug | URL-friendly name |
+| description | Full description (English) |
+| description_he | Full description (Hebrew) |
+| short_description | One-liner shown on cards (English) |
+| short_description_he | One-liner shown on cards (Hebrew) |
+| category_id | Which category it belongs to (matches an id in GI_CATEGORIES) |
+| logo_url | `/logos/name.png` (local file), a Google favicon URL, or `null` |
+| website_url | Their main website |
+| donation_url | Direct link to their donate page |
+| location | Where in Israel they operate (English) |
+| location_he | Where in Israel they operate (Hebrew) |
+| amuta_number | Official Israeli registration number |
+| is_verified | true/false — whether we've confirmed they're legit |
+| is_featured | true/false — shows them in the "Featured" section |
+| is_tax_deductible_us | true/false — tax deductible for US donors |
+| is_partner | true/false — official Give Israel partner |
+| tags | List of keywords for search, e.g. `["children","education"]` |
+| search_text | Combined text used for search matching |
+
+### Fields on each category
+
+| Field | What It Stores |
+|-------|---------------|
+| id | Unique number |
+| name | Category name in English (e.g. "Soldiers & Veterans") |
+| name_he | Category name in Hebrew (e.g. "חיילים וותיקים") |
+| slug | URL-friendly version (e.g. "soldiers-veterans") |
+| description | Short explanation of the category (English) |
+| description_he | Short explanation of the category (Hebrew) |
+| icon | Emoji icon for the category |
+| display_order | What order to show them in |
 
 ### The 15 Categories
 
@@ -144,8 +158,28 @@ Desktop/give-israel/
 14. Animals
 15. Religious & Spiritual
 
-### Supabase Edge Function
-- **submit-suggestion** — Handles community charity submissions from the suggest form on the main site
+### Logos
+
+- Most logos (50) are real image files in `public/logos/`, referenced like `/logos/aleh.png`
+- A few (3) still use a Google favicon URL
+- Some (7) are `null` — the site shows the charity's initials instead
+
+---
+
+## Suggesting a Charity — Just an Email Link
+
+There is no form. The "Suggest a Charity" button in the header is a plain email link:
+
+```html
+<a class="btn-suggest" href="mailto:avigdor@crunchybuzz.com?subject=...">
+```
+
+- Clicking it opens the visitor's own email app, already addressed to **avigdor@crunchybuzz.com**
+- The button reads "+ Suggest a Charity" in English and "+ הציעו עמותה" in Hebrew
+- Nothing is sent through the site, nothing is stored — the email IS the record
+- To list a suggested charity, Avigdor adds it to `public/data.js` by hand
+
+**Nothing to set up.** No email service, no API keys, no environment variables. The site is pure static files.
 
 ---
 
@@ -216,8 +250,8 @@ The site is fully bilingual. Here's how it works:
 
 ### Translation Architecture
 - **UI text** (labels, buttons, quiz, form, footer, badges) lives in a `LANG` dictionary inside index.html's JavaScript, with keys for `en` and `he`
-- **Charity data** (names, descriptions, locations) comes from Supabase `_he` columns (e.g. `name_he`, `short_description_he`)
-- **Category names** also come from Supabase `name_he` column
+- **Charity data** (names, descriptions, locations) comes from the `_he` fields in `public/data.js` (e.g. `name_he`, `short_description_he`)
+- **Category names** also come from the `name_he` field in `public/data.js`
 - **Fallback**: if any Hebrew field is empty, the English version is shown instead
 
 ### Key Functions
@@ -249,25 +283,11 @@ When adding any new visible text to the site:
 - **Real-time search** — searches names, descriptions, and tags instantly as you type
 - **Category filter pills** — sticky row below header, click to filter, shows count per category
 - **Featured section** — hand-picked charities appear at the top with special styling
-- **Charity cards** with: auto-pulled logo, name, location, badges (Verified, Featured, US Tax Deductible), description, category label, Donate button, Website button
-- **"Suggest a Charity" modal** — community submission form (name, website, donation URL, category, description, submitter info)
+- **Charity cards** with: logo, name, location, badges (Verified, Featured, US Tax Deductible), description, category label, Donate button, Website button
+- **"Suggest a Charity" button** — a plain email link. Clicking it opens the visitor's email app addressed to avigdor@crunchybuzz.com. No form, no backend
 - **Donation tracking** — links directly to each charity's own donation page (external)
-- **Logo fallback** — shows initials if Google favicon API doesn't return an image
+- **Logo fallback** — shows the charity's initials when there is no logo image
 - **Animations** — cards rise in on load, hover effects on everything
-
----
-
-## Admin Dashboard Features (admin.html)
-
-- **Supabase Auth** — email/password login required
-- **Stats overview** — total charities, pending suggestions, categories, featured count
-- **Suggestions tab** — see all submitted charities with status (pending/approved/rejected)
-- **Publish flow** — review suggestion, edit details, pick category, add Hebrew translations, add to live directory
-- **Reject flow** — dismiss a suggestion
-- **All Charities tab** — see everything currently in the directory, edit Hebrew translations
-- **Hebrew translation fields** — both the Publish form and Edit Charity form include Hebrew name, short description, location, and full description fields (marked with 🇮🇱, RTL input direction)
-- **Uses Supabase JS SDK** (loaded via CDN)
-- Admin dashboard stays in English only (it's only used by Avigdor)
 
 ---
 
@@ -289,8 +309,9 @@ An interactive SVG map of Israel that lights up as users explore charities. Full
 
 - **Vercel headers**: X-Frame-Options DENY, HSTS, CSP, XSS Protection, nosniff, strict referrer policy
 - **Permissions-Policy**: camera, microphone, geolocation all disabled
-- **CSP**: restricts scripts to self, Google Analytics, jsdelivr CDN; restricts connections to self and Supabase
-- **RLS**: Supabase Row Level Security enforces read-only public access
+- **CSP connect-src**: `'self' https://ipapi.co https://www.google-analytics.com https://www.googletagmanager.com` (ipapi.co is needed for the Hebrew geolocation check)
+- **No database, no login, no user accounts** — nothing to break into. The site is read-only files
+- **No secrets and no environment variables at all** — there is nothing to leak. The site is pure static files with no backend code
 - **Security stress test**: documented in GiveIsrael-Security-Stress-Test.docx
 
 ---
@@ -298,7 +319,7 @@ An interactive SVG map of Israel that lights up as users explore charities. Full
 ## Git & Deployment Workflow
 
 ```bash
-cd ~/Desktop/give-israel
+cd ~/dev/give-israel
 git add -A
 git commit -m "describe what you changed"
 git push
@@ -310,30 +331,39 @@ Vercel watches GitHub and auto-deploys every push within ~30 seconds. No build s
 
 ## Common Tasks
 
-### Add a charity manually
-1. Go to Supabase dashboard → Table Editor → charities
-2. Click "Insert row"
-3. Fill in name, description, category_id, donation_url at minimum
-4. Also fill in name_he, short_description_he, location_he for Hebrew support
-5. For logo, use: `https://www.google.com/s2/favicons?domain=THEIR_DOMAIN&sz=128`
-6. **Verification rule**: A charity is only considered "verified" if it has ALL THREE: a working website, an Israeli Amuta (registration) number, and a direct donation link. Set `is_verified` to true only when all three are confirmed.
-7. Look up the Amuta number on IsraelGives.org (`israelgives.org/amuta/AMUTA_NUMBER`) to confirm it's real
+### Add a charity
+1. Open `public/data.js`
+2. Find `GI_CHARITIES` and copy an existing entry
+3. Paste it and edit the fields (name, name_he, description, category_id, donation_url, etc.)
+4. If it's featured, put it with the other featured entries at the top of the list
+5. Save, then `git add -A && git commit -m "Added [charity]" && git push`
+6. Live in about 30 seconds
 
-### Review a community suggestion
-1. Go to giveisrael.charity/admin
-2. Log in
-3. See pending suggestions
-4. Click "Publish" to add to directory, or "Reject" to dismiss
+**Verification rule**: a charity is only "verified" if it has ALL THREE — a working website, an Israeli Amuta (registration) number, and a direct donation link. Set `is_verified` to true only when all three are confirmed. Look up the Amuta number at `israelgives.org/amuta/AMUTA_NUMBER` to confirm it's real.
 
-### Feature/unfeature a charity
-1. Supabase dashboard → Table Editor → charities
-2. Find the charity → toggle `is_featured` to true/false
+### Edit a charity
+1. Open `public/data.js`, find the charity by name
+2. Change the field you want
+3. Save and push
+
+### Feature or unfeature a charity
+1. In `public/data.js`, set `is_featured` to `true` or `false`
+2. **Also move the entry** so all the featured ones stay together at the top of the list
+3. Save and push
 
 ### Add a new category
-1. Supabase dashboard → Table Editor → categories
-2. Click "Insert row"
-3. Add name, slug, description, icon (emoji), display_order
-4. Also add name_he and description_he for Hebrew support
+1. In `public/data.js`, add an entry to `GI_CATEGORIES`
+2. Give it a new unique `id`, plus `name`, `name_he`, `slug`, `description`, `description_he`, `icon` (an emoji), and `display_order`
+3. Save and push
+
+### Add or change a logo
+1. Save the image file into `public/logos/`
+2. Set that charity's `logo_url` to `/logos/yourfilename.png`
+3. Save and push
+
+### Review a community suggestion
+1. Check your email at **avigdor@crunchybuzz.com** — people email their suggestions straight to you
+2. If you want to list it, add it to `public/data.js` by hand (see "Add a charity" above)
 
 ---
 
@@ -341,9 +371,9 @@ Vercel watches GitHub and auto-deploys every push within ~30 seconds. No build s
 
 1. **Never change anything unless Avigdor explicitly says to** — this is the #1 rule
 2. **Keep explanations simple** — Avigdor is not a developer, avoid jargon
-3. **Single-file architecture** — index.html and admin.html are self-contained (HTML + CSS + JS all inline). Do NOT split them into separate files
-4. **No frameworks** — no React, no Vue, no build tools. Plain HTML/CSS/JS only
-5. **Supabase anon key is public** — it's safe to be in the HTML, RLS protects the data
+3. **There is NO database** — all charity data lives in `public/data.js`. Never suggest Supabase, an admin dashboard, or any database. They were removed on 16 August 2026
+4. **Single-file architecture** — index.html is self-contained (HTML + CSS + JS all inline). Do NOT split it into separate files. `data.js` is the one deliberate exception, and it holds data only
+5. **No frameworks** — no React, no Vue, no build tools. Plain HTML/CSS/JS only
 6. **Test changes carefully** — this is a live charity site with real users
 7. **Preserve the design** — editorial luxury aesthetic, Israeli flag blue (#0038B8) and white, Cormorant Garamond + Figtree (English) / Frank Ruhl Libre + Heebo (Hebrew), grain texture, flag stripe accents
 7b. **Bilingual consistency** — when adding new text, always add both English and Hebrew versions to the LANG dictionary. Use `t('key')` for UI text, `cf(charity,'field')` for charity data, `catf(category,'field')` for category data
@@ -358,7 +388,7 @@ March 2026 — Built with Claude using the Mikoshi Protocol for research and pla
 
 ## Changelog
 
-- **March 19, 2026** — Added full Hebrew/English language toggle: translation dictionary (100+ entries), RTL CSS support, Hebrew Google Fonts, geolocation-based language detection, Hebrew columns in Supabase (all 45 charities + 15 categories translated), admin dashboard Hebrew input fields, and "Find Your Cause" quiz fully translated. Translations stress-tested by a separate AI model and scored on CIQ rubric.
+- **March 19, 2026** — Added full Hebrew/English language toggle: translation dictionary (100+ entries), RTL CSS support, Hebrew Google Fonts, geolocation-based language detection, Hebrew text for all 45 charities + 15 categories, and "Find Your Cause" quiz fully translated. Translations stress-tested by a separate AI model and scored on CIQ rubric.
 - **March 20, 2026** — Full charity audit and expansion:
   - **Removed 3 charities**: Claims Conference (international, not Israeli), October 7 Relief Fund (unverifiable), AWIS (wrong URL pointing to unrelated site)
   - **Fixed 2 URLs**: Beit Issie Shapiro (→ beitissie.org.il), ORT Israel (→ en.ort.org.il)
@@ -373,3 +403,11 @@ March 2026 — Built with Claude using the Mikoshi Protocol for research and pla
   - **Mobile suggest button**: Styled as a filled blue circle with white "+" icon, properly centered, pushed to the right next to the language toggle.
   - **Scroll offset fix**: All `scrollIntoView` calls replaced with a `scrollToEl()` helper that accounts for the sticky header and category nav height. Quiz results and category filters now scroll to the correct visible position.
   - **Auto-hide header on mobile**: Header slides up and hides when scrolling down (below 680px width), reappears on scroll up. Category nav adjusts its top position accordingly. Desktop header remains sticky and always visible.
+- **August 16, 2026** — **Moved off Supabase completely. The site no longer uses a database.**
+  - **Why**: Avigdor's free Supabase account is capped at 2 projects. Give Israel was using one of those slots. Freeing it unblocked a separate product, Sage Review.
+  - **New `public/data.js`**: all 15 categories and 60 charities now live in one plain JavaScript file loaded by index.html. This is now the single source of truth. To change the directory, edit the file and push.
+  - **Suggest form removed the same day**: the whole "Suggest a Charity" modal and form were deleted from `index.html` to keep things simple. The header button is now just an email link to avigdor@crunchybuzz.com. This also removed the `api/` folder, the Resend email service, the honeypot spam field, and every environment variable. The site is 100% static files again — no backend, no secrets.
+  - **Admin dashboard retired**: `public/admin.html` moved to `retired/admin.html`. It is no longer deployed and cannot work. giveisrael.charity/admin is gone. Suggestions are reviewed by email now.
+  - **Logos moved in-house**: 50 charity logos now live in `public/logos/` and are served from the site. 3 still use a Google favicon URL, 7 have none and show initials instead. The Google Favicon API is no longer the general method.
+  - **Security tightened**: Supabase URL removed from the CSP; ipapi.co added (needed for the Hebrew geolocation check). No API keys of any kind remain in the code.
+  - **Kept for reference**: `backup-supabase/` holds a raw JSON backup of the old database, and `download-logos.sh` is the one-time script that pulled the logo files out. Nothing on the site reads either of them.

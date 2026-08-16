@@ -223,6 +223,7 @@ body::after {
   height: 42px;
   padding: 0 18px;
   display: flex;
+  text-decoration: none;
   align-items: center;
   gap: 6px;
   background: var(--white);
@@ -1720,10 +1721,10 @@ html[dir="rtl"] .quiz-back-btn .back-arrow { transform: scaleX(-1); }
       </div>
     </div>
 
-    <button class="btn-suggest" onclick="openSuggestModal()" aria-label="Suggest a Charity">
+    <a class="btn-suggest" href="mailto:avigdor@crunchybuzz.com?subject=Give%20Israel%20%E2%80%94%20charity%20suggestion" aria-label="Suggest a charity by email">
       <span class="desktop-text">+ Suggest a Charity</span>
       <span style="display:none" class="mobile-plus">+</span>
-    </button>
+    </a>
 
     <button class="btn-lang" id="langToggle" onclick="toggleLanguage()" aria-label="Switch language"><span class="lang-flag" id="langFlag">🇮🇱</span><span id="langText">עב</span></button>
 
@@ -1814,58 +1815,15 @@ html[dir="rtl"] .quiz-back-btn .back-arrow { transform: scaleX(-1); }
 </footer>
 <div class="flag-stripe-bottom"></div>
 
-<!-- SUGGEST MODAL -->
-<div class="modal-bg" id="suggestModal" onclick="closeSuggestModal(event)">
-  <div class="modal" onclick="event.stopPropagation()">
-    <div class="modal-top">
-      <div>
-        <h2>Suggest a Charity</h2>
-        <p>Know an Israeli charity that should be listed?</p>
-      </div>
-      <button class="modal-x" onclick="closeSuggestModal()" aria-label="Close">&times;</button>
-    </div>
-    <div class="modal-content" id="suggestFormBody">
-      <form id="suggestForm" onsubmit="submitSuggestion(event)">
-        <div class="fg">
-          <label class="fl">Charity Name <span class="req">*</span></label>
-          <input type="text" class="fi" name="charity_name" required placeholder="e.g. Magen David Adom">
-        </div>
-        <div class="f-row">
-          <div class="fg"><label class="fl">Website</label><input type="url" class="fi" name="website_url" placeholder="https://..."></div>
-          <div class="fg"><label class="fl">Donation Page</label><input type="url" class="fi" name="donation_url" placeholder="https://.../donate"></div>
-        </div>
-        <div class="fg">
-          <label class="fl">Category</label>
-          <select class="fs" name="category">
-            <option value="">Select a category...</option>
-            <option>Soldiers & Veterans</option><option>Medical & Emergency</option><option>Poverty & Hunger</option><option>Education</option><option>Children & Youth</option><option>Holocaust Survivors</option><option>Special Needs</option><option>Terror Victims</option><option>Community Development</option><option>Environment & Land</option><option>Women Empowerment</option><option>Arts & Culture</option><option>Technology & Innovation</option><option>Animals</option><option>Religious & Spiritual</option>
-          </select>
-        </div>
-        <div class="fg">
-          <label class="fl">Description</label>
-          <textarea class="ft" name="description" placeholder="What does this charity do?"></textarea>
-        </div>
-        <div class="f-row">
-          <div class="fg"><label class="fl">Your Name</label><input type="text" class="fi" name="submitter_name" placeholder="Optional"></div>
-          <div class="fg"><label class="fl">Your Email</label><input type="email" class="fi" name="submitter_email" placeholder="Optional"></div>
-        </div>
-        <div style="position:absolute;left:-9999px;opacity:0;height:0;overflow:hidden;" aria-hidden="true"><label>Website URL<input type="text" name="_hp_website" tabindex="-1" autocomplete="off"></label></div>
-        <button type="submit" class="btn-submit" id="submitBtn">Submit Suggestion</button>
-      </form>
-    </div>
-  </div>
-</div>
-
 <!-- SCROLL TOP -->
 <button class="to-top" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
 </button>
 
-<script>
-const SUPABASE_URL='https://psrtcjaxfeutecirypwd.supabase.co';
-const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBzcnRjamF4ZmV1dGVjaXJ5cHdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5NTcxMDIsImV4cCI6MjA4OTUzMzEwMn0.4aJK0277vZudaRtvmCpEhfWhHkbrXyHIc_2f8DgqZkQ';
-const hdrs={'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`,'Content-Type':'application/json'};
+<!-- Charity + category data. To add or edit a charity, edit public/data.js -->
+<script src="/data.js"></script>
 
+<script>
 const LANG = {
   en: {
     logo: 'Give<span>Israel</span>',
@@ -2146,38 +2104,6 @@ function updateStaticText() {
 
   document.querySelector('.footer').innerHTML = '<strong>' + (currentLang === 'he' ? 'תן לישראל' : 'Give Israel') + '</strong> — ' + t('footerTagline') + '<div class="footer-rule"></div>' + t('footerDisclaimer1') + '<br>&copy; 2026 &middot; ' + t('footerDisclaimer2');
 
-  const modalTop = document.querySelector('.modal-top');
-  if (modalTop) {
-    modalTop.querySelector('h2').textContent = t('suggestTitle');
-    modalTop.querySelector('p').textContent = t('suggestSub');
-  }
-
-  const form = document.getElementById('suggestForm');
-  if (form) {
-    const labels = form.querySelectorAll('.fl');
-    const labelKeys = ['labelName', 'labelWebsite', 'labelDonation', 'labelCategory', 'labelDesc', 'labelYourName', 'labelYourEmail'];
-    labels.forEach((lbl, i) => {
-      if (labelKeys[i]) {
-        const req = lbl.querySelector('.req');
-        lbl.textContent = t(labelKeys[i]) + ' ';
-        if (req) lbl.appendChild(req);
-      }
-    });
-
-    form.querySelector('[name="charity_name"]').placeholder = t('phName');
-    form.querySelector('[name="website_url"]').placeholder = t('phWebsite');
-    form.querySelector('[name="donation_url"]').placeholder = t('phDonation');
-    form.querySelector('[name="description"]').placeholder = t('phDesc');
-    form.querySelector('[name="submitter_name"]').placeholder = t('phOptional');
-    form.querySelector('[name="submitter_email"]').placeholder = t('phOptional');
-
-    const sel = form.querySelector('select');
-    if (sel && sel.options[0]) sel.options[0].textContent = t('phCategory');
-
-    const submitBtn = document.getElementById('submitBtn');
-    if (submitBtn && !submitBtn.disabled) submitBtn.textContent = t('submitBtn');
-  }
-
   const cookie = document.getElementById('cookieConsent');
   if (cookie) {
     cookie.querySelector('span').innerHTML = t('cookieMsg') + ' <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener" style="color:#5B94F0;text-decoration:underline;">' + t('cookieLearn') + '</a>';
@@ -2205,19 +2131,16 @@ let allCharities=[],allCategories=[],activeCat=null,sq='',quizMatchData=null;
 // Sanitize strings to prevent XSS
 function esc(str){if(!str)return '';const d=document.createElement('div');d.textContent=str;return d.innerHTML;}
 
-async function fetchData(){
+function fetchData(){
   try{
-    const[cr,chr]=await Promise.all([
-      fetch(`${SUPABASE_URL}/rest/v1/categories?order=display_order.asc`,{headers:hdrs}),
-      fetch(`${SUPABASE_URL}/rest/v1/charities?order=is_featured.desc,name.asc`,{headers:hdrs})
-    ]);
-    allCategories=await cr.json();allCharities=await chr.json();
+    if(typeof GI_CATEGORIES==='undefined'||typeof GI_CHARITIES==='undefined')throw new Error('data.js did not load');
+    allCategories=GI_CATEGORIES;allCharities=GI_CHARITIES;
     document.getElementById('totalCharities').textContent=allCharities.length;
     document.getElementById('totalCategories').textContent=allCategories.length;
     renderCats();renderCards();
   }catch(e){
-    console.error('Error fetching data:',e);
-    document.getElementById('charityGrid').innerHTML='<div class="empty"><div class="empty-ico">⚠️</div><h3>Could not load charities</h3><p>Check your connection and refresh.</p></div>';
+    console.error('Error loading data:',e);
+    document.getElementById('charityGrid').innerHTML='<div class="empty"><div class="empty-ico">⚠️</div><h3>Could not load charities</h3><p>Please refresh the page.</p></div>';
   }
 }
 
@@ -2375,23 +2298,8 @@ function updateSuggestBtn(){const w=window.innerWidth;document.querySelectorAll(
 function updateCatNavTop(){const h=document.querySelector('.header');const cn=document.querySelector('.cat-nav');if(h&&cn){cn.style.top=h.offsetHeight+'px';}}
 updateSuggestBtn();updateCatNavTop();window.addEventListener('resize',function(){updateSuggestBtn();updateCatNavTop();});
 
-// Modal
-function openSuggestModal(){document.getElementById('suggestModal').classList.add('open');document.body.style.overflow='hidden';}
-function closeSuggestModal(e){if(e&&e.target!==e.currentTarget)return;document.getElementById('suggestModal').classList.remove('open');document.body.style.overflow='';setTimeout(()=>{const b=document.getElementById('suggestFormBody');if(b.querySelector('.form-ok')){location.reload();}},300);}
 
-async function submitSuggestion(e){
-  e.preventDefault();const form=e.target,btn=document.getElementById('submitBtn');
-  btn.disabled=true;btn.textContent=t('submitting');
-  const d={charity_name:form.charity_name.value,website_url:form.website_url.value||null,donation_url:form.donation_url.value||null,category:form.category.value||null,description:form.description.value||null,submitter_name:form.submitter_name.value||null,submitter_email:form.submitter_email.value||null,_hp_website:form._hp_website.value};
-  try{const r=await fetch(`${SUPABASE_URL}/functions/v1/submit-suggestion`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});
-    const res=await r.json();
-    if(r.ok&&res.success){document.getElementById('suggestFormBody').innerHTML='<div class="form-ok"><div class="form-ok-ico">✓</div><h3>'+t('successTitle')+'</h3><p>'+t('successMsg')+'</p></div>';}
-    else if(r.status===429){btn.disabled=false;btn.textContent=t('submitBtn');alert(t('errorRate'));}
-    else throw new Error('fail');
-  }catch(err){btn.disabled=false;btn.textContent=t('submitBtn');alert(t('errorGeneric'));}
-}
 
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSuggestModal();});
 
 // ===== FIND YOUR CAUSE QUIZ =====
 function getQuizQuestions(){

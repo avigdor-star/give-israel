@@ -1,5 +1,16 @@
 # "Light Up Israel" — Feature Spec
 
+> ⚠️ **OUT OF DATE IN ONE IMPORTANT WAY — read before building this.**
+> This spec was written in March 2026, when Give Israel used a Supabase database.
+> **That database was removed on 16 August 2026.** There is no database any more.
+> All charity data now lives in `public/data.js`, and the site is static files on Vercel.
+>
+> Ignore every mention of Supabase in this document, including the proposed Supabase
+> table for the Phase 2 Community Map. If that feature is ever built, it needs a
+> different approach that does not add a database. Everything else here — the design,
+> the regions, the milestones, the localStorage progress — still stands.
+> See `CLAUDE.md` for how the project actually works today.
+
 ## The Mikoshi Protocol Output
 
 Built through deep research, CIQ evaluation, and stress-testing. This is your 10x engagement feature.
